@@ -468,7 +468,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines'));
       var counts=[].slice.call(document.querySelectorAll('.hh-count'));
       function inView(el,ratio){var r=el.getBoundingClientRect();return r.top<innerHeight*ratio && r.bottom>0;}
-      function countUp(el){var to=parseFloat(el.getAttribute('data-to')),s=null,d=1200;function step(ts){if(s===null)s=ts;var p=Math.min((ts-s)/d,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(e*to);if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
+      function countUp(el){var to=parseFloat(el.getAttribute('data-to')),s=null,d=2200;function step(ts){if(s===null)s=ts;var p=Math.min((ts-s)/d,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(e*to);if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
       function check(){
         for(var i=items.length-1;i>=0;i--){ if(inView(items[i],0.88)){ items[i].classList.add('hh-in'); items.splice(i,1); } }
         for(var j=counts.length-1;j>=0;j--){ if(inView(counts[j],0.9)){ countUp(counts[j]); counts.splice(j,1); } }
