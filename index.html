@@ -338,7 +338,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 #hh-bg .hh-bar.r{right:-40%;left:auto;top:24%;transform:rotate(38deg);background:linear-gradient(90deg,#0E86A6,#0A5E75);}
 /* 現役マーケター: 純白＋FVとのくっきり境界 */
 [class*="linear-gradient(to_bottom,rgba(255,255,255,1)"].hh-white-sec{background:#ffffff !important;}
-.hh-white-top{border-top:1px solid #DCEAEE !important;}
+.hh-white-top{border-top:none !important;}
 /* ブランド色のダーク・セクション（LayerX "Join Us" 風／上端を斜めカット） */
 .hh-dark-sec{background:linear-gradient(160deg,#12414b 0%,#08272e 100%) !important;position:relative;overflow:hidden;clip-path:polygon(0 66px,100% 0,100% 100%,0 100%);padding-top:130px !important;}
 /* gradient+noise の "箱"（スクロールでズームイン） */
@@ -433,15 +433,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       /* 8) 残りの本文（段落）→ フェードアップ（既にタグ済みの中は除外） */
       [].forEach.call(document.querySelectorAll('main p'),function(el){ if(!ancTagged(el)) tag(el,'fadeup'); });
 
-      /* 9) セクション間は仕切り線のみ（単調な交互塗りは廃止。面白さは"斜めカット"＋ダーク句読点で出す） */
-      try{
-        var heroSec=document.getElementById('hero');
-        [].forEach.call(document.querySelectorAll('main > section, main > div'),function(el){
-          if(!heroSec||el===heroSec||el.contains(heroSec)) return;
-          if(!el.textContent || el.textContent.replace(/\s/g,'').length < 4) return;
-          el.style.borderTop = '1px solid #E1EBEE';
-        });
-      }catch(e){}
+      /* 9) セクション境目のグレー仕切り線は無し（区切りは見せ場＝gradient箱/斜めダークで表現） */
 
       /* 10) 「役割」セクションを"ブランド色ダーク"に（いきなり背景ブランド色・白文字・斜めシェイプ） */
       try{
