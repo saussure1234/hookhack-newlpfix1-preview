@@ -453,6 +453,26 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         if(us) us.classList.add('hh-underline');
       }catch(e){}
 
+      /* 13) 見せ場(gbox/ダーク)内の要素は個別revealを解除（箱/セクションと一緒に出す＝ボタン消え防止） */
+      try{
+        [].forEach.call(document.querySelectorAll('.hh-gbox .hh-rv, .hh-dark-sec .hh-rv'),function(el){
+          el.classList.remove('hh-rv'); el.removeAttribute('data-fx'); el.style.opacity=''; el.style.transform=''; el.style.transitionDelay='';
+        });
+      }catch(e){}
+
+      /* 14) 「導入事例／費用」の背景に、スクロールで一緒に動く柔らかいシェイプ（棒じゃない） */
+      try{
+        [sectionOf('導入事例'), sectionOf('費用')].forEach(function(sec,i){
+          if(!sec) return;
+          if(getComputedStyle(sec).position==='static') sec.style.position='relative';
+          sec.style.overflow='hidden';
+          var blob=document.createElement('div'); blob.className='hh-sbg'; blob.setAttribute('data-depth', i? '-0.12':'0.15');
+          blob.style.cssText='position:absolute;z-index:0;'+(i?'bottom:2%;left:-8%;':'top:6%;right:-8%;')+'width:460px;height:460px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,147,180,.15),transparent 70%);filter:blur(12px);pointer-events:none;';
+          sec.insertBefore(blob, sec.firstChild);
+          [].forEach.call(sec.children,function(c){ if(c!==blob && getComputedStyle(c).position==='static'){ c.style.position='relative'; c.style.zIndex='1'; } });
+        });
+      }catch(e){}
+
       if(reduce){
         document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline').forEach(function(el){el.classList.add('hh-in');});
         document.querySelectorAll('.hh-count').forEach(function(el){el.textContent=el.getAttribute('data-to');});
@@ -484,6 +504,8 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       /* reveal エンジン（スクロール位置ベース） */
       var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline'));
       var counts=[].slice.call(document.querySelectorAll('.hh-count'));
+      var sbgs=[].slice.call(document.querySelectorAll('.hh-sbg'));
+      function moveSBG(){ var vh=window.innerHeight||800; sbgs.forEach(function(el){ var p=el.parentElement.getBoundingClientRect(); var center=p.top+p.height/2-vh/2; el.style.transform='translateY('+(center*-parseFloat(el.getAttribute('data-depth')))+'px)'; }); }
       function inView(el,ratio){var r=el.getBoundingClientRect();return r.top<innerHeight*ratio && r.bottom>0;}
       function countUp(el){var to=parseFloat(el.getAttribute('data-to')),s=null,d=2200;function step(ts){if(s===null)s=ts;var p=Math.min((ts-s)/d,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(e*to);if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
       function check(){
@@ -491,9 +513,9 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         for(var j=counts.length-1;j>=0;j--){ if(inView(counts[j],0.9)){ countUp(counts[j]); counts.splice(j,1); } }
       }
       var ticking=false;
-      function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(function(){ check(); moveBars(); ticking=false; }); } }
+      function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(function(){ check(); moveBars(); moveSBG(); ticking=false; }); } }
       addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll,{passive:true});
-      check();
+      check(); moveSBG();
     }catch(e){ document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline').forEach(function(el){el.classList.add('hh-in');}); }
   }
   if(document.readyState!=='loading') run(); else document.addEventListener('DOMContentLoaded',run);
