@@ -482,14 +482,25 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           });
           [].forEach.call(sec.children,function(c){ if(!/hh-sbg/.test(c.className||'') && getComputedStyle(c).position==='static'){ c.style.position='relative'; c.style.zIndex='1'; } });
         })();
-        // 費用: 内容を"箱に収める"薄い枠つき角丸パネル（背景に1枚・スクロールでふわっと登場）
+        // 費用: 内容を"箱に収める"薄い枠つき角丸パネル（費用＋サポートを1つの箱に・スクロールでふわっと登場）
         (function(){
-          var sec=document.querySelector('#pricing')||sectionOf('費用'); if(!sec) return;
-          if(getComputedStyle(sec).position==='static') sec.style.position='relative';
+          var pricing=document.getElementById('pricing')||sectionOf('費用'); if(!pricing) return;
+          var sup=pricing.nextElementSibling;
+          var includeSup = sup && sup.tagName==='SECTION' && !sup.id && /サポート/.test(sup.textContent);
+          var host;
+          if(includeSup){
+            var wrap=document.createElement('div'); wrap.className='hh-pboxwrap'; wrap.style.position='relative';
+            pricing.parentNode.insertBefore(wrap, pricing);
+            wrap.appendChild(pricing); wrap.appendChild(sup);
+            host=wrap;
+          } else {
+            if(getComputedStyle(pricing).position==='static') pricing.style.position='relative';
+            host=pricing;
+          }
           var panel=document.createElement('div'); panel.className='hh-pbox hh-rv'; panel.setAttribute('data-fx','scale');
           panel.style.cssText='position:absolute;z-index:0;top:56px;left:2.5%;right:2.5%;bottom:56px;border-radius:30px;background:linear-gradient(160deg,#E9F6F9 0%,#F7FCFD 55%,#FFFFFF 100%);border:1px solid #CFE4E9;box-shadow:0 50px 100px -60px rgba(4,60,72,.30),inset 0 1px 0 rgba(255,255,255,.6);pointer-events:none;';
-          sec.insertBefore(panel, sec.firstChild);
-          [].forEach.call(sec.children,function(c){ if(c!==panel && getComputedStyle(c).position==='static'){ c.style.position='relative'; c.style.zIndex='1'; } });
+          host.insertBefore(panel, host.firstChild);
+          [].forEach.call(host.children,function(c){ if(c!==panel){ if(getComputedStyle(c).position==='static') c.style.position='relative'; c.style.zIndex='1'; } });
         })();
       }catch(e){}
 
