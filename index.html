@@ -286,9 +286,9 @@ body,main{background:transparent !important}
 [class*="bg-[#11434D]/70"] [class*="border-white"]{border-color:#E7EFF1 !important}
 
 /* ===== セクションの差（リズム）：レイアウト無変更・トーンだけ ===== */
-/* A) 白バンド(現役マーケター/導入事例/メンバー) → 淡い寒色ティント帯にして区切りを出す */
+/* A) 白バンドのオーバーレイは透明化（セクション色は step9 の"交互塗り分け"に一本化） */
 [class*="linear-gradient(to_bottom,rgba(255,255,255,1)"]{
-  background:linear-gradient(to bottom,#EAF6F9 0%,#EAF6F9 82%,rgba(234,246,249,0) 100%) !important;
+  background:transparent !important;
 }
 /* B) 収納パネル(3つの軸/サンプル/BPaaS) → 白より少し濃い寒色"フィーチャーカード"化して浮かせる */
 [class*="bg-[#041D22]/60"],
@@ -339,8 +339,21 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 /* 現役マーケター: 純白＋FVとのくっきり境界 */
 [class*="linear-gradient(to_bottom,rgba(255,255,255,1)"].hh-white-sec{background:#ffffff !important;}
 .hh-white-top{border-top:1px solid #DCEAEE !important;}
-/* ブランド色のダーク・セクション（LayerX "Join Us" 風） */
-.hh-dark-sec{background:linear-gradient(160deg,#12414b 0%,#08272e 100%) !important;border-top:1px solid rgba(255,255,255,.1) !important;position:relative;overflow:hidden;}
+/* ブランド色のダーク・セクション（LayerX "Join Us" 風／上端を斜めカット） */
+.hh-dark-sec{background:linear-gradient(160deg,#12414b 0%,#08272e 100%) !important;position:relative;overflow:hidden;clip-path:polygon(0 66px,100% 0,100% 100%,0 100%);padding-top:130px !important;}
+/* gradient+noise の "箱"（スクロールでズームイン） */
+.hh-gbox{background:linear-gradient(120deg,#2f4d8a 0%,#0093B4 52%,#43c39a 100%) !important;border:none !important;position:relative;overflow:hidden;
+  box-shadow:0 50px 100px -50px rgba(4,60,72,.5) !important;
+  transform:scale(.9);opacity:0;transition:transform 1.05s cubic-bezier(.16,1,.3,1),opacity .9s cubic-bezier(.16,1,.3,1);will-change:transform;}
+.hh-gbox.hh-in{transform:scale(1);opacity:1;}
+.hh-gbox::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.16;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+.hh-gbox>*{position:relative;z-index:1;}
+.hh-gbox h2,.hh-gbox h3,.hh-gbox p,.hh-gbox span,.hh-gbox i,.hh-gbox a{color:#ffffff !important;}
+.hh-gbox [class*="text-black"],.hh-gbox [class*="text-[#0a2b31]"],.hh-gbox [class*="text-white"]{color:#ffffff !important;}
+.hh-gbox [class*="bg-white/10"],.hh-gbox [class*="rounded-xl"]{background:rgba(255,255,255,.12) !important;border-color:rgba(255,255,255,.28) !important;}
+.hh-gbox [class*="text-[#6cc5da]"]{color:#d4f2f8 !important;}
+.hh-gbox [class*="bg-[#2C9FB8]"]{background:#ffffff !important;color:#0d6e86 !important;}
 .hh-dark-sec,.hh-dark-sec h2,.hh-dark-sec h3,.hh-dark-sec h4,.hh-dark-sec p,.hh-dark-sec span,.hh-dark-sec i,.hh-dark-sec .lab{color:#ffffff !important;}
 .hh-dark-sec [class*="text-black"],.hh-dark-sec [class*="text-[#11434D]"],.hh-dark-sec [class*="text-[#041D22]"]{color:#ffffff !important;}
 .hh-dark-sec [class*="rounded-xl"],.hh-dark-sec [class*="rounded-2xl"]{background:rgba(255,255,255,.06) !important;border-color:rgba(255,255,255,.18) !important;}
@@ -420,13 +433,13 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       /* 8) 残りの本文（段落）→ フェードアップ（既にタグ済みの中は除外） */
       [].forEach.call(document.querySelectorAll('main p'),function(el){ if(!ancTagged(el)) tag(el,'fadeup'); });
 
-      /* 9) セクション間に"仕切り線"だけ入れて区切りを明確化（背景の塗り分けはしない＝透明/余白のムラを出さない。棒はclipでFV限定なので下に漏れない） */
+      /* 9) セクション間は仕切り線のみ（単調な交互塗りは廃止。面白さは"斜めカット"＋ダーク句読点で出す） */
       try{
         var heroSec=document.getElementById('hero');
         [].forEach.call(document.querySelectorAll('main > section, main > div'),function(el){
           if(!heroSec||el===heroSec||el.contains(heroSec)) return;
           if(!el.textContent || el.textContent.replace(/\s/g,'').length < 4) return;
-          el.style.borderTop = '1px solid #D9E7EA';
+          el.style.borderTop = '1px solid #E1EBEE';
         });
       }catch(e){}
 
@@ -436,8 +449,11 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         if(roleH2){ var rs=roleH2.closest('section')||roleH2.parentElement.closest('div'); if(rs) rs.classList.add('hh-dark-sec'); }
       }catch(e){}
 
+      /* 11) 「3つの軸」パネル = gradient+noise の箱（スクロールでズームイン） */
+      try{ var gb=document.querySelector('[class*="bg-[#041D22]/60"]'); if(gb) gb.classList.add('hh-gbox'); }catch(e){}
+
       if(reduce){
-        document.querySelectorAll('.hh-rv,.hh-lines').forEach(function(el){el.classList.add('hh-in');});
+        document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox').forEach(function(el){el.classList.add('hh-in');});
         document.querySelectorAll('.hh-count').forEach(function(el){el.textContent=el.getAttribute('data-to');});
         return;
       }
@@ -465,7 +481,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       moveBars();
 
       /* reveal エンジン（スクロール位置ベース） */
-      var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines'));
+      var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox'));
       var counts=[].slice.call(document.querySelectorAll('.hh-count'));
       function inView(el,ratio){var r=el.getBoundingClientRect();return r.top<innerHeight*ratio && r.bottom>0;}
       function countUp(el){var to=parseFloat(el.getAttribute('data-to')),s=null,d=2200;function step(ts){if(s===null)s=ts;var p=Math.min((ts-s)/d,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(e*to);if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
@@ -477,7 +493,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(function(){ check(); moveBars(); ticking=false; }); } }
       addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll,{passive:true});
       check();
-    }catch(e){ document.querySelectorAll('.hh-rv,.hh-lines').forEach(function(el){el.classList.add('hh-in');}); }
+    }catch(e){ document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox').forEach(function(el){el.classList.add('hh-in');}); }
   }
   if(document.readyState!=='loading') run(); else document.addEventListener('DOMContentLoaded',run);
 })();
