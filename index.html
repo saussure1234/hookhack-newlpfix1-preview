@@ -354,6 +354,9 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 .hh-gbox [class*="bg-white/10"],.hh-gbox [class*="rounded-xl"]{background:rgba(255,255,255,.12) !important;border-color:rgba(255,255,255,.28) !important;}
 .hh-gbox [class*="text-[#6cc5da]"]{color:#d4f2f8 !important;}
 .hh-gbox [class*="bg-[#2C9FB8]"]{background:#ffffff !important;color:#0d6e86 !important;}
+/* 下線ドロー（スクロールで左→右に引かれる） */
+.hh-underline{background-image:linear-gradient(#0093B4,#0093B4) !important;background-repeat:no-repeat !important;background-position:0 100% !important;background-size:0% 3px !important;transition:background-size 1.15s cubic-bezier(.16,1,.3,1) !important;padding-bottom:2px;}
+.hh-underline.hh-in{background-size:100% 3px !important;}
 .hh-dark-sec,.hh-dark-sec h2,.hh-dark-sec h3,.hh-dark-sec h4,.hh-dark-sec p,.hh-dark-sec span,.hh-dark-sec i,.hh-dark-sec .lab{color:#ffffff !important;}
 .hh-dark-sec [class*="text-black"],.hh-dark-sec [class*="text-[#11434D]"],.hh-dark-sec [class*="text-[#041D22]"]{color:#ffffff !important;}
 .hh-dark-sec [class*="rounded-xl"],.hh-dark-sec [class*="rounded-2xl"]{background:rgba(255,255,255,.06) !important;border-color:rgba(255,255,255,.18) !important;}
@@ -444,8 +447,14 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       /* 11) 「3つの軸」パネル = gradient+noise の箱（スクロールでズームイン） */
       try{ var gb=document.querySelector('[class*="bg-[#041D22]/60"]'); if(gb) gb.classList.add('hh-gbox'); }catch(e){}
 
+      /* 12) 実績フレーズ「5年間で30社超…対応」に下線ドロー */
+      try{
+        var us=[].slice.call(document.querySelectorAll('main span,main b,main strong')).find(function(s){return s.textContent.indexOf('5年間で30社超')>=0 && s.textContent.replace(/\s/g,'').length<70;});
+        if(us) us.classList.add('hh-underline');
+      }catch(e){}
+
       if(reduce){
-        document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox').forEach(function(el){el.classList.add('hh-in');});
+        document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline').forEach(function(el){el.classList.add('hh-in');});
         document.querySelectorAll('.hh-count').forEach(function(el){el.textContent=el.getAttribute('data-to');});
         return;
       }
@@ -473,7 +482,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       moveBars();
 
       /* reveal エンジン（スクロール位置ベース） */
-      var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox'));
+      var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline'));
       var counts=[].slice.call(document.querySelectorAll('.hh-count'));
       function inView(el,ratio){var r=el.getBoundingClientRect();return r.top<innerHeight*ratio && r.bottom>0;}
       function countUp(el){var to=parseFloat(el.getAttribute('data-to')),s=null,d=2200;function step(ts){if(s===null)s=ts;var p=Math.min((ts-s)/d,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(e*to);if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
@@ -485,7 +494,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(function(){ check(); moveBars(); ticking=false; }); } }
       addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll,{passive:true});
       check();
-    }catch(e){ document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox').forEach(function(el){el.classList.add('hh-in');}); }
+    }catch(e){ document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline').forEach(function(el){el.classList.add('hh-in');}); }
   }
   if(document.readyState!=='loading') run(); else document.addEventListener('DOMContentLoaded',run);
 })();
