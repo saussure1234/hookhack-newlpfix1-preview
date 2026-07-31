@@ -339,6 +339,14 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 /* 現役マーケター: 純白＋FVとのくっきり境界 */
 [class*="linear-gradient(to_bottom,rgba(255,255,255,1)"].hh-white-sec{background:#ffffff !important;}
 .hh-white-top{border-top:1px solid #DCEAEE !important;}
+/* ブランド色のダーク・セクション（LayerX "Join Us" 風） */
+.hh-dark-sec{background:linear-gradient(160deg,#12414b 0%,#08272e 100%) !important;border-top:1px solid rgba(255,255,255,.1) !important;position:relative;overflow:hidden;}
+.hh-dark-sec,.hh-dark-sec h2,.hh-dark-sec h3,.hh-dark-sec h4,.hh-dark-sec p,.hh-dark-sec span,.hh-dark-sec i,.hh-dark-sec .lab{color:#ffffff !important;}
+.hh-dark-sec [class*="text-black"],.hh-dark-sec [class*="text-[#11434D]"],.hh-dark-sec [class*="text-[#041D22]"]{color:#ffffff !important;}
+.hh-dark-sec [class*="rounded-xl"],.hh-dark-sec [class*="rounded-2xl"]{background:rgba(255,255,255,.06) !important;border-color:rgba(255,255,255,.18) !important;}
+.hh-dark-sec::before{content:"";position:absolute;top:-60px;left:-12%;width:62%;height:280px;background:rgba(255,255,255,.045);border-radius:60px;transform:rotate(-24deg);pointer-events:none;z-index:0;}
+.hh-dark-sec::after{content:"";position:absolute;bottom:-50px;right:-10%;width:52%;height:260px;background:rgba(255,255,255,.03);border-radius:60px;transform:rotate(-24deg);pointer-events:none;z-index:0;}
+.hh-dark-sec>*{position:relative;z-index:1;}
 </style>
 <script>
 (function(){
@@ -423,6 +431,12 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           el.style.borderTop = '1px solid #D3E6EA';   // くっきりした境界線
           tog++;
         });
+      }catch(e){}
+
+      /* 10) 「役割」セクションを"ブランド色ダーク"に（いきなり背景ブランド色・白文字・斜めシェイプ） */
+      try{
+        var roleH2=heading('HookHackの役割')||heading('役割');
+        if(roleH2){ var rs=roleH2.closest('section')||roleH2.parentElement.closest('div'); if(rs) rs.classList.add('hh-dark-sec'); }
       }catch(e){}
 
       if(reduce){
