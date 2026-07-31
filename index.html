@@ -412,13 +412,16 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       /* 8) 残りの本文（段落）→ フェードアップ（既にタグ済みの中は除外） */
       [].forEach.call(document.querySelectorAll('main p'),function(el){ if(!ancTagged(el)) tag(el,'fadeup'); });
 
-      /* 9) FV(ヒーロー)以外のセクションを"不透明な明地"にして、固定の斜めバーをヒーローだけに見せる */
+      /* 9) FV以外のセクションを不透明化＋交互の明地＋境界線で"くっきり分ける"（斜めバーもヒーロー限定に） */
       try{
         var heroSec=document.getElementById('hero');
+        var tog=0;
         [].forEach.call(document.querySelectorAll('main > section, main > div'),function(el){
           if(!heroSec||el===heroSec||el.contains(heroSec)) return;
-          var bg=getComputedStyle(el).backgroundColor;
-          if(bg==='rgba(0, 0, 0, 0)'||bg==='transparent') el.style.backgroundColor='#F4FBFC';
+          if(!el.textContent || el.textContent.replace(/\s/g,'').length < 4) return; // 空/スペーサー除外
+          el.style.backgroundColor = (tog%2===0) ? '#FFFFFF' : '#E8F4F7';
+          el.style.borderTop = '1px solid #D3E6EA';   // くっきりした境界線
+          tog++;
         });
       }catch(e){}
 
