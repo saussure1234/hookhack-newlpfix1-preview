@@ -464,10 +464,11 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         });
       }catch(e){}
 
-      /* 14) 「導入事例／費用」の背景に、スクロールで一緒に動く柔らかいシェイプ（大玉2つ・はっきり見える） */
+      /* 14) 「導入事例」=柔らかい大玉シェイプ / 「費用」=内容を収める薄い枠つき角丸パネル */
       try{
-        [sectionOf('導入事例'), sectionOf('費用')].forEach(function(sec,i){
-          if(!sec) return;
+        // 導入事例: 大玉2つ（視差で一緒に動く）
+        (function(){
+          var sec=sectionOf('導入事例'); if(!sec) return;
           if(getComputedStyle(sec).position==='static') sec.style.position='relative';
           sec.style.overflow='hidden';
           var specs=[
@@ -480,7 +481,16 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
             sec.insertBefore(blob, sec.firstChild);
           });
           [].forEach.call(sec.children,function(c){ if(!/hh-sbg/.test(c.className||'') && getComputedStyle(c).position==='static'){ c.style.position='relative'; c.style.zIndex='1'; } });
-        });
+        })();
+        // 費用: 内容を"箱に収める"薄い枠つき角丸パネル（背景に1枚・スクロールでふわっと登場）
+        (function(){
+          var sec=document.querySelector('#pricing')||sectionOf('費用'); if(!sec) return;
+          if(getComputedStyle(sec).position==='static') sec.style.position='relative';
+          var panel=document.createElement('div'); panel.className='hh-pbox hh-rv'; panel.setAttribute('data-fx','scale');
+          panel.style.cssText='position:absolute;z-index:0;top:56px;left:2.5%;right:2.5%;bottom:56px;border-radius:30px;background:linear-gradient(160deg,#E9F6F9 0%,#F7FCFD 55%,#FFFFFF 100%);border:1px solid #CFE4E9;box-shadow:0 50px 100px -60px rgba(4,60,72,.30),inset 0 1px 0 rgba(255,255,255,.6);pointer-events:none;';
+          sec.insertBefore(panel, sec.firstChild);
+          [].forEach.call(sec.children,function(c){ if(c!==panel && getComputedStyle(c).position==='static'){ c.style.position='relative'; c.style.zIndex='1'; } });
+        })();
       }catch(e){}
 
       if(reduce){
