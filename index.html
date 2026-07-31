@@ -420,16 +420,13 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       /* 8) 残りの本文（段落）→ フェードアップ（既にタグ済みの中は除外） */
       [].forEach.call(document.querySelectorAll('main p'),function(el){ if(!ancTagged(el)) tag(el,'fadeup'); });
 
-      /* 9) FV以外のセクションを不透明化＋交互の明地＋境界線で"くっきり分ける"（斜めバーもヒーロー限定に） */
+      /* 9) セクション間に"仕切り線"だけ入れて区切りを明確化（背景の塗り分けはしない＝透明/余白のムラを出さない。棒はclipでFV限定なので下に漏れない） */
       try{
         var heroSec=document.getElementById('hero');
-        var tog=0;
         [].forEach.call(document.querySelectorAll('main > section, main > div'),function(el){
           if(!heroSec||el===heroSec||el.contains(heroSec)) return;
-          if(!el.textContent || el.textContent.replace(/\s/g,'').length < 4) return; // 空/スペーサー除外
-          el.style.backgroundColor = (tog%2===0) ? '#FFFFFF' : '#E8F4F7';
-          el.style.borderTop = '1px solid #D3E6EA';   // くっきりした境界線
-          tog++;
+          if(!el.textContent || el.textContent.replace(/\s/g,'').length < 4) return;
+          el.style.borderTop = '1px solid #D9E7EA';
         });
       }catch(e){}
 
@@ -452,10 +449,18 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         document.body.appendChild(bg);
       } }catch(e){}
       var barwraps=[].slice.call(document.querySelectorAll('#hh-bg .hh-barwrap'));
+      var bgEl=document.getElementById('hh-bg');
       function moveBars(){
         var y=window.pageYOffset||document.documentElement.scrollTop;
-        /* 微パララックス。#hh-bgはabsoluteでFVに紐付き、スクロールで一緒に上へ抜ける（透明化しない） */
         barwraps.forEach(function(w){ w.style.transform='translateY('+(y*parseFloat(w.getAttribute('data-speed')))+'px)'; });
+        /* 棒はfixedで"ついてくる"が、FV(ヒーロー)の画面上の範囲だけにclipで刈り込む → 下のセクションには絶対漏れない */
+        var hero=document.getElementById('hero');
+        if(bgEl&&hero){
+          var hb=hero.getBoundingClientRect().bottom, vh=window.innerHeight||800;
+          var cut=vh-hb; if(cut<0)cut=0;
+          var ins='inset(0 0 '+cut+'px 0)';
+          bgEl.style.clipPath=ins; bgEl.style.webkitClipPath=ins;
+        }
       }
       moveBars();
 
