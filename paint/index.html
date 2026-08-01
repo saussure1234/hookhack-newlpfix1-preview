@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>塗るように出るストローク／ブロックが出てくる｜HookHack デモ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#0093B4; --teal:#11434D; --mint:#1DEEC8; --deep:#0d3640;
+  --ink:#0a2b31; --body:#48595c; --line:#E1EBEE;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans JP",sans-serif;color:var(--ink);line-height:1.85;background:#fff;overflow-x:hidden}
+
+.tip{position:sticky;top:0;z-index:60;background:var(--ink);color:#fff;padding:13px 24px;font-size:13.5px;font-weight:700}
+.tip small{font-weight:400;color:#9dbcc2;margin-left:10px}
+.lead{max-width:940px;margin:0 auto;padding:60px 24px 0}
+.lead h1{font-size:clamp(20px,2.6vw,27px);font-weight:800;margin-bottom:10px}
+.lead p{color:var(--body);font-size:14.5px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+.spacer{height:32vh}
+.cap{max-width:940px;margin:0 auto;padding:0 24px 10px}
+.cap .n{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--cyan);
+  border:1px solid rgba(0,147,180,.3);border-radius:999px;padding:4px 12px}
+.cap h2{font-size:19px;font-weight:800;margin:12px 0 4px}
+.cap p{color:var(--body);font-size:14px}
+
+/* ===== ① 塗るように出るストローク ===== */
+.paintsec{position:relative;padding:120px 0;overflow:hidden}
+.paintsec .art{position:absolute;top:50%;right:-6%;transform:translateY(-50%);
+  width:min(760px,64vw);z-index:0;pointer-events:none}
+.paintsec .art svg{display:block;width:100%;height:auto;overflow:visible}
+.paintsec .art path{
+  fill:none;stroke-linecap:round;stroke-linejoin:round;
+  /* 線を「描く」ための仕込み: 全長を破線1本にして、offsetを縮めると描かれていく */
+  stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+}
+.paintsec .inner{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:0 28px}
+.paintsec .eyebrow{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:10px}
+.paintsec h3{font-size:clamp(30px,4.6vw,54px);font-weight:900;letter-spacing:-.01em;line-height:1.2}
+.paintsec .body{color:var(--body);font-size:15px;margin-top:14px;max-width:30em}
+
+/* ===== ② ブロックが出てくる ===== */
+.blockstage{padding:110px 0}
+.blk{position:relative;overflow:hidden;border-radius:28px;padding:64px 56px;
+  background:linear-gradient(140deg,#0d6e86 0%,#0093B4 58%,#2fb9a6 100%);color:#fff;
+  box-shadow:0 60px 110px -60px rgba(4,60,72,.6);
+  /* 下から"生えてくる"仕込み */
+  clip-path:inset(100% 0 0 0);opacity:0;
+  transform:translateY(26px);
+  transition:clip-path 1.05s var(--ease),opacity .5s var(--ease),transform 1.05s var(--ease)}
+.blk.in{clip-path:inset(0 0 0 0);opacity:1;transform:none}
+.blk::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.15;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.blk .grid{position:relative;display:grid;grid-template-columns:1fr .85fr;gap:44px;align-items:center}
+.blk .chip{display:inline-block;background:#fff;color:var(--deep);font-weight:800;font-size:13.5px;
+  border-radius:12px;padding:9px 16px;margin-bottom:22px}
+.blk .no{font-size:14px;font-weight:800;margin-bottom:8px;opacity:.92}
+.blk h3{font-size:clamp(25px,3.4vw,40px);font-weight:900;line-height:1.32}
+.blk p{color:rgba(255,255,255,.9);font-size:14.5px;margin-top:16px}
+.blk .shot{border-radius:16px;overflow:hidden;background:rgba(255,255,255,.12)}
+.blk .shot img{display:block;width:100%;height:auto}
+
+.end{text-align:center;padding:70px 24px 130px;color:var(--body);font-size:14px}
+@media(max-width:820px){ .blk .grid{grid-template-columns:1fr} .blk{padding:44px 28px} .paintsec .art{right:-24%;width:96vw;opacity:.65} }
+</style>
+</head>
+<body>
+
+<div class="tip">① 塗るように出るストローク　② ブロックが出てくる<small>スクロールに合わせて線が「描かれ」ます。戻すと戻ります</small></div>
+
+<div class="lead">
+  <h1>デジタルグリッドの2つ、作りました</h1>
+  <p>①は右のペイント風ストロークが<b>スクロール量に比例して描かれる</b>（スクロールを戻すと巻き戻る）。<br>
+  ②は<b>ブロックが下から生えてくる</b>ように出現。中身は今のLPの3軸そのままです。</p>
+</div>
+
+<div class="spacer"></div>
+
+<!-- ===== ① ===== -->
+<div class="cap">
+  <span class="n">①</span>
+  <h2>塗るように出るストローク</h2>
+  <p>ブランド色のグラデーションで、太いストロークが右側に描かれていきます。</p>
+</div>
+
+<section class="paintsec" id="p1">
+  <div class="art">
+    <svg viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%"  stop-color="#1DEEC8"/>
+          <stop offset="48%" stop-color="#0093B4"/>
+          <stop offset="100%" stop-color="#0d6e86"/>
+        </linearGradient>
+      </defs>
+      <!-- ジグザグの太い筆跡 -->
+      <path class="stroke" d="M40 470 L400 190 L470 330 L860 60" stroke="url(#g1)" stroke-width="86"/>
+    </svg>
+  </div>
+  <div class="inner">
+    <div class="eyebrow">［ コンバージョン改善に繋がる3つの軸 ］</div>
+    <h3>検証スピード</h3>
+    <div class="body">動画広告を最短5分、LPを最短即日で立ち上げ、検証サイクルを最速化</div>
+  </div>
+</section>
+
+<div class="spacer"></div>
+
+<!-- もう1本（向き違い・細め） -->
+<section class="paintsec" id="p2">
+  <div class="art" style="right:auto;left:-8%;">
+    <svg viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="g2" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0%"  stop-color="#0093B4"/>
+          <stop offset="60%" stop-color="#2fb9a6"/>
+          <stop offset="100%" stop-color="#1DEEC8"/>
+        </linearGradient>
+      </defs>
+      <path class="stroke" d="M860 120 L520 380 L430 250 L60 520" stroke="url(#g2)" stroke-width="60"/>
+    </svg>
+  </div>
+  <div class="inner" style="text-align:right">
+    <div class="eyebrow">［ コンバージョン改善に繋がる3つの軸 ］</div>
+    <h3>検証コスト</h3>
+    <div class="body" style="margin-left:auto">動画広告最大30本、LP最大5枚、月額２万円で勝ち筋探索の試行回数を最大化</div>
+  </div>
+</section>
+
+<div class="spacer"></div>
+
+<!-- ===== ② ===== -->
+<div class="cap">
+  <span class="n">②</span>
+  <h2>ブロックが出てくる</h2>
+  <p>白地から、ブランド色のブロックが下から生えるように出現します。</p>
+</div>
+
+<section class="blockstage">
+  <div class="wrap">
+    <div class="blk" id="b1">
+      <div class="grid">
+        <div>
+          <span class="chip">まず1セット、無料で試す</span>
+          <div class="no">3. 検証精度</div>
+          <h3>データのノイズを減らす</h3>
+          <p>広告だけ・LPだけで分かれてることによりノイズに埋もれがちな「勝ち訴求」を、広告×LPの連動運用により切り出し</p>
+        </div>
+        <div class="shot"><img src="https://www.hook-hack.com/lpsampleso.png" alt=""></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="end">— ①の太さ・色・角度、②の出方（下から／横から／ズーム）、寄せます —</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* ===== ① ストロークを「描く」 =====
+     SVGのpath全長を取得 → dasharray=全長、dashoffset=全長 で最初は非表示。
+     スクロール進捗に応じて dashoffset を 全長→0 に縮めると、線が描かれていく。 */
+  var strokes = [].slice.call(document.querySelectorAll('.paintsec')).map(function(sec){
+    var p = sec.querySelector('path.stroke');
+    var len = p.getTotalLength();
+    p.style.setProperty('--len', len);
+    p.style.strokeDasharray  = len;
+    p.style.strokeDashoffset = len;
+    return {sec:sec, path:p, len:len};
+  });
+
+  function drawStrokes(){
+    var vh = window.innerHeight || 800;
+    strokes.forEach(function(s){
+      var r = s.sec.getBoundingClientRect();
+      /* セクションが画面下から入ってきて、中央を通過するまでを 0→1 に */
+      var start = vh * 0.92;
+      var end   = vh * 0.25;
+      var prog  = (start - r.top) / (start - end);
+      prog = Math.max(0, Math.min(1, prog));
+      s.path.style.strokeDashoffset = s.len * (1 - prog);
+    });
+  }
+
+  /* ===== ② ブロックが出てくる ===== */
+  function revealBlocks(){
+    [].forEach.call(document.querySelectorAll('.blk'), function(el){
+      var r = el.getBoundingClientRect();
+      if(r.top < innerHeight * 0.85 && r.bottom > 0) el.classList.add('in');
+    });
+  }
+
+  var ticking=false;
+  function onScroll(){
+    if(!ticking){ ticking=true; requestAnimationFrame(function(){ drawStrokes(); revealBlocks(); ticking=false; }); }
+  }
+  addEventListener('scroll', onScroll, {passive:true});
+  addEventListener('resize', onScroll);
+
+  if(reduce){
+    strokes.forEach(function(s){ s.path.style.strokeDashoffset = 0; });
+    [].forEach.call(document.querySelectorAll('.blk'),function(el){el.classList.add('in')});
+  } else {
+    drawStrokes(); revealBlocks();
+  }
+})();
+</script>
+</body>
+</html>
