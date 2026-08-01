@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>固定して文字が変わる／永遠スライド｜HookHack デモ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#0093B4; --teal:#11434D; --mint:#1DEEC8; --deep:#0d3640;
+  --ink:#0a2b31; --body:#48595c; --line:#E1EBEE;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans JP",sans-serif;color:var(--ink);line-height:1.85;background:#fff;overflow-x:hidden}
+
+.tip{position:sticky;top:0;z-index:60;background:var(--ink);color:#fff;padding:13px 24px;font-size:13.5px;font-weight:700}
+.tip small{font-weight:400;color:#9dbcc2;margin-left:10px}
+.lead{max-width:940px;margin:0 auto;padding:64px 24px 0}
+.lead h1{font-size:clamp(20px,2.6vw,27px);font-weight:800;margin-bottom:10px}
+.lead p{color:var(--body);font-size:14.5px}
+.lead .note{margin-top:12px;padding:12px 16px;border-left:3px solid var(--cyan);background:#F3FAFC;font-size:13.5px}
+
+/* ============ ① 固定して文字が変わる（sticky pin） ============ */
+.pinwrap{position:relative;height:320vh}          /* 高さ=ピン留めしている距離 */
+.pin{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1fr 1fr;
+     align-items:center;gap:60px;max-width:1180px;margin:0 auto;padding:0 40px}
+
+/* 左：ブランド色パネル（Paynの青い箱にあたる） */
+.panel{position:relative;aspect-ratio:1/.92;border-radius:26px;overflow:hidden;
+  background:linear-gradient(150deg,#0d6e86 0%,#0093B4 55%,#2fb9a6 100%);
+  box-shadow:0 60px 110px -60px rgba(4,60,72,.6);display:grid;place-items:center}
+.panel::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.15;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.pvis{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;
+  opacity:0;transform:scale(.94);transition:opacity .55s var(--ease),transform .7s var(--ease)}
+.pvis.on{opacity:1;transform:none}
+.pvis .num{font-size:clamp(90px,11vw,150px);font-weight:900;line-height:.9;opacity:.28}
+.pvis .kw{font-size:clamp(24px,2.6vw,36px);font-weight:900;margin-top:-.28em;letter-spacing:.02em}
+
+/* 右：スクロールで入れ替わるテキスト */
+.steps{position:relative;min-height:330px}
+.step{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+  opacity:0;transform:translateY(18px);transition:opacity .5s var(--ease),transform .65s var(--ease);pointer-events:none}
+.step.on{opacity:1;transform:none;pointer-events:auto}
+.step .eyebrow{color:var(--cyan);font-weight:800;font-size:14px;margin-bottom:14px}
+.step h3{font-size:clamp(26px,3.4vw,40px);font-weight:900;line-height:1.32;margin-bottom:16px}
+.step p{color:var(--body);font-size:15px;max-width:30em}
+
+/* 進捗バー */
+.prog{position:absolute;left:40px;bottom:11vh;display:flex;gap:8px}
+.prog i{display:block;width:34px;height:3px;border-radius:2px;background:#D7E8EC;transition:background .3s}
+.prog i.on{background:var(--cyan)}
+
+/* ============ ② 永遠スライド（メンバー） ============ */
+.slidewrap{padding:110px 0 130px;overflow:hidden}
+.slidewrap h2{text-align:center;font-size:clamp(22px,3vw,30px);font-weight:900;margin-bottom:8px}
+.slidewrap .sub{text-align:center;color:var(--body);font-size:14px;margin-bottom:44px}
+.rail{display:flex;width:max-content;gap:22px;will-change:transform}
+.mcard{width:290px;flex:0 0 290px;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  box-shadow:0 34px 70px -50px rgba(4,60,72,.45)}
+.mcard .ph{aspect-ratio:1/1;background:#F1F7F9;overflow:hidden}
+.mcard .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.mcard .tx{padding:18px 20px 22px}
+.mcard .nm{font-size:16.5px;font-weight:800}
+.mcard .rl{font-size:12.5px;font-weight:700;color:var(--cyan);margin-top:2px}
+.mcard .bio{font-size:12.5px;color:var(--body);line-height:1.75;margin-top:9px;
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+
+.end{text-align:center;padding:70px 24px 120px;color:var(--body);font-size:14px}
+
+@media(max-width:860px){
+  .pin{grid-template-columns:1fr;gap:26px;padding:80px 24px 0;align-content:center}
+  .panel{aspect-ratio:16/10}
+  .steps{min-height:230px}
+  .prog{left:24px;bottom:6vh}
+}
+</style>
+</head>
+<body>
+
+<div class="tip">① 固定して文字が変わる ＋ ② 永遠スライド<small>下にスクロール。画面が一旦ピン留めされ、テキストが1→2→3と入れ替わります</small></div>
+
+<div class="lead">
+  <h1>もらった2つの技、本物の中身で組みました</h1>
+  <p>①はPaynの「急に固定→文字が変わる」、②はYoomの「右から左へ永遠スライド」。<br>
+  テキスト・写真は<b>すべて今のLPにあるものそのまま</b>です（新しい言葉は足していません）。</p>
+  <div class="note">
+    <b>ここだけ相談：</b>Paynは各ステップに専用イラストがありますが、HookHackの3軸は<b>画像が1枚もありません</b>。
+    なので左パネルは、元からある「番号」と「キーワード」で組んでいます。ちゃんとした図版を作るなら別途用意が要ります。
+  </div>
+</div>
+
+<!-- ===== ① ===== -->
+<div class="pinwrap" id="pinwrap">
+  <div class="pin">
+    <div class="panel">
+      <div class="pvis on"><div><div class="num">1</div><div class="kw">検証スピード</div></div></div>
+      <div class="pvis"><div><div class="num">2</div><div class="kw">検証コスト</div></div></div>
+      <div class="pvis"><div><div class="num">3</div><div class="kw">検証精度</div></div></div>
+    </div>
+
+    <div class="steps">
+      <div class="step on">
+        <div class="eyebrow">検証スピード</div>
+        <h3>制作待ちのボトルネックを解消</h3>
+        <p>動画広告を最短5分、LPを最短即日で立ち上げ、検証サイクルを最速化</p>
+      </div>
+      <div class="step">
+        <div class="eyebrow">検証コスト</div>
+        <h3>仮説検証の敷居を下げる</h3>
+        <p>動画広告最大30本、LP最大5枚、月額２万円で勝ち筋探索の試行回数を最大化</p>
+      </div>
+      <div class="step">
+        <div class="eyebrow">検証精度</div>
+        <h3>データのノイズを減らす</h3>
+        <p>広告だけ・LPだけで分かれてることによりノイズに埋もれがちな「勝ち訴求」を、広告×LPの連動運用により切り出し</p>
+      </div>
+    </div>
+
+    <div class="prog"><i class="on"></i><i></i><i></i></div>
+  </div>
+</div>
+
+<!-- ===== ② ===== -->
+<section class="slidewrap">
+  <h2>メンバー紹介</h2>
+  <p class="sub">右から左へ、止まらずに流れ続けます（カーソルを乗せると一時停止）</p>
+  <div class="rail" id="rail"></div>
+</section>
+
+<div class="end">— ①をどのセクションに使うか、②の速さ／カードの大きさ、決まったら本番に入れます —</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* ===== ① sticky pin: スクロール位置 → アクティブ番号 ===== */
+  var wrap  = document.getElementById('pinwrap');
+  var steps = [].slice.call(document.querySelectorAll('.step'));
+  var vis   = [].slice.call(document.querySelectorAll('.pvis'));
+  var dots  = [].slice.call(document.querySelectorAll('.prog i'));
+  var cur   = -1;
+
+  function updatePin(){
+    var r = wrap.getBoundingClientRect();
+    var total = wrap.offsetHeight - window.innerHeight;   // ピン留めしている総距離
+    if(total <= 0) return;
+    var p = (-r.top) / total;                             // 0→1 の進捗
+    p = Math.max(0, Math.min(0.999, p));
+    var i = Math.floor(p * steps.length);                 // 3等分してどのステップか
+    if(i !== cur){
+      cur = i;
+      steps.forEach(function(el,k){ el.classList.toggle('on', k===i); });
+      vis.forEach(function(el,k){ el.classList.toggle('on', k===i); });
+      dots.forEach(function(el,k){ el.classList.toggle('on', k===i); });
+    }
+  }
+
+  /* ===== ② 永遠スライド ===== */
+  var MEMBERS = [
+    {img:'https://www.hook-hack.com/team/17.png', nm:'橋本 圭司', rl:'代表取締役',
+     bio:'大手通信会社の営業、事業企画を経験後、Webコンサル会社へ転職。2018年にイラスト世界チャンピオンとともにDT合同会社を設立し、CMO着任。'},
+    {img:'https://www.hook-hack.com/team/18.png', nm:'林　壮', rl:'PM/アートディレクター',
+     bio:'東京生まれ、イギリス・シンガポール育ち。映像ディレクターの経験を持ち、企画・撮影・編集を一貫して対応。現在は弊社のオフショア開発事業と動画制作事業に加え、採用担当も務める。'},
+    {img:'https://www.hook-hack.com/team/19.png', nm:'上水流 弘一', rl:'PM',
+     bio:'福岡在住。Web開発会社の経営と並行して、現役のフルスタックエンジニアとしても活動。小規模から中規模まで、事業フェーズに応じた柔軟なシステム設計を得意とする。'},
+    {img:'https://www.hook-hack.com/team/20.png', nm:'Satrio Buwono', rl:'エンジニア統括',
+     bio:'インドネシア生まれ、グラズゴー大学卒業。11カ国を旅する。SaaSを専門に構築を行い、複数のITベンチャーを立ち上げ。オフショア開発事業のエンジニア統括を担う。'},
+    {img:'https://www.hook-hack.com/team/21.png', nm:'Jibran', rl:'エンジニア',
+     bio:'インドネシア出身。現役大学生。システムアーキテクチャおよびバックエンドエンジニアリングに精通。PythonとGoを主軸とし、複雑なシステムの最適化を実現する自動化ワークフローの構築において豊富な経験を持つ。'},
+    {img:'https://www.hook-hack.com/team/22.png', nm:'Ahmad', rl:'エンジニア',
+     bio:'インドネシア出身。サウジアラビアのハイル大学在学中。JavaScript開発環境に深く精通し、フルスタックWebアプリケーション開発において豊富な実績を持つ。'}
+  ];
+  var rail = document.getElementById('rail');
+  function card(m){
+    var d=document.createElement('div'); d.className='mcard';
+    d.innerHTML='<div class="ph"><img src="'+m.img+'" alt=""></div>'+
+                '<div class="tx"><div class="nm">'+m.nm+'</div><div class="rl">'+m.rl+'</div>'+
+                '<div class="bio">'+m.bio+'</div></div>';
+    return d;
+  }
+  /* 継ぎ目なくループさせるため2周ぶん敷く */
+  MEMBERS.forEach(function(m){ rail.appendChild(card(m)); });
+  MEMBERS.forEach(function(m){ rail.appendChild(card(m)); });
+
+  var x = 0, SPEED = 0.55, paused = false;
+  rail.addEventListener('mouseenter', function(){ paused = true; });
+  rail.addEventListener('mouseleave', function(){ paused = false; });
+
+  function frame(){
+    if(!paused){
+      var half = rail.scrollWidth / 2;
+      if(half > 0){
+        x -= SPEED;
+        if(x <= -half) x += half;      // 1周ぶん戻す＝継ぎ目なし
+        rail.style.transform = 'translate3d(' + x + 'px,0,0)';
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  var ticking = false;
+  addEventListener('scroll', function(){
+    if(!ticking){ ticking = true; requestAnimationFrame(function(){ updatePin(); ticking = false; }); }
+  }, {passive:true});
+  addEventListener('resize', updatePin);
+
+  updatePin();
+  if(!reduce) requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
