@@ -363,6 +363,15 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 .hh-dark-sec::before{content:"";position:absolute;top:-60px;left:-12%;width:62%;height:280px;background:rgba(255,255,255,.045);border-radius:60px;transform:rotate(-24deg);pointer-events:none;z-index:0;}
 .hh-dark-sec::after{content:"";position:absolute;bottom:-50px;right:-10%;width:52%;height:260px;background:rgba(255,255,255,.03);border-radius:60px;transform:rotate(-24deg);pointer-events:none;z-index:0;}
 .hh-dark-sec>*{position:relative;z-index:1;}
+/* 背後を流れる巨大文字（B案: HookHack・輪郭線）*/
+.hh-mq{position:absolute;top:50%;left:0;width:100%;transform:translateY(-50%);z-index:0;
+  pointer-events:none;user-select:none;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);}
+.hh-mq-track{display:flex;width:max-content;will-change:transform;}
+.hh-mq-track span{display:block;white-space:nowrap;padding-right:.3em;
+  font-size:clamp(80px,13vw,190px);font-weight:900;line-height:1;letter-spacing:-.01em;
+  color:transparent;-webkit-text-stroke:1.5px #D7E9ED;}
 </style>
 <script>
 (function(){
@@ -532,6 +541,39 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       }
       moveBars();
 
+      /* 15) 背後を流れる巨大文字「HookHack」（スクロールで加速） */
+      var mqs=[];
+      try{
+        ['サンプルLP','サンプル動画'].forEach(function(t){
+          var sec=sectionOf(t); if(!sec) return;
+          if(getComputedStyle(sec).position==='static') sec.style.position='relative';
+          sec.style.overflow='hidden';
+          var mq=document.createElement('div'); mq.className='hh-mq';
+          var tr=document.createElement('div'); tr.className='hh-mq-track';
+          for(var i=0;i<10;i++){ var s=document.createElement('span'); s.textContent='HookHack'; tr.appendChild(s); }
+          mq.appendChild(tr); sec.insertBefore(mq, sec.firstChild);
+          [].forEach.call(sec.children,function(c){ if(c!==mq){ if(getComputedStyle(c).position==='static') c.style.position='relative'; c.style.zIndex='1'; } });
+          mqs.push({track:tr, x:0, base:0.55});
+        });
+      }catch(e){}
+
+      /* マーキー: 基本速度 + スクロールの勢い（勢いは減衰）*/
+      var mqVel=0, mqLastY=window.pageYOffset||0;
+      function mqFrame(){
+        mqVel*=0.90; if(Math.abs(mqVel)<0.01) mqVel=0;
+        for(var i=0;i<mqs.length;i++){
+          var m=mqs[i], half=m.track.scrollWidth/2;
+          if(half>0){
+            m.x-=(m.base+mqVel);
+            if(m.x<=-half) m.x+=half;
+            if(m.x>0)      m.x-=half;
+            m.track.style.transform='translate3d('+m.x+'px,0,0)';
+          }
+        }
+        requestAnimationFrame(mqFrame);
+      }
+      if(mqs.length) requestAnimationFrame(mqFrame);
+
       /* reveal エンジン（スクロール位置ベース） */
       var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline'));
       var counts=[].slice.call(document.querySelectorAll('.hh-count'));
@@ -544,7 +586,12 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         for(var j=counts.length-1;j>=0;j--){ if(inView(counts[j],0.9)){ countUp(counts[j]); counts.splice(j,1); } }
       }
       var ticking=false;
-      function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(function(){ check(); moveBars(); moveSBG(); ticking=false; }); } }
+      function onScroll(){
+        var _y=window.pageYOffset||0;
+        mqVel+=(_y-mqLastY)*0.55; if(mqVel>90)mqVel=90; if(mqVel<-90)mqVel=-90;
+        mqLastY=_y;
+        if(!ticking){ ticking=true; requestAnimationFrame(function(){ check(); moveBars(); moveSBG(); ticking=false; }); }
+      }
       addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll,{passive:true});
       check(); moveSBG();
     }catch(e){ document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline').forEach(function(el){el.classList.add('hh-in');}); }
