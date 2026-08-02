@@ -369,8 +369,8 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 .hh-dark-sec,.hh-dark-sec h2,.hh-dark-sec h3,.hh-dark-sec h4,.hh-dark-sec p,.hh-dark-sec span,.hh-dark-sec i,.hh-dark-sec .lab{color:#ffffff !important;}
 .hh-dark-sec [class*="text-black"],.hh-dark-sec [class*="text-[#11434D]"],.hh-dark-sec [class*="text-[#041D22]"]{color:#ffffff !important;}
 .hh-dark-sec [class*="rounded-xl"],.hh-dark-sec [class*="rounded-2xl"]{background:rgba(255,255,255,.06) !important;border-color:rgba(255,255,255,.18) !important;}
-.hh-dark-sec::before{content:"";position:absolute;top:-60px;left:-12%;width:62%;height:280px;background:rgba(255,255,255,.045);border-radius:60px;transform:translate3d(var(--hhb1x,0px),var(--hhb1y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
-.hh-dark-sec::after{content:"";position:absolute;bottom:-50px;right:-10%;width:52%;height:260px;background:rgba(255,255,255,.03);border-radius:60px;transform:translate3d(var(--hhb2x,0px),var(--hhb2y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
+.hh-dark-sec::before{content:"";position:absolute;top:-60px;left:-12%;width:62%;height:280px;background:rgba(255,255,255,.10);border-radius:60px;transform:translate3d(var(--hhb1x,0px),var(--hhb1y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
+.hh-dark-sec::after{content:"";position:absolute;bottom:-50px;right:-10%;width:52%;height:260px;background:rgba(255,255,255,.07);border-radius:60px;transform:translate3d(var(--hhb2x,0px),var(--hhb2y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
 .hh-dark-sec>*{position:relative;z-index:1;}
 /* 背後を流れる巨大文字（B案: HookHack・輪郭線）*/
 .hh-mq{position:relative;width:100%;overflow:hidden;z-index:0;
@@ -555,17 +555,16 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       var mqs=[];
       var topLevelOf=function(el){ var e=el; while(e.parentElement && e.parentElement.tagName!=='MAIN' && e.parentElement.tagName!=='BODY') e=e.parentElement; return e; };
       try{
-        ['費用'].forEach(function(t,i){
-          var sec=sectionOf(t); if(!sec) return;
-          if(document.querySelector('.hh-mq[data-i="'+i+'"]')) return;
-          var anchor=topLevelOf(sec); if(!anchor||!anchor.parentNode) return;
-          var mq=document.createElement('div'); mq.className='hh-mq'; mq.setAttribute('data-i',i);
+        (function(){
+          if(document.querySelector('.hh-mq')) return;
+          var main=document.querySelector('main'); if(!main) return;
+          var mq=document.createElement('div'); mq.className='hh-mq'; mq.setAttribute('data-i','0');
           var tr=document.createElement('div'); tr.className='hh-mq-track';
           for(var k=0;k<10;k++){ var s=document.createElement('span'); s.textContent='HookHack'; tr.appendChild(s); }
           mq.appendChild(tr);
-          anchor.parentNode.insertBefore(mq, anchor);
+          main.appendChild(mq);            /* LPの一番下に置く */
           mqs.push({track:tr, x:0, base:0.55});
-        });
+        })();
       }catch(e){}
 
             /* 17) 塗るように描かれるストローク：セクションとセクションの"間"に帯として置く（文字に被らない） */
@@ -574,7 +573,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         /* main直下まで遡って、本当に"セクションの間"に差し込む */
         var topLevelOf=function(el){ var e=el; while(e.parentElement && e.parentElement.tagName!=='MAIN' && e.parentElement.tagName!=='BODY') e=e.parentElement; return e; };
         [
-          {before:'コンバージョン改善に繋がる3つの軸', w:74,
+          {before:'メンバー紹介', w:74,
            d:'M-40 255 L370 105 L620 210 L900 80',
            cols:['#1DEEC8','#0093B4','#0d6e86'], x1:'0',y1:'0',x2:'1',y2:'1'}
         ].forEach(function(cfg,i){
@@ -658,10 +657,10 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         var vh=window.innerHeight||800;
         var r=darkSec.getBoundingClientRect();
         var center=r.top+r.height/2-vh/2;
-        darkSec.style.setProperty('--hhb1y', (center*-0.075)+'px');
-        darkSec.style.setProperty('--hhb1x', (center*-0.030)+'px');
-        darkSec.style.setProperty('--hhb2y', (center*0.060)+'px');
-        darkSec.style.setProperty('--hhb2x', (center*0.024)+'px');
+        darkSec.style.setProperty('--hhb1y', (center*-0.12)+'px');
+        darkSec.style.setProperty('--hhb1x', (center*-0.05)+'px');
+        darkSec.style.setProperty('--hhb2y', (center*0.095)+'px');
+        darkSec.style.setProperty('--hhb2x', (center*0.040)+'px');
       }
 
       /* 18) 「役割」のダークセクションを"下から生えるブロック"にする
