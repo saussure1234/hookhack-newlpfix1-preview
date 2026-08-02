@@ -373,8 +373,9 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 .hh-dark-sec::after{content:"";position:absolute;bottom:-50px;right:-10%;width:52%;height:260px;background:rgba(255,255,255,.03);border-radius:60px;transform:rotate(-24deg);pointer-events:none;z-index:0;}
 .hh-dark-sec>*{position:relative;z-index:1;}
 /* 背後を流れる巨大文字（B案: HookHack・輪郭線）*/
-.hh-mq{position:absolute;top:50%;left:0;width:100%;transform:translateY(-50%);z-index:0;
-  pointer-events:none;user-select:none;overflow:hidden;
+.hh-mq{position:relative;width:100%;overflow:hidden;z-index:0;
+  pointer-events:none;user-select:none;display:flex;align-items:center;
+  height:clamp(115px,15vw,200px);
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
           mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);}
 .hh-mq-track{display:flex;width:max-content;will-change:transform;}
@@ -550,23 +551,24 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       }
       moveBars();
 
-      /* 15) 背後を流れる巨大文字「HookHack」（スクロールで加速） */
+      /* 15) 巨大文字「HookHack」：セクションとセクションの"間"に帯として置く（スクロールで加速） */
       var mqs=[];
+      var topLevelOf=function(el){ var e=el; while(e.parentElement && e.parentElement.tagName!=='MAIN' && e.parentElement.tagName!=='BODY') e=e.parentElement; return e; };
       try{
-        ['サンプルLP','サンプル動画'].forEach(function(t){
+        ['サンプル動画','費用'].forEach(function(t,i){
           var sec=sectionOf(t); if(!sec) return;
-          if(getComputedStyle(sec).position==='static') sec.style.position='relative';
-          sec.style.overflow='hidden';
-          var mq=document.createElement('div'); mq.className='hh-mq';
+          if(document.querySelector('.hh-mq[data-i="'+i+'"]')) return;
+          var anchor=topLevelOf(sec); if(!anchor||!anchor.parentNode) return;
+          var mq=document.createElement('div'); mq.className='hh-mq'; mq.setAttribute('data-i',i);
           var tr=document.createElement('div'); tr.className='hh-mq-track';
-          for(var i=0;i<10;i++){ var s=document.createElement('span'); s.textContent='HookHack'; tr.appendChild(s); }
-          mq.appendChild(tr); sec.insertBefore(mq, sec.firstChild);
-          [].forEach.call(sec.children,function(c){ if(c!==mq){ if(getComputedStyle(c).position==='static') c.style.position='relative'; c.style.zIndex='1'; } });
+          for(var k=0;k<10;k++){ var s=document.createElement('span'); s.textContent='HookHack'; tr.appendChild(s); }
+          mq.appendChild(tr);
+          anchor.parentNode.insertBefore(mq, anchor);
           mqs.push({track:tr, x:0, base:0.55});
         });
       }catch(e){}
 
-      /* 17) 塗るように描かれるストローク：セクションとセクションの"間"に帯として置く（文字に被らない） */
+            /* 17) 塗るように描かれるストローク：セクションとセクションの"間"に帯として置く（文字に被らない） */
       var strokes=[];
       try{
         /* main直下まで遡って、本当に"セクションの間"に差し込む */
@@ -640,8 +642,6 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
             vp.appendChild(rail); host.innerHTML=''; host.appendChild(vp);
             /* 折り返し距離は offsetLeft の実測（gapを含む1周ぶん。scrollWidth/2 では末尾gapぶんズレる） */
             mrailWrap = rail.children[n].offsetLeft - rail.children[0].offsetLeft;
-            rail.addEventListener('mouseenter',function(){ mrailPaused=true; });
-            rail.addEventListener('mouseleave',function(){ mrailPaused=false; });
             addEventListener('resize',function(){ mrailWrap = rail.children[n].offsetLeft - rail.children[0].offsetLeft; });
             mrail=rail;
           }
@@ -651,22 +651,29 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       /* マーキー: 基本速度 + スクロールの勢い（勢いは減衰）*/
       var mqVel=0, mqLastY=window.pageYOffset||0;
       function mqFrame(){
-        mqVel*=0.90; if(Math.abs(mqVel)<0.01) mqVel=0;
-        if(mrail && mrailWrap>0 && !mrailPaused){
-          mrailX-=0.55;
-          if(mrailX<=-mrailWrap) mrailX+=mrailWrap;
-          mrail.style.transform='translate3d('+mrailX+'px,0,0)';
-        }
-        for(var i=0;i<mqs.length;i++){
-          var m=mqs[i], half=m.track.scrollWidth/2;
-          if(half>0){
-            m.x-=(m.base+mqVel);
-            if(m.x<=-half) m.x+=half;
-            if(m.x>0)      m.x-=half;
-            m.track.style.transform='translate3d('+m.x+'px,0,0)';
-          }
-        }
+        /* 何が起きても次フレームは必ず予約する＝ループが死なない */
         requestAnimationFrame(mqFrame);
+        try{
+          mqVel*=0.90; if(Math.abs(mqVel)<0.01) mqVel=0;
+          /* 一時停止は :hover のライブ判定（mouseenterのフラグ方式だと、
+             スクロールでカーソル下にレールが入った時に mouseleave が来ず止まりっぱなしになる） */
+          var hovered=false;
+          if(mrail){ try{ hovered=mrail.matches(':hover'); }catch(e){ hovered=false; } }
+          if(mrail && mrailWrap>0 && !hovered){
+            mrailX-=0.55;
+            if(mrailX<=-mrailWrap) mrailX+=mrailWrap;
+            mrail.style.transform='translate3d('+mrailX+'px,0,0)';
+          }
+          for(var i=0;i<mqs.length;i++){
+            var m=mqs[i], half=m.track.scrollWidth/2;
+            if(half>0){
+              m.x-=(m.base+mqVel);
+              if(m.x<=-half) m.x+=half;
+              if(m.x>0)      m.x-=half;
+              m.track.style.transform='translate3d('+m.x+'px,0,0)';
+            }
+          }
+        }catch(e){}
       }
       if(mqs.length || mrail) requestAnimationFrame(mqFrame);
 
