@@ -555,7 +555,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       var mqs=[];
       var topLevelOf=function(el){ var e=el; while(e.parentElement && e.parentElement.tagName!=='MAIN' && e.parentElement.tagName!=='BODY') e=e.parentElement; return e; };
       try{
-        ['サンプル動画','費用'].forEach(function(t,i){
+        ['費用'].forEach(function(t,i){
           var sec=sectionOf(t); if(!sec) return;
           if(document.querySelector('.hh-mq[data-i="'+i+'"]')) return;
           var anchor=topLevelOf(sec); if(!anchor||!anchor.parentNode) return;
@@ -576,10 +576,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         [
           {before:'コンバージョン改善に繋がる3つの軸', w:74,
            d:'M-40 250 L430 90 L700 205 L1130 55 L1660 185',
-           cols:['#1DEEC8','#0093B4','#0d6e86'], x1:'0',y1:'0',x2:'1',y2:'1'},
-          {before:'導入事例', w:56,
-           d:'M1660 70 L1150 235 L780 110 L380 240 L-40 105',
-           cols:['#0093B4','#2fb9a6','#1DEEC8'], x1:'1',y1:'0',x2:'0',y2:'1'}
+           cols:['#1DEEC8','#0093B4','#0d6e86'], x1:'0',y1:'0',x2:'1',y2:'1'}
         ].forEach(function(cfg,i){
           var sec=sectionOf(cfg.before); if(!sec) return;
           if(document.querySelector('.hh-band[data-i="'+i+'"]')) return;
