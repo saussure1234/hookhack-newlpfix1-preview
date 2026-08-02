@@ -341,6 +341,14 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 .hh-white-top{border-top:none !important;}
 /* ブランド色のダーク・セクション（LayerX "Join Us" 風／上端を斜めカット） */
 .hh-dark-sec{background:linear-gradient(160deg,#12414b 0%,#08272e 100%) !important;position:relative;overflow:hidden;clip-path:polygon(0 66px,100% 0,100% 100%,0 100%);padding-top:130px !important;}
+/* ブロックが下から生えてくる（斜めカットは維持したまま、同じ4点ポリゴンを立ち上げる） */
+.hh-block{clip-path:polygon(0 100%,100% 100%,100% 100%,0 100%);opacity:0;
+  transition:clip-path 1.05s cubic-bezier(.16,1,.3,1),opacity .5s cubic-bezier(.16,1,.3,1);}
+.hh-block.hh-in{clip-path:polygon(0 66px,100% 0,100% 100%,0 100%);opacity:1;}
+/* 塗るように描かれるストローク */
+.hh-paint{position:absolute;top:50%;transform:translateY(-50%);z-index:0;pointer-events:none;}
+.hh-paint svg{display:block;width:100%;height:auto;overflow:visible;}
+.hh-paint path{fill:none;stroke-linecap:round;stroke-linejoin:round;}
 /* gradient+noise の "箱"（スクロールでズームイン） */
 .hh-gbox{background:linear-gradient(120deg,#2f4d8a 0%,#0093B4 52%,#43c39a 100%) !important;border:none !important;position:relative;overflow:hidden;
   box-shadow:0 50px 100px -50px rgba(4,60,72,.5) !important;
@@ -514,7 +522,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       }catch(e){}
 
       if(reduce){
-        document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline').forEach(function(el){el.classList.add('hh-in');});
+        document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline,.hh-block').forEach(function(el){el.classList.add('hh-in');});
         document.querySelectorAll('.hh-count').forEach(function(el){el.textContent=el.getAttribute('data-to');});
         return;
       }
@@ -555,6 +563,60 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           [].forEach.call(sec.children,function(c){ if(c!==mq){ if(getComputedStyle(c).position==='static') c.style.position='relative'; c.style.zIndex='1'; } });
           mqs.push({track:tr, x:0, base:0.55});
         });
+      }catch(e){}
+
+      /* 17) 塗るように描かれるストローク（1〜2箇所だけ） */
+      var strokes=[];
+      try{
+        [
+          {t:'こんな課題を抱えていませんか？', side:'right', w:86, wide:'min(720px,58vw)',
+           d:'M40 470 L400 190 L470 330 L860 60',  cols:['#1DEEC8','#0093B4','#0d6e86'], x1:'0',y1:'0',x2:'1',y2:'1'},
+          {t:'現役マーケターが企画・開発',       side:'left',  w:60, wide:'min(640px,52vw)',
+           d:'M860 120 L520 380 L430 250 L60 520', cols:['#0093B4','#2fb9a6','#1DEEC8'], x1:'1',y1:'0',x2:'0',y2:'1'}
+        ].forEach(function(cfg,i){
+          var sec=sectionOf(cfg.t); if(!sec) return;
+          if(document.querySelector('.hh-paint[data-i="'+i+'"]')) return;
+          if(getComputedStyle(sec).position==='static') sec.style.position='relative';
+          sec.style.overflow='hidden';
+          var art=document.createElement('div'); art.className='hh-paint'; art.setAttribute('data-i',i);
+          art.style.width=cfg.wide;
+          art.style[cfg.side]='-6%';
+          var gid='hhg'+i;
+          art.innerHTML='<svg viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+            '<defs><linearGradient id="'+gid+'" x1="'+cfg.x1+'" y1="'+cfg.y1+'" x2="'+cfg.x2+'" y2="'+cfg.y2+'">'+
+            '<stop offset="0%" stop-color="'+cfg.cols[0]+'"/><stop offset="52%" stop-color="'+cfg.cols[1]+'"/>'+
+            '<stop offset="100%" stop-color="'+cfg.cols[2]+'"/></linearGradient></defs>'+
+            '<path d="'+cfg.d+'" stroke="url(#'+gid+')" stroke-width="'+cfg.w+'"/></svg>';
+          sec.insertBefore(art, sec.firstChild);
+          [].forEach.call(sec.children,function(c){ if(c!==art){ if(getComputedStyle(c).position==='static') c.style.position='relative'; c.style.zIndex='1'; } });
+          var p=art.querySelector('path'), len=p.getTotalLength();
+          p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
+          strokes.push({sec:sec, path:p, len:len});
+        });
+      }catch(e){}
+      /* スクロール量に比例して線を"描く"（戻すと巻き戻る） */
+      function drawStrokes(){
+        var vh=window.innerHeight||800;
+        for(var i=0;i<strokes.length;i++){
+          var s=strokes[i], r=s.sec.getBoundingClientRect();
+          var start=vh*0.92, end=vh*0.25;
+          var prog=(start-r.top)/(start-end);
+          if(prog<0)prog=0; if(prog>1)prog=1;
+          s.path.style.strokeDashoffset=s.len*(1-prog);
+        }
+      }
+
+      /* 18) 「役割」のダークセクションを"下から生えるブロック"にする
+             ※既に表示中の要素にクラスを足すと"畳まれるアニメ"が見えるので、
+               transitionを一旦切って初期状態を確定 → リフロー → transitionを戻す */
+      try{
+        var dk=document.querySelector('.hh-dark-sec');
+        if(dk && dk.className.indexOf('hh-block')<0){
+          dk.style.transition='none';
+          dk.className+=' hh-block';
+          void dk.offsetWidth;
+          dk.style.transition='';
+        }
       }catch(e){}
 
       /* 16) メンバー紹介: 右から左へ永遠スライド（既存カードをそのまま使う・作り直さない） */
@@ -608,7 +670,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       if(mqs.length || mrail) requestAnimationFrame(mqFrame);
 
       /* reveal エンジン（スクロール位置ベース） */
-      var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline'));
+      var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline,.hh-block'));
       var counts=[].slice.call(document.querySelectorAll('.hh-count'));
       var sbgs=[].slice.call(document.querySelectorAll('.hh-sbg'));
       function moveSBG(){ var vh=window.innerHeight||800; sbgs.forEach(function(el){ var p=el.parentElement.getBoundingClientRect(); var center=p.top+p.height/2-vh/2; el.style.transform='translateY('+(center*-parseFloat(el.getAttribute('data-depth')))+'px)'; }); }
@@ -623,10 +685,10 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         var _y=window.pageYOffset||0;
         mqVel+=(_y-mqLastY)*0.55; if(mqVel>90)mqVel=90; if(mqVel<-90)mqVel=-90;
         mqLastY=_y;
-        if(!ticking){ ticking=true; requestAnimationFrame(function(){ check(); moveBars(); moveSBG(); ticking=false; }); }
+        if(!ticking){ ticking=true; requestAnimationFrame(function(){ check(); moveBars(); moveSBG(); drawStrokes(); ticking=false; }); }
       }
       addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll,{passive:true});
-      check(); moveSBG();
+      check(); moveSBG(); drawStrokes();
     }catch(e){ document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline').forEach(function(el){el.classList.add('hh-in');}); }
   }
   if(document.readyState!=='loading') run(); else document.addEventListener('DOMContentLoaded',run);
