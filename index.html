@@ -619,22 +619,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 
       /* 14) 「導入事例」=柔らかい大玉シェイプ / 「費用」=内容を収める薄い枠つき角丸パネル */
       try{
-        // 導入事例: 大玉2つ（視差で一緒に動く）
-        (function(){
-          var sec=sectionOf('導入事例'); if(!sec) return;
-          if(getComputedStyle(sec).position==='static') sec.style.position='relative';
-          sec.style.overflow='hidden';
-          var specs=[
-            {pos:'top:-8%;right:-12%;', col:'0,147,180',  a:'.26', depth:'0.18'},
-            {pos:'top:52%;left:-14%;',  col:'29,238,200', a:'.20', depth:'-0.14'}
-          ];
-          specs.forEach(function(sp){
-            var blob=document.createElement('div'); blob.className='hh-sbg'; blob.setAttribute('data-depth', sp.depth);
-            blob.style.cssText='position:absolute;z-index:0;'+sp.pos+'width:min(80vw,900px);height:min(80vw,900px);border-radius:50%;background:radial-gradient(closest-side,rgba('+sp.col+','+sp.a+'),rgba('+sp.col+',0) 78%);filter:blur(8px);pointer-events:none;';
-            sec.insertBefore(blob, sec.firstChild);
-          });
-          [].forEach.call(sec.children,function(c){ if(!/hh-sbg/.test(c.className||'') && getComputedStyle(c).position==='static'){ c.style.position='relative'; c.style.zIndex='1'; } });
-        })();
+        /* 導入事例の薄いシェイプは無し（白い箱だけで見せる） */
         /* 費用の裏のブロックは無し（BPaaSカード側の箱はそのまま活かす） */
       }catch(e){}
 
@@ -691,7 +676,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         var topLevelOf=function(el){ var e=el; while(e.parentElement && e.parentElement.tagName!=='MAIN' && e.parentElement.tagName!=='BODY') e=e.parentElement; return e; };
         [
           {before:'メンバー紹介', w:58,
-           d:'M-70 40 C 250 130, 430 330, 560 760'}   /* 左寄りに降ろす：中央の見出しに被らせないため */
+           d:'M-70 60 C 560 110, 1040 145, 1660 600'}   /* 見出しの上を通って右へ抜ける（余白37pxを実測確認） */
         ].forEach(function(cfg,i){
           var sec=sectionOf(cfg.before); if(!sec) return;
           if(document.querySelector('.hh-band[data-i="'+i+'"]')) return;
