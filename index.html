@@ -653,6 +653,31 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         }
       }catch(e){}
 
+      /* 22) 見せ場(3つの軸/役割)が強いぶん、素通りしていたセクションに"控えめ"な動きを足す
+             対象: 会社概要の各行 / お問い合わせの各入力行（どちらも今は見出ししか動いていない） */
+      try{
+        /* タグ付けは既存の tagged / ancTagged / tag(el,fx) を使う（自前で作ると名前が衝突する） */
+        var stagger=function(list,step){
+          [].forEach.call(list,function(el,i){
+            if(tagged(el)||ancTagged(el)) return;
+            tag(el,'fadeup');
+            el.style.transitionDelay=(i*step)+'ms';
+          });
+        };
+        /* 会社概要: 名称 / 代表取締役 / 住所 / コーポレート の4行 */
+        var _co=document.getElementById('company')||sectionOf('会社概要');
+        if(_co){
+          var coRows=_co.querySelectorAll('.space-y-6 > .space-y-1');
+          if(coRows.length) stagger(coRows,90);
+        }
+        /* お問い合わせ: 入力行 */
+        var _iq=document.getElementById('inquiry')||sectionOf('お問い合わせ');
+        if(_iq){
+          var iqRows=_iq.querySelectorAll('form > div');
+          if(iqRows.length) stagger(iqRows,80);
+        }
+      }catch(e){}
+
       /* 21) 「役割」の背景の棒を、スクロールで少し動かす（擬似要素なのでCSS変数経由） */
       var darkSec=document.querySelector('.hh-dark-sec');
       function moveDark(){
