@@ -349,7 +349,13 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 .hh-block.hh-in{clip-path:polygon(0 66px,100% 0,100% 100%,0 100%);opacity:1;}
 /* 塗るように描かれるストローク（セクションとセクションの"間"に置く帯。文字に被らない） */
 .hh-band{position:relative;width:100%;overflow:hidden;pointer-events:none;
-  height:clamp(150px,19vw,250px);margin:0;}
+  height:clamp(150px,19vw,250px);
+  /* 前後のセクションに少し食い込ませて、独立した帯に見えないようにする */
+  margin:-40px 0;
+  /* 両端を溶かす。丸い切り口のまま宙で止まると"唐突"に見えるため */
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 13%,#000 46%,transparent 64%);
+          mask-image:linear-gradient(90deg,transparent 0%,#000 13%,#000 46%,transparent 64%);
+  opacity:.72;}
 .hh-band svg{position:absolute;inset:0;width:100%;height:100%;display:block;}
 .hh-band path{fill:none;stroke-linecap:round;stroke-linejoin:round;}
 /* gradient+noise の "箱"（スクロールでズームイン） */
