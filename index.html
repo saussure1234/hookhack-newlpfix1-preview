@@ -773,13 +773,11 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         }
       }catch(e){}
 
-      /* マーキー: 基本速度 + スクロールの勢い（勢いは減衰）*/
-      var mqVel=0, mqLastY=window.pageYOffset||0;
+      /* マーキー: 一定速度で流す（スクロール加速はしない） */
       function mqFrame(){
         /* 何が起きても次フレームは必ず予約する＝ループが死なない */
         requestAnimationFrame(mqFrame);
         try{
-          mqVel*=0.90; if(Math.abs(mqVel)<0.01) mqVel=0;
           /* 一時停止は :hover のライブ判定（mouseenterのフラグ方式だと、
              スクロールでカーソル下にレールが入った時に mouseleave が来ず止まりっぱなしになる） */
           var hovered=false;
@@ -792,7 +790,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           for(var i=0;i<mqs.length;i++){
             var m=mqs[i], half=m.track.scrollWidth/2;
             if(half>0){
-              m.x-=(m.base+mqVel);
+              m.x-=m.base;
               if(m.x<=-half) m.x+=half;
               if(m.x>0)      m.x-=half;
               m.track.style.transform='translate3d('+m.x+'px,0,0)';
@@ -815,9 +813,6 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       }
       var ticking=false;
       function onScroll(){
-        var _y=window.pageYOffset||0;
-        mqVel+=(_y-mqLastY)*0.55; if(mqVel>90)mqVel=90; if(mqVel<-90)mqVel=-90;
-        mqLastY=_y;
         if(!ticking){ ticking=true; requestAnimationFrame(function(){ check(); moveBars(); moveSBG(); drawStrokes(); moveDark(); ticking=false; }); }
       }
       addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll,{passive:true});
