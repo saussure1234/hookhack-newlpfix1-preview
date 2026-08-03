@@ -333,7 +333,8 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 /* ===== 斜めバー背景（LayerX型・スクロールで上→下に流れる） ===== */
 #hh-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;}
 #hh-bg .hh-barwrap{position:absolute;left:0;top:0;width:100%;height:100%;will-change:transform;}
-#hh-bg .hh-bar{position:absolute;width:150%;height:150px;border-radius:80px;}
+#hh-bg /* 棒の太さは画面幅に追従（150px固定だとスマホで太すぎる）。角丸は高さに依らずピル形になる値 */
+.hh-bar{position:absolute;width:150%;height:clamp(52px,11vw,150px);border-radius:999px;}
 #hh-bg .hh-bar.l{left:-40%;top:28%;transform:rotate(-38deg);background:linear-gradient(90deg,#9FDDEA,#6CC5DA);}
 #hh-bg .hh-bar.r{right:-40%;left:auto;top:24%;transform:rotate(38deg);background:linear-gradient(90deg,#0E86A6,#0A5E75);}
 /* 現役マーケター: 純白＋FVとのくっきり境界 */
