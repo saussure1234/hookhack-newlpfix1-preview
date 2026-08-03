@@ -500,7 +500,21 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       function sectionOf(t){var h=heading(t);return h?(h.closest('section')||h.parentElement):null;}
       function tagged(el){return el.classList.contains('hh-rv')||el.classList.contains('hh-lines');}
       function ancTagged(el){for(var p=el.parentElement;p&&p.tagName!=='MAIN'&&p!==document.body;p=p.parentElement){if(tagged(p))return true;}return false;}
-      function tag(el,fx){ if(!el||tagged(el))return; el.classList.add('hh-rv'); el.setAttribute('data-fx',fx); }
+      /* transform を自前で使っている要素（タブの選択インジケータ等）は対象外にする。
+         .hh-rv.hh-in{transform:none !important} が相手の translateX を打ち消し、UIが壊れるため。
+         実例: 「こんな課題」の事業会社/代理店タブで、選択位置が動かず文字が地に埋もれた。 */
+      function usesOwnTransform(el){
+        try{
+          if(el.style && el.style.transform) return true;
+          var c=(el.className||'').toString();
+          if(/transition-transform|\btransform\b|translate-|rotate-|scale-/.test(c)) return true;
+          var cs=getComputedStyle(el);
+          if(cs.transform && cs.transform!=='none') return true;
+          if((cs.transitionProperty||'').indexOf('transform')>-1) return true;
+        }catch(e){}
+        return false;
+      }
+      function tag(el,fx){ if(!el||tagged(el)||usesOwnTransform(el))return; el.classList.add('hh-rv'); el.setAttribute('data-fx',fx); }
       function lineMask(h){ if(!h||h.classList.contains('hh-lines'))return; try{
         var parts=h.innerHTML.split(/<br\s*\/?>/i);
         h.innerHTML=parts.map(function(p){return '<span><i>'+p+'</i></span>';}).join('');
