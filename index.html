@@ -456,6 +456,13 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
    反転処理が両方とも濃色にしてしまい、選択中の文字が帯に沈んでいた。 */
 [class*="bg-[#11434D]/60"] button[class*="text-white"]:not([class*="text-white/"]){color:#ffffff !important;}
 [class*="bg-[#11434D]/60"] button[class*="text-white/"]{color:rgba(10,43,49,.62) !important;}
+/* PDCAの「Do」だけは元から強調指定（bg-[#11434D] + border-2 + 1.04倍）を持っている。
+   ダーク章の一括CSSが背景と枠色を他カードと同じに潰していたので、Doだけ戻して更に立てる。 */
+.hh-dark-sec [class*="border-2"]{
+  background:rgba(255,255,255,.14) !important;
+  border-color:rgba(29,238,200,.55) !important;
+  box-shadow:0 28px 64px -30px rgba(0,0,0,.6) !important;
+}
 .hh-deco{position:relative;overflow:hidden;}
 .hh-deco::before{content:"";position:absolute;top:4%;left:-14%;width:64%;height:300px;background:rgba(255,255,255,.055);border-radius:60px;transform:translate3d(var(--hhd1x,0px),var(--hhd1y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
 .hh-deco::after{content:"";position:absolute;bottom:2%;right:-12%;width:54%;height:280px;background:rgba(255,255,255,.038);border-radius:60px;transform:translate3d(var(--hhd2x,0px),var(--hhd2y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
@@ -682,7 +689,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         var topLevelOf=function(el){ var e=el; while(e.parentElement && e.parentElement.tagName!=='MAIN' && e.parentElement.tagName!=='BODY') e=e.parentElement; return e; };
         [
           {before:'メンバー紹介', w:58,
-           d:'M-60 55 C 430 120, 950 300, 1560 640'}   /* 隙間から入り、下のセクションの背後へ潜る弧 */
+           d:'M-70 40 C 250 130, 430 330, 560 760'}   /* 左寄りに降ろす：中央の見出しに被らせないため */
         ].forEach(function(cfg,i){
           var sec=sectionOf(cfg.before); if(!sec) return;
           if(document.querySelector('.hh-band[data-i="'+i+'"]')) return;
