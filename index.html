@@ -668,11 +668,14 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         }
       }catch(e){}
 
-      /* 23) 「導入事例〜サンプル」の背後に寒色の帯を敷く
-             ・白いパネル（導入事例の箱／サンプルの панель）が、ほぼ白の地の上で沈んでいたため
-             ・帯の上端＝ダークセクション直後、下端＝費用の直前 → セクションの分け目もはっきりする */
+      /* 23) 「役割」のダークを 導入事例〜サンプル まで継続させる（章として締める）
+             ・役割のグラデ終端 #08272e に合わせたフラットな濃色 → 継ぎ目が出ない
+             ・白いパネル（導入事例の箱／サンプルのパネル）が濃色の上で強く浮く
+             ・文字色は一切いじらない：本文はすべてパネル（白箱／サンプルの明パネル）の上に載っており、
+               375px〜1272px で「パネル外に出る文字は0件」であることを実測で確認済み。
+               座標で白文字化する処理は、レイアウトが変わると白地の上の文字まで白くして消すため入れない。 */
       try{
-        var TINT='#E4F1F5';
+        var DARK='#08272e';
         var _c=document.getElementById('case')||sectionOf('導入事例');
         var _sv=document.getElementById('sample-videos')||sectionOf('サンプル動画');
         var seen=[];
@@ -681,7 +684,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           var t=topLevelOf(sec);
           if(!t || seen.indexOf(t)>-1) return;
           seen.push(t);
-          t.style.background=TINT;
+          t.style.background=DARK;
         });
       }catch(e){}
 
