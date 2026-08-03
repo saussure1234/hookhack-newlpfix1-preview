@@ -375,6 +375,54 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 .hh-dark-sec::after{content:"";position:absolute;bottom:-50px;right:-10%;width:52%;height:260px;background:rgba(255,255,255,.07);border-radius:60px;transform:translate3d(var(--hhb2x,0px),var(--hhb2y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
 .hh-dark-sec>*{position:relative;z-index:1;}
 /* ダーク章の続き（導入事例・サンプル）にも同じ斜めシェイプを流して、章として繋げる */
+/* ダーク章：役割＋導入事例＋サンプルを1つの入れ物にまとめ、背景と斜めシェイプを通しで描く。
+   セクションごとに overflow:hidden で塗ると、境目でシェイプが切れて"線"に見えるため。 */
+.hh-chapter{position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#12414b 0%,#0c333b 24%,#08272e 100%);
+  clip-path:polygon(0 66px,100% 0,100% 100%,0 100%);}
+.hh-chapter>*{position:relative;z-index:1;}
+.hh-cbar{position:absolute;border-radius:200px;pointer-events:none;z-index:0;will-change:transform;}
+/* 入口：上から下へ開く（章が長いので下からだと上に何も出ない） */
+.hh-chapterin{clip-path:polygon(0 66px,100% 0,100% 0,0 66px);
+  transition:clip-path 1.15s cubic-bezier(.16,1,.3,1);}
+.hh-chapterin.hh-in{clip-path:polygon(0 66px,100% 0,100% 100%,0 100%);}
+/* 章にまとめたので、役割セクション自身の背景・斜めカット・シェイプは無効化 */
+.hh-chapter .hh-dark-sec{background:none !important;clip-path:none !important;}
+.hh-chapter .hh-dark-sec::before,.hh-chapter .hh-dark-sec::after{display:none !important;}
+/* ダーク章の中のパネルは"ガラス"にする。
+   ほぼ白のパネルだと章の面積をほぼ占有し、ダークが細い縁としてしか残らず「端に白」に見えるため。
+   patternB が黒くしていた文字は白に戻す（章の中だけスコープを限定）。 */
+.hh-chapter .hh-cbox,
+.hh-chapter [class*="bg-[#11434D]/60"],
+.hh-chapter [class*="bg-[#041D22]/60"]{
+  background:rgba(255,255,255,.055) !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+  box-shadow:none !important;
+  backdrop-filter:blur(6px);
+}
+.hh-chapter h1,.hh-chapter h2,.hh-chapter h3,.hh-chapter h4,
+.hh-chapter p,.hh-chapter li,.hh-chapter dt,.hh-chapter dd,
+.hh-chapter span,.hh-chapter a,.hh-chapter strong,.hh-chapter b,.hh-chapter em{
+  color:#ffffff !important;
+}
+/* patternB の反転ルール（[class*="bg-[#11434D]/60"] [class*="text-white"]{color:#0a2b31}）は
+   詳細度(0,2,0)で勝ってしまうため、章スコープを足した(0,3,0)で明示的に白へ戻す */
+.hh-chapter [class*="bg-[#11434D]/60"] [class*="text-white"],
+.hh-chapter [class*="bg-[#041D22]/60"] [class*="text-white"],
+.hh-chapter [class*="bg-[#11434D]/70"] [class*="text-white"]{color:#ffffff !important;}
+.hh-chapter [class*="bg-[#11434D]/60"] [class*="text-[#11434D]"],
+.hh-chapter [class*="bg-[#11434D]/60"] [class*="text-[#041D22]"],
+.hh-chapter [class*="bg-[#041D22]/60"] [class*="text-[#11434D]"],
+.hh-chapter [class*="bg-[#041D22]/60"] [class*="text-[#041D22]"]{color:#ffffff !important;}
+.hh-chapter [class*="bg-[#11434D]/60"] [class*="bg-white/10"],
+.hh-chapter [class*="bg-[#041D22]/60"] [class*="bg-white/10"]{background:rgba(255,255,255,.10) !important;}
+.hh-chapter [class*="bg-[#11434D]/60"] [class*="border-white"],
+.hh-chapter [class*="bg-[#041D22]/60"] [class*="border-white"]{border-color:rgba(255,255,255,.20) !important;}
+.hh-chapter [class*="bg-white/10"]{background:rgba(255,255,255,.09) !important;}
+.hh-chapter [class*="border-white"]{border-color:rgba(255,255,255,.18) !important;}
+.hh-chapter [class*="text-[#6cc5da]"]{color:#8fdcee !important;}
+/* CTAボタンは塗りを保ったまま白文字 */
+.hh-chapter a[class*="bg-[#2C9FB8]"]{background:#2C9FB8 !important;color:#ffffff !important;}
 .hh-deco{position:relative;overflow:hidden;}
 .hh-deco::before{content:"";position:absolute;top:4%;left:-14%;width:64%;height:300px;background:rgba(255,255,255,.055);border-radius:60px;transform:translate3d(var(--hhd1x,0px),var(--hhd1y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
 .hh-deco::after{content:"";position:absolute;bottom:2%;right:-12%;width:54%;height:280px;background:rgba(255,255,255,.038);border-radius:60px;transform:translate3d(var(--hhd2x,0px),var(--hhd2y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
@@ -676,82 +724,65 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         }
       }catch(e){}
 
-      /* 23) 「役割」のダークを 導入事例〜サンプル まで継続させる（章として締める）
-             ・役割のグラデ終端 #08272e に合わせたフラットな濃色 → 継ぎ目が出ない
-             ・白いパネル（導入事例の箱／サンプルのパネル）が濃色の上で強く浮く
-             ・文字色は一切いじらない：本文はすべてパネル（白箱／サンプルの明パネル）の上に載っており、
-               375px〜1272px で「パネル外に出る文字は0件」であることを実測で確認済み。
-               座標で白文字化する処理は、レイアウトが変わると白地の上の文字まで白くして消すため入れない。 */
+      /* 23) 役割＋導入事例＋サンプルを1つの"ダーク章"にまとめる
+             ・背景と斜めシェイプを章ぜんぶに通しで描く → 境目の線が出ない／棒が上下に繋がる
+             ・文字色は触らない（本文はすべて白箱・明パネルの上にあることを実測済み） */
+      var chapterBars=[];
       try{
-        var DARK='#08272e';
+        var _role=document.querySelector('.hh-dark-sec');
         var _c=document.getElementById('case')||sectionOf('導入事例');
         var _sv=document.getElementById('sample-videos')||sectionOf('サンプル動画');
-        var seen=[];
-        [_c,_sv].forEach(function(sec){
-          if(!sec) return;
-          var t=topLevelOf(sec);
-          if(!t || seen.indexOf(t)>-1) return;
-          seen.push(t);
-          t.style.background=DARK;
-          if(t.className.indexOf('hh-deco')<0) t.className+=' hh-deco';   /* 斜めシェイプを継続 */
-          [].forEach.call(t.children,function(c){ if(getComputedStyle(c).position==='static') c.style.position='relative'; c.style.zIndex='1'; });
-        });
-        /* サンプルの明パネルが章の下端に接していて「端に白」に見える → 下にダークの余白を作る */
-        var _svTop = _sv ? topLevelOf(_sv) : null;
-        if(_svTop){
-          var _p=_svTop.querySelector('[class*="bg-[#11434D]/60"],[class*="bg-[#041D22]/60"]');
+        var parts=[];
+        [_role,_c,_sv].forEach(function(s){ if(!s) return; var t=topLevelOf(s); if(t && parts.indexOf(t)<0) parts.push(t); });
+        if(parts.length>1 && !document.querySelector('.hh-chapter')){
+          var ch=document.createElement('div'); ch.className='hh-chapter hh-chapterin';
+          parts[0].parentNode.insertBefore(ch, parts[0]);
+          parts.forEach(function(p){ p.style.background=''; ch.appendChild(p); });
+          /* 通しで流れる斜めシェイプ（章の高さに沿って配置） */
+          [{top:'3%',  left:'-16%', w:'72%', h:'min(44vw,600px)', a:'.055', d:0.11},
+           {top:'26%', right:'-14%',w:'64%', h:'min(40vw,540px)', a:'.040', d:-0.09},
+           {top:'54%', left:'-12%', w:'66%', h:'min(38vw,520px)', a:'.045', d:0.08},
+           {top:'78%', right:'-16%',w:'70%', h:'min(42vw,560px)', a:'.032', d:-0.07}
+          ].forEach(function(cfg,i){
+            var b=document.createElement('div'); b.className='hh-cbar';
+            b.style.cssText='top:'+cfg.top+';'+(cfg.left?('left:'+cfg.left+';'):('right:'+cfg.right+';'))+
+              'width:'+cfg.w+';height:'+cfg.h+';background:rgba(255,255,255,'+cfg.a+');'+
+              'transform:rotate(-24deg);';
+            b.setAttribute('data-depth', cfg.d);
+            ch.insertBefore(b, ch.firstChild);
+            chapterBars.push(b);
+          });
+          /* サンプルの明パネルが章の下端に接して「端に白」に見えるのを防ぐ */
+          var _svTop=topLevelOf(_sv);
+          var _p=_svTop?_svTop.querySelector('[class*="bg-[#11434D]/60"],[class*="bg-[#041D22]/60"]'):null;
           if(_p){
-            var gapBottom = _svTop.getBoundingClientRect().bottom - _p.getBoundingClientRect().bottom;
-            if(gapBottom < 40) _svTop.style.paddingBottom = ((parseFloat(getComputedStyle(_svTop).paddingBottom)||0) + (64-gapBottom)) + 'px';
+            var gapBottom=_svTop.getBoundingClientRect().bottom - _p.getBoundingClientRect().bottom;
+            if(gapBottom<40) _svTop.style.paddingBottom=((parseFloat(getComputedStyle(_svTop).paddingBottom)||0)+(64-gapBottom))+'px';
           }
+          /* 事例の白箱／サンプルの明パネルの登場アニメーション */
+          [document.querySelector('.hh-cbox'),_p].forEach(function(el){
+            if(!el || el.className.indexOf('hh-blockin')>-1) return;
+            el.style.transition='none'; el.className+=' hh-blockin'; void el.offsetWidth; el.style.transition='';
+          });
+          /* 章自体の入口アニメも、付けた瞬間に閉じるのが見えないよう初期状態を確定 */
+          ch.style.transition='none'; void ch.offsetWidth; ch.style.transition='';
         }
-        /* 事例の白箱／サンプルの明パネルに登場アニメーション */
-        [document.querySelector('.hh-cbox'),
-         _svTop ? _svTop.querySelector('[class*="bg-[#11434D]/60"],[class*="bg-[#041D22]/60"]') : null
-        ].forEach(function(el){
-          if(!el || el.className.indexOf('hh-blockin')>-1) return;
-          /* 表示中の要素にクラスを足すと"フェードアウト"が一度走るので、初期状態を確定させてから transition を戻す */
-          el.style.transition='none';
-          el.className+=' hh-blockin';
-          void el.offsetWidth;
-          el.style.transition='';
-        });
       }catch(e){}
 
       /* 21) 「役割」の背景の棒を、スクロールで少し動かす（擬似要素なのでCSS変数経由） */
-      var darkSec=document.querySelector('.hh-dark-sec');
       function moveDark(){
         var vh=window.innerHeight||800;
-        if(darkSec){
-          var r=darkSec.getBoundingClientRect();
+        for(var i=0;i<chapterBars.length;i++){
+          var b=chapterBars[i];
+          var r=b.parentElement.getBoundingClientRect();
           var center=r.top+r.height/2-vh/2;
-          darkSec.style.setProperty('--hhb1y', (center*-0.12)+'px');
-          darkSec.style.setProperty('--hhb1x', (center*-0.05)+'px');
-          darkSec.style.setProperty('--hhb2y', (center*0.095)+'px');
-          darkSec.style.setProperty('--hhb2x', (center*0.040)+'px');
+          var d=parseFloat(b.getAttribute('data-depth'))||0;
+          b.style.transform='translate3d('+(center*d*0.25)+'px,'+(center*d)+'px,0) rotate(-24deg)';
         }
-        [].forEach.call(document.querySelectorAll('.hh-deco'),function(el){
-          var r2=el.getBoundingClientRect();
-          var c2=r2.top+r2.height/2-vh/2;
-          el.style.setProperty('--hhd1y', (c2*-0.10)+'px');
-          el.style.setProperty('--hhd1x', (c2*-0.042)+'px');
-          el.style.setProperty('--hhd2y', (c2*0.085)+'px');
-          el.style.setProperty('--hhd2x', (c2*0.036)+'px');
-        });
       }
 
-      /* 18) 「役割」のダークセクションを"下から生えるブロック"にする
-             ※既に表示中の要素にクラスを足すと"畳まれるアニメ"が見えるので、
-               transitionを一旦切って初期状態を確定 → リフロー → transitionを戻す */
-      try{
-        var dk=document.querySelector('.hh-dark-sec');
-        if(dk && dk.className.indexOf('hh-block')<0){
-          dk.style.transition='none';
-          dk.className+=' hh-block';
-          void dk.offsetWidth;
-          dk.style.transition='';
-        }
-      }catch(e){}
+      /* 18) 役割の単体アニメは廃止：step23 の"章"の入口アニメに一本化した
+             （章にまとめた以上、中で個別に開くと二重になり境目が見えてしまう） */
 
       /* 16) メンバー紹介: 右から左へ永遠スライド（既存カードをそのまま使う・作り直さない） */
       var mrail=null, mrailX=0, mrailWrap=0, mrailPaused=false, railVP=null;
