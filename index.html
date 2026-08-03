@@ -452,6 +452,10 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
   width:18px;height:18px;accent-color:#0093B4;
   border:1px solid #9FBFC8 !important;
 }
+/* 横動画/縦動画タブ：選択中は濃い帯(bg-[#11434D])の上に乗るので白、非選択は明パネルの上なので濃色。
+   反転処理が両方とも濃色にしてしまい、選択中の文字が帯に沈んでいた。 */
+[class*="bg-[#11434D]/60"] button[class*="text-white"]:not([class*="text-white/"]){color:#ffffff !important;}
+[class*="bg-[#11434D]/60"] button[class*="text-white/"]{color:rgba(10,43,49,.62) !important;}
 .hh-deco{position:relative;overflow:hidden;}
 .hh-deco::before{content:"";position:absolute;top:4%;left:-14%;width:64%;height:300px;background:rgba(255,255,255,.055);border-radius:60px;transform:translate3d(var(--hhd1x,0px),var(--hhd1y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
 .hh-deco::after{content:"";position:absolute;bottom:2%;right:-12%;width:54%;height:280px;background:rgba(255,255,255,.038);border-radius:60px;transform:translate3d(var(--hhd2x,0px),var(--hhd2y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
@@ -837,6 +841,37 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 
       /* 18) 役割の単体アニメは廃止：step23 の"章"の入口アニメに一本化した
              （章にまとめた以上、中で個別に開くと二重になり境目が見えてしまう） */
+
+      /* 25) メディアの取り違えを本番(hook-hack.com)に合わせて修正
+             ・サンプル動画3本が別ファイルを指していた
+             ・導入事例のLPは本番では iframe（実物のLPを埋め込み）だが、静止画に化けていた */
+      try{
+        var VID={'教育':'https://www.hook-hack.com/landing%20page/horizontaleducation.m4v',
+                 '不動産':'https://www.hook-hack.com/landing%20page/horizontalrealestate.m4v',
+                 '通販':'https://www.hook-hack.com/video%20display/avatarvertical.mp4'};
+        var _sv=document.getElementById('sample-videos');
+        if(_sv){
+          [].forEach.call(_sv.querySelectorAll('video'),function(v){
+            /* 直近の祖先からキャプションを拾って対応付ける */
+            var p=v, cap='';
+            for(var i=0;i<5&&p;i++){ var t=(p.textContent||'').replace(/\s+/g,'').trim(); if(t&&t.length<40){cap=t;break;} p=p.parentElement; }
+            for(var k in VID){ if(cap.indexOf(k)===0){ if(v.getAttribute('src')!==VID[k]) v.setAttribute('src',VID[k]); break; } }
+          });
+        }
+        /* 導入事例のLPプレビューを iframe に戻す */
+        var _cs=document.getElementById('case');
+        var _img=_cs?_cs.querySelector('img[alt*="LPプレビュー"]'):null;
+        if(_img && _img.parentElement && _img.parentElement.tagName==='A'){
+          var url=_img.parentElement.getAttribute('href');
+          if(url){
+            var ifr=document.createElement('iframe');
+            ifr.src=url; ifr.title=_img.getAttribute('alt')||'LPプレビュー'; ifr.loading='lazy';
+            ifr.className='absolute inset-0 w-full h-full pointer-events-none';
+            ifr.setAttribute('frameborder','0');
+            _img.parentNode.replaceChild(ifr,_img);
+          }
+        }
+      }catch(e){}
 
       /* 24) フッターをブランドの濃色に（ロゴは非表示） */
       try{
