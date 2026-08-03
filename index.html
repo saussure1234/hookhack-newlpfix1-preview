@@ -387,7 +387,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 @media (max-width:1024px){
   .hh-band{height:clamp(120px,17vw,190px);}
   .hh-mq{height:clamp(100px,15vw,160px);}
-  .hh-cbox,.hh-pbox{border-radius:24px !important;left:20px !important;right:20px !important;}
+  .hh-cbox{border-radius:24px !important;left:20px !important;right:20px !important;}
 }
 @media (max-width:640px){
   .hh-band{height:clamp(92px,25vw,132px);}
@@ -395,7 +395,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
   .hh-mq-track span{font-size:clamp(50px,16vw,88px);-webkit-text-stroke-width:1.5px;}
   .hh-dark-sec{padding-top:82px !important;clip-path:polygon(0 36px,100% 0,100% 100%,0 100%);}
   .hh-block.hh-in{clip-path:polygon(0 36px,100% 0,100% 100%,0 100%);}
-  .hh-cbox,.hh-pbox{border-radius:18px !important;left:14px !important;right:14px !important;top:26px !important;bottom:26px !important;}
+  .hh-cbox{border-radius:18px !important;left:14px !important;right:14px !important;top:26px !important;bottom:26px !important;}
 }
 </style>
 <script>
@@ -506,8 +506,8 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           if(getComputedStyle(sec).position==='static') sec.style.position='relative';
           sec.style.overflow='hidden';
           var specs=[
-            {pos:'top:3%;right:-6%;',  col:'0,147,180',  a:'.20', depth:'0.18'},
-            {pos:'top:50%;left:-8%;',  col:'29,238,200', a:'.16', depth:'-0.14'}
+            {pos:'top:3%;right:-6%;',  col:'0,147,180',  a:'.32', depth:'0.18'},
+            {pos:'top:50%;left:-8%;',  col:'29,238,200', a:'.26', depth:'-0.14'}
           ];
           specs.forEach(function(sp){
             var blob=document.createElement('div'); blob.className='hh-sbg'; blob.setAttribute('data-depth', sp.depth);
@@ -516,26 +516,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           });
           [].forEach.call(sec.children,function(c){ if(!/hh-sbg/.test(c.className||'') && getComputedStyle(c).position==='static'){ c.style.position='relative'; c.style.zIndex='1'; } });
         })();
-        // 費用: 内容を"箱に収める"薄い枠つき角丸パネル（費用＋サポートを1つの箱に・スクロールでふわっと登場）
-        (function(){
-          var pricing=document.getElementById('pricing')||sectionOf('費用'); if(!pricing) return;
-          var sup=pricing.nextElementSibling;
-          var includeSup = sup && sup.tagName==='SECTION' && !sup.id && /サポート/.test(sup.textContent);
-          var host;
-          if(includeSup){
-            var wrap=document.createElement('div'); wrap.className='hh-pboxwrap'; wrap.style.position='relative';
-            pricing.parentNode.insertBefore(wrap, pricing);
-            wrap.appendChild(pricing); wrap.appendChild(sup);
-            host=wrap;
-          } else {
-            if(getComputedStyle(pricing).position==='static') pricing.style.position='relative';
-            host=pricing;
-          }
-          var panel=document.createElement('div'); panel.className='hh-pbox hh-rv'; panel.setAttribute('data-fx','scale');
-          panel.style.cssText='position:absolute;z-index:0;top:56px;left:2.5%;right:2.5%;bottom:56px;border-radius:30px;background:linear-gradient(160deg,#E9F6F9 0%,#F7FCFD 55%,#FFFFFF 100%);border:1px solid #CFE4E9;box-shadow:0 50px 100px -60px rgba(4,60,72,.30),inset 0 1px 0 rgba(255,255,255,.6);pointer-events:none;';
-          host.insertBefore(panel, host.firstChild);
-          [].forEach.call(host.children,function(c){ if(c!==panel){ if(getComputedStyle(c).position==='static') c.style.position='relative'; c.style.zIndex='1'; } });
-        })();
+        /* 費用の裏のブロックは無し（BPaaSカード側の箱はそのまま活かす） */
       }catch(e){}
 
       if(reduce){
@@ -659,10 +640,11 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           if(getComputedStyle(_cs).position==='static') _cs.style.position='relative';
           /* 出現アニメは付けない（静止）。白地に白い箱では見えないので、実際に寒色のトーンを持たせる */
           var cbox=document.createElement('div'); cbox.className='hh-cbox';
+          /* 箱は白のまま。色みは背景シェイプ側で出す */
           cbox.style.cssText='position:absolute;z-index:0;top:40px;left:2.5%;right:2.5%;bottom:40px;border-radius:32px;'+
-            'background:linear-gradient(165deg,#DCEFF4 0%,#E9F6F9 52%,#F5FBFC 100%);'+
-            'border:1px solid rgba(0,147,180,.12);'+
-            'box-shadow:0 40px 90px -60px rgba(4,60,72,.30);'+
+            'background:#FFFFFF;'+
+            'border:1px solid #E3EEF1;'+
+            'box-shadow:0 44px 90px -58px rgba(4,60,72,.34);'+
             'pointer-events:none;';
           _cs.insertBefore(cbox, _cs.firstChild);
         }
