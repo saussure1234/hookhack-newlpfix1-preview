@@ -389,36 +389,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 /* 章にまとめたので、役割セクション自身の背景・斜めカット・シェイプは無効化 */
 .hh-chapter .hh-dark-sec{background:none !important;clip-path:none !important;}
 .hh-chapter .hh-dark-sec::before,.hh-chapter .hh-dark-sec::after{display:none !important;}
-/* ダーク章の中のパネルは"ガラス"にする。
-   ほぼ白のパネルだと章の面積をほぼ占有し、ダークが細い縁としてしか残らず「端に白」に見えるため。
-   patternB が黒くしていた文字は白に戻す（章の中だけスコープを限定）。 */
-.hh-chapter .hh-cbox,
-.hh-chapter [class*="bg-[#11434D]/60"],
-.hh-chapter [class*="bg-[#041D22]/60"]{
-  background:rgba(255,255,255,.055) !important;
-  border:1px solid rgba(255,255,255,.14) !important;
-  box-shadow:none !important;
-  backdrop-filter:blur(6px);
-}
-.hh-chapter h1,.hh-chapter h2,.hh-chapter h3,.hh-chapter h4,
-.hh-chapter p,.hh-chapter li,.hh-chapter dt,.hh-chapter dd,
-.hh-chapter span,.hh-chapter a,.hh-chapter strong,.hh-chapter b,.hh-chapter em{
-  color:#ffffff !important;
-}
-/* patternB の反転ルール（[class*="bg-[#11434D]/60"] [class*="text-white"]{color:#0a2b31}）は
-   詳細度(0,2,0)で勝ってしまうため、章スコープを足した(0,3,0)で明示的に白へ戻す */
-.hh-chapter [class*="bg-[#11434D]/60"] [class*="text-white"],
-.hh-chapter [class*="bg-[#041D22]/60"] [class*="text-white"],
-.hh-chapter [class*="bg-[#11434D]/70"] [class*="text-white"]{color:#ffffff !important;}
-.hh-chapter [class*="bg-[#11434D]/60"] [class*="text-[#11434D]"],
-.hh-chapter [class*="bg-[#11434D]/60"] [class*="text-[#041D22]"],
-.hh-chapter [class*="bg-[#041D22]/60"] [class*="text-[#11434D]"],
-.hh-chapter [class*="bg-[#041D22]/60"] [class*="text-[#041D22]"]{color:#ffffff !important;}
-.hh-chapter [class*="bg-[#11434D]/60"] [class*="bg-white/10"],
-.hh-chapter [class*="bg-[#041D22]/60"] [class*="bg-white/10"]{background:rgba(255,255,255,.10) !important;}
-.hh-chapter [class*="bg-[#11434D]/60"] [class*="border-white"],
-.hh-chapter [class*="bg-[#041D22]/60"] [class*="border-white"]{border-color:rgba(255,255,255,.20) !important;}
-.hh-chapter [class*="bg-white/10"]{background:rgba(255,255,255,.09) !important;}
+
 .hh-chapter [class*="border-white"]{border-color:rgba(255,255,255,.18) !important;}
 .hh-chapter [class*="text-[#6cc5da]"]{color:#8fdcee !important;}
 /* CTAボタンは塗りを保ったまま白文字 */
@@ -786,13 +757,6 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           var _r=_ch.getBoundingClientRect();
           if(_r.top < vh && _r.bottom > 0) _ch.classList.add('hh-in');
         }
-        for(var i=0;i<chapterBars.length;i++){
-          var b=chapterBars[i];
-          var r=b.parentElement.getBoundingClientRect();
-          var center=r.top+r.height/2-vh/2;
-          var d=parseFloat(b.getAttribute('data-depth'))||0;
-          b.style.transform='translate3d('+(center*d*0.25)+'px,'+(center*d)+'px,0) rotate(-24deg)';
-        }
       }
 
       /* 18) 役割の単体アニメは廃止：step23 の"章"の入口アニメに一本化した
@@ -859,10 +823,19 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       }catch(e){}
 
       /* マーキー: 一定速度で流す（スクロール加速はしない） */
+      var barT=0;
       function mqFrame(){
         /* 何が起きても次フレームは必ず予約する＝ループが死なない */
         requestAnimationFrame(mqFrame);
         try{
+          /* 背景の棒：スクロールに関係なく、常にゆっくり漂わせる（1周およそ60〜80秒） */
+          barT++;
+          for(var bi=0;bi<chapterBars.length;bi++){
+            var bar=chapterBars[bi];
+            var ph=barT*0.0015+bi*1.7;
+            var ax=48+bi*9, ay=32+bi*7;
+            bar.style.transform='translate3d('+(Math.sin(ph)*ax).toFixed(2)+'px,'+(Math.cos(ph*0.8)*ay).toFixed(2)+'px,0) rotate(-24deg)';
+          }
           /* 一時停止は :hover のライブ判定（mouseenterのフラグ方式だと、
              スクロールでカーソル下にレールが入った時に mouseleave が来ず止まりっぱなしになる） */
           var hovered=false;
