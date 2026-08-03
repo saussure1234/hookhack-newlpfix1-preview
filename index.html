@@ -583,7 +583,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       }catch(e){}
 
       if(reduce){
-        document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline,.hh-block,.hh-blockin').forEach(function(el){el.classList.add('hh-in');});
+        document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline,.hh-block,.hh-blockin,.hh-chapterin').forEach(function(el){el.classList.add('hh-in');});
         document.querySelectorAll('.hh-count').forEach(function(el){el.textContent=el.getAttribute('data-to');});
         return;
       }
@@ -778,6 +778,14 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       /* 21) 「役割」の背景の棒を、スクロールで少し動かす（擬似要素なのでCSS変数経由） */
       function moveDark(){
         var vh=window.innerHeight||800;
+        /* 安全弁：章の開閉は reveal のリストに依存しているが、
+           そこから漏れると"役割・導入事例・サンプル"が丸ごと消える（実際に起きた）。
+           リストとは独立に、画面に入ったら必ず開くようにしておく。 */
+        var _ch=document.querySelector('.hh-chapterin');
+        if(_ch && !_ch.classList.contains('hh-in')){
+          var _r=_ch.getBoundingClientRect();
+          if(_r.top < vh && _r.bottom > 0) _ch.classList.add('hh-in');
+        }
         for(var i=0;i<chapterBars.length;i++){
           var b=chapterBars[i];
           var r=b.parentElement.getBoundingClientRect();
@@ -878,7 +886,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       if(mqs.length || mrail) requestAnimationFrame(mqFrame);
 
       /* reveal エンジン（スクロール位置ベース） */
-      var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline,.hh-block,.hh-blockin'));
+      var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline,.hh-block,.hh-blockin,.hh-chapterin'));
       var counts=[].slice.call(document.querySelectorAll('.hh-count'));
       var sbgs=[].slice.call(document.querySelectorAll('.hh-sbg'));
       function moveSBG(){ var vh=window.innerHeight||800; sbgs.forEach(function(el){ var p=el.parentElement.getBoundingClientRect(); var center=p.top+p.height/2-vh/2; el.style.transform='translateY('+(center*-parseFloat(el.getAttribute('data-depth')))+'px)'; }); }
@@ -894,7 +902,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       }
       addEventListener('scroll',onScroll,{passive:true}); addEventListener('resize',onScroll,{passive:true});
       check(); moveSBG(); drawStrokes(); moveDark();
-    }catch(e){ document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline').forEach(function(el){el.classList.add('hh-in');}); }
+    }catch(e){ document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline,.hh-block,.hh-blockin,.hh-chapterin').forEach(function(el){el.classList.add('hh-in');}); }
   }
   if(document.readyState!=='loading') run(); else document.addEventListener('DOMContentLoaded',run);
 })();
