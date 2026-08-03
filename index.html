@@ -431,6 +431,29 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 [class*="bg-[#11434D]/70"] [class*="border-t"]{border-top-color:rgba(255,255,255,.18) !important;}
 /* CTAは白ボタン＋濃色文字（元の設計） */
 [class*="bg-[#11434D]/70"] a[class*="bg-white"]{background:#ffffff !important;color:#11434D !important;}
+/* お問い合わせ：カードが白地の上に白・枠も白・影なしで輪郭が無かった（差5）。
+   セクションに面を敷いて、カードを浮かせる。 */
+#inquiry{background:linear-gradient(180deg,#E6F2F6 0%,#F1F9FB 100%) !important;}
+#inquiry [class*="rounded-xl"][class*="bg-white"]{
+  background:#ffffff !important;
+  border:1px solid #CFE3E8 !important;
+  box-shadow:0 44px 88px -58px rgba(4,60,72,.45) !important;
+}
+/* 入力欄：枠が薄すぎて"入力できる場所"に見えないので、はっきりさせる */
+#inquiry input:not([type="checkbox"]),#inquiry textarea{
+  background:#ffffff !important;
+  border:1px solid #C3D9E0 !important;
+}
+#inquiry input:not([type="checkbox"]):focus,#inquiry textarea:focus{
+  border-color:#0093B4 !important;
+  box-shadow:0 0 0 3px rgba(0,147,180,.18) !important;
+  outline:none !important;
+}
+/* 同意チェックは送信の前提なので、見落とされないよう少し強く */
+#inquiry input[type="checkbox"]{
+  width:18px;height:18px;accent-color:#0093B4;
+  border:1px solid #9FBFC8 !important;
+}
 .hh-deco{position:relative;overflow:hidden;}
 .hh-deco::before{content:"";position:absolute;top:4%;left:-14%;width:64%;height:300px;background:rgba(255,255,255,.055);border-radius:60px;transform:translate3d(var(--hhd1x,0px),var(--hhd1y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
 .hh-deco::after{content:"";position:absolute;bottom:2%;right:-12%;width:54%;height:280px;background:rgba(255,255,255,.038);border-radius:60px;transform:translate3d(var(--hhd2x,0px),var(--hhd2y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
