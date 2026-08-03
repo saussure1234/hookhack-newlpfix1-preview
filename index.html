@@ -382,6 +382,21 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 .hh-mq-track span{display:block;white-space:nowrap;padding-right:.3em;
   font-size:clamp(80px,13vw,190px);font-weight:900;line-height:1;letter-spacing:-.01em;
   color:transparent;-webkit-text-stroke:2px rgba(0,147,180,.42);}
+
+/* ===== レスポンシブ（必ずスタイル末尾に置く。途中だと後続の .hh-mq 等に負ける） ===== */
+@media (max-width:1024px){
+  .hh-band{height:clamp(120px,17vw,190px);}
+  .hh-mq{height:clamp(100px,15vw,160px);}
+  .hh-cbox,.hh-pbox{border-radius:24px !important;left:20px !important;right:20px !important;}
+}
+@media (max-width:640px){
+  .hh-band{height:clamp(92px,25vw,132px);}
+  .hh-mq{height:clamp(80px,21vw,116px);}
+  .hh-mq-track span{font-size:clamp(50px,16vw,88px);-webkit-text-stroke-width:1.5px;}
+  .hh-dark-sec{padding-top:82px !important;clip-path:polygon(0 36px,100% 0,100% 100%,0 100%);}
+  .hh-block.hh-in{clip-path:polygon(0 36px,100% 0,100% 100%,0 100%);}
+  .hh-cbox,.hh-pbox{border-radius:18px !important;left:14px !important;right:14px !important;top:26px !important;bottom:26px !important;}
+}
 </style>
 <script>
 (function(){
@@ -705,7 +720,27 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       }catch(e){}
 
       /* 16) メンバー紹介: 右から左へ永遠スライド（既存カードをそのまま使う・作り直さない） */
-      var mrail=null, mrailX=0, mrailWrap=0, mrailPaused=false;
+      var mrail=null, mrailX=0, mrailWrap=0, mrailPaused=false, railVP=null;
+      /* 画面いっぱいに広げる：一度margin/widthを戻して実位置を測り、その分だけ左に引く */
+      function fitRail(){
+        if(!railVP) return;
+        /* width を先に確定 → left:0 で自然位置を測る → left で戻す。
+           position:relative の left はレイアウトに影響しないので測定がブレない
+           （margin で寄せると中央寄せの親では位置自体が動いて測定が壊れる） */
+        railVP.style.width=document.documentElement.clientWidth+'px';
+        railVP.style.left='0px';
+        var l=railVP.getBoundingClientRect().left;
+        railVP.style.left=(-l)+'px';
+      }
+      /* カード幅を画面幅に合わせる（スマホで300pxだと1枚しか入らない） */
+      function sizeCards(){
+        if(!mrail) return;
+        var vw=document.documentElement.clientWidth;
+        var w = vw<=640 ? 232 : (vw<=1024 ? 264 : 300);
+        var g = vw<=640 ? 16  : (vw<=1024 ? 24  : 32);
+        mrail.style.gap=g+'px';
+        [].forEach.call(mrail.children,function(c){ c.style.flex='0 0 '+w+'px'; c.style.width=w+'px'; c.style.maxWidth=w+'px'; });
+      }
       try{
         var mb=sectionOf('メンバー紹介');
         if(mb && !document.querySelector('.hh-mrail')){   /* 二重適用ガード（カードが増殖しないように） */
@@ -715,7 +750,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           if(cards.length>1){
             var host=cards[0].parentElement.parentElement;
             var vp=document.createElement('div');
-            vp.style.cssText='position:relative;width:100vw;left:50%;margin-left:-50vw;overflow:hidden;';
+            vp.style.cssText='position:relative;overflow:hidden;';
             var rail=document.createElement('div'); rail.className='hh-mrail';
             rail.style.cssText='display:flex;width:max-content;gap:32px;padding:8px 0;will-change:transform;';
             var n=cards.length;
@@ -723,8 +758,16 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
             cards.forEach(function(c){ var d=c.cloneNode(true); d.setAttribute('aria-hidden','true'); rail.appendChild(d); });
             vp.appendChild(rail); host.innerHTML=''; host.appendChild(vp);
             /* 折り返し距離は offsetLeft の実測（gapを含む1周ぶん。scrollWidth/2 では末尾gapぶんズレる） */
+            /* 全幅化：left:50%+margin-left:-50vw は親の位置に依存して破綻するので、実測で合わせる */
+            railVP=vp; mrail=rail;      /* sizeCards() は mrail を見るので先に代入する */
+            fitRail();
+            sizeCards();
             mrailWrap = rail.children[n].offsetLeft - rail.children[0].offsetLeft;
-            addEventListener('resize',function(){ mrailWrap = rail.children[n].offsetLeft - rail.children[0].offsetLeft; });
+            addEventListener('resize',function(){
+              fitRail(); sizeCards();
+              mrailWrap = rail.children[n].offsetLeft - rail.children[0].offsetLeft;
+              if(mrailX<=-mrailWrap) mrailX=0;
+            });
             mrail=rail;
           }
         }
