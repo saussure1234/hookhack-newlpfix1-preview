@@ -341,7 +341,8 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 [class*="linear-gradient(to_bottom,rgba(255,255,255,1)"].hh-white-sec{background:#ffffff !important;}
 .hh-white-top{border-top:none !important;}
 /* ブランド色のダーク・セクション（LayerX "Join Us" 風／上端を斜めカット） */
-.hh-dark-sec{background:linear-gradient(160deg,#12414b 0%,#08272e 100%) !important;position:relative;overflow:hidden;clip-path:polygon(0 66px,100% 0,100% 100%,0 100%);padding-top:130px !important;}
+/* 縦グラデにする：160度の斜めだと下端の色が左右で変わり、次の平坦な#08272eとの境目が線で見える */
+.hh-dark-sec{background:linear-gradient(180deg,#12414b 0%,#08272e 100%) !important;position:relative;overflow:hidden;clip-path:polygon(0 66px,100% 0,100% 100%,0 100%);padding-top:130px !important;}
 /* ブロックが下から生えてくる（斜めカットは維持したまま、同じ4点ポリゴンを立ち上げる） */
 .hh-block{clip-path:polygon(0 100%,100% 100%,100% 100%,0 100%);opacity:0;
   transition:clip-path 1.05s cubic-bezier(.16,1,.3,1),opacity .5s cubic-bezier(.16,1,.3,1);}
@@ -373,6 +374,13 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 .hh-dark-sec::before{content:"";position:absolute;top:-60px;left:-12%;width:62%;height:280px;background:rgba(255,255,255,.10);border-radius:60px;transform:translate3d(var(--hhb1x,0px),var(--hhb1y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
 .hh-dark-sec::after{content:"";position:absolute;bottom:-50px;right:-10%;width:52%;height:260px;background:rgba(255,255,255,.07);border-radius:60px;transform:translate3d(var(--hhb2x,0px),var(--hhb2y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
 .hh-dark-sec>*{position:relative;z-index:1;}
+/* ダーク章の続き（導入事例・サンプル）にも同じ斜めシェイプを流して、章として繋げる */
+.hh-deco{position:relative;overflow:hidden;}
+.hh-deco::before{content:"";position:absolute;top:4%;left:-14%;width:64%;height:300px;background:rgba(255,255,255,.055);border-radius:60px;transform:translate3d(var(--hhd1x,0px),var(--hhd1y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
+.hh-deco::after{content:"";position:absolute;bottom:2%;right:-12%;width:54%;height:280px;background:rgba(255,255,255,.038);border-radius:60px;transform:translate3d(var(--hhd2x,0px),var(--hhd2y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
+/* 事例／サンプルのブロックの登場アニメーション */
+.hh-blockin{opacity:0;transform:translateY(24px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);}
+.hh-blockin.hh-in{opacity:1;transform:none;}
 /* 背後を流れる巨大文字（B案: HookHack・輪郭線）*/
 .hh-mq{position:relative;width:100%;overflow:hidden;z-index:0;
   pointer-events:none;user-select:none;display:flex;align-items:center;
@@ -521,7 +529,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       }catch(e){}
 
       if(reduce){
-        document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline,.hh-block').forEach(function(el){el.classList.add('hh-in');});
+        document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline,.hh-block,.hh-blockin').forEach(function(el){el.classList.add('hh-in');});
         document.querySelectorAll('.hh-count').forEach(function(el){el.textContent=el.getAttribute('data-to');});
         return;
       }
@@ -685,20 +693,51 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           if(!t || seen.indexOf(t)>-1) return;
           seen.push(t);
           t.style.background=DARK;
+          if(t.className.indexOf('hh-deco')<0) t.className+=' hh-deco';   /* 斜めシェイプを継続 */
+          [].forEach.call(t.children,function(c){ if(getComputedStyle(c).position==='static') c.style.position='relative'; c.style.zIndex='1'; });
+        });
+        /* サンプルの明パネルが章の下端に接していて「端に白」に見える → 下にダークの余白を作る */
+        var _svTop = _sv ? topLevelOf(_sv) : null;
+        if(_svTop){
+          var _p=_svTop.querySelector('[class*="bg-[#11434D]/60"],[class*="bg-[#041D22]/60"]');
+          if(_p){
+            var gapBottom = _svTop.getBoundingClientRect().bottom - _p.getBoundingClientRect().bottom;
+            if(gapBottom < 40) _svTop.style.paddingBottom = ((parseFloat(getComputedStyle(_svTop).paddingBottom)||0) + (64-gapBottom)) + 'px';
+          }
+        }
+        /* 事例の白箱／サンプルの明パネルに登場アニメーション */
+        [document.querySelector('.hh-cbox'),
+         _svTop ? _svTop.querySelector('[class*="bg-[#11434D]/60"],[class*="bg-[#041D22]/60"]') : null
+        ].forEach(function(el){
+          if(!el || el.className.indexOf('hh-blockin')>-1) return;
+          /* 表示中の要素にクラスを足すと"フェードアウト"が一度走るので、初期状態を確定させてから transition を戻す */
+          el.style.transition='none';
+          el.className+=' hh-blockin';
+          void el.offsetWidth;
+          el.style.transition='';
         });
       }catch(e){}
 
       /* 21) 「役割」の背景の棒を、スクロールで少し動かす（擬似要素なのでCSS変数経由） */
       var darkSec=document.querySelector('.hh-dark-sec');
       function moveDark(){
-        if(!darkSec) return;
         var vh=window.innerHeight||800;
-        var r=darkSec.getBoundingClientRect();
-        var center=r.top+r.height/2-vh/2;
-        darkSec.style.setProperty('--hhb1y', (center*-0.12)+'px');
-        darkSec.style.setProperty('--hhb1x', (center*-0.05)+'px');
-        darkSec.style.setProperty('--hhb2y', (center*0.095)+'px');
-        darkSec.style.setProperty('--hhb2x', (center*0.040)+'px');
+        if(darkSec){
+          var r=darkSec.getBoundingClientRect();
+          var center=r.top+r.height/2-vh/2;
+          darkSec.style.setProperty('--hhb1y', (center*-0.12)+'px');
+          darkSec.style.setProperty('--hhb1x', (center*-0.05)+'px');
+          darkSec.style.setProperty('--hhb2y', (center*0.095)+'px');
+          darkSec.style.setProperty('--hhb2x', (center*0.040)+'px');
+        }
+        [].forEach.call(document.querySelectorAll('.hh-deco'),function(el){
+          var r2=el.getBoundingClientRect();
+          var c2=r2.top+r2.height/2-vh/2;
+          el.style.setProperty('--hhd1y', (c2*-0.10)+'px');
+          el.style.setProperty('--hhd1x', (c2*-0.042)+'px');
+          el.style.setProperty('--hhd2y', (c2*0.085)+'px');
+          el.style.setProperty('--hhd2x', (c2*0.036)+'px');
+        });
       }
 
       /* 18) 「役割」のダークセクションを"下から生えるブロック"にする
@@ -796,7 +835,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
       if(mqs.length || mrail) requestAnimationFrame(mqFrame);
 
       /* reveal エンジン（スクロール位置ベース） */
-      var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline,.hh-block'));
+      var items=[].slice.call(document.querySelectorAll('.hh-rv,.hh-lines,.hh-gbox,.hh-underline,.hh-block,.hh-blockin'));
       var counts=[].slice.call(document.querySelectorAll('.hh-count'));
       var sbgs=[].slice.call(document.querySelectorAll('.hh-sbg'));
       function moveSBG(){ var vh=window.innerHeight||800; sbgs.forEach(function(el){ var p=el.parentElement.getBoundingClientRect(); var center=p.top+p.height/2-vh/2; el.style.transform='translateY('+(center*-parseFloat(el.getAttribute('data-depth')))+'px)'; }); }
