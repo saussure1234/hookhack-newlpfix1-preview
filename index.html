@@ -400,6 +400,15 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 .hh-foot a{color:rgba(255,255,255,.78) !important;transition:color .25s;}
 .hh-foot a:hover{color:#ffffff !important;}
 .hh-foot img{display:none !important;}
+/* BPaaSカード内の3ブロック（ディレクター×AI×デザイナー）。
+   反転処理で #F6FBFC になり、親パネル(#F1FAFC〜#FBFEFE)と輝度差ゼロで見えていなかった。 */
+[class*="bg-[#11434D]/70"] [class*="bg-white/10"]{
+  background:linear-gradient(180deg,#DCEDF2 0%,#E9F5F8 100%) !important;
+  border:1px solid rgba(0,147,180,.18) !important;
+}
+[class*="bg-[#11434D]/70"] [class*="bg-white/10"] [class*="bg-white"]{
+  background:#ffffff !important;
+}
 .hh-deco{position:relative;overflow:hidden;}
 .hh-deco::before{content:"";position:absolute;top:4%;left:-14%;width:64%;height:300px;background:rgba(255,255,255,.055);border-radius:60px;transform:translate3d(var(--hhd1x,0px),var(--hhd1y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
 .hh-deco::after{content:"";position:absolute;bottom:2%;right:-12%;width:54%;height:280px;background:rgba(255,255,255,.038);border-radius:60px;transform:translate3d(var(--hhd2x,0px),var(--hhd2y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
@@ -421,7 +430,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 @media (max-width:1024px){
   .hh-band{height:clamp(120px,17vw,190px);}
   .hh-mq{height:clamp(100px,15vw,160px);}
-  .hh-cbox{border-radius:24px !important;left:20px !important;right:20px !important;}
+  .hh-cbox{border-radius:24px !important;width:calc(100% - 40px) !important;}
 }
 @media (max-width:640px){
   .hh-band{height:clamp(92px,25vw,132px);}
@@ -429,7 +438,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
   .hh-mq-track span{font-size:clamp(50px,16vw,88px);-webkit-text-stroke-width:1.5px;}
   .hh-dark-sec{padding-top:82px !important;clip-path:polygon(0 36px,100% 0,100% 100%,0 100%);}
   .hh-block.hh-in{clip-path:polygon(0 36px,100% 0,100% 100%,0 100%);}
-  .hh-cbox{border-radius:18px !important;left:14px !important;right:14px !important;top:26px !important;bottom:26px !important;}
+  .hh-cbox{border-radius:18px !important;width:calc(100% - 28px) !important;top:26px !important;bottom:26px !important;}
 }
 </style>
 <script>
@@ -664,7 +673,8 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           /* 出現アニメは付けない（静止）。白地に白い箱では見えないので、実際に寒色のトーンを持たせる */
           var cbox=document.createElement('div'); cbox.className='hh-cbox';
           /* 箱は白のまま。色みは箱の"中"に閉じ込める（外にはみ出すと中途半端に見える） */
-          cbox.style.cssText='position:absolute;z-index:0;top:40px;left:2.5%;right:2.5%;bottom:40px;border-radius:32px;'+
+          /* 中身(max-w-6xl=1152px)より少しだけ広い程度に。left/right の%指定だと大画面で広がりすぎる */
+          cbox.style.cssText='position:absolute;z-index:0;top:40px;left:50%;transform:translateX(-50%);width:min(1200px,92%);bottom:40px;border-radius:32px;'+
             'background:#FFFFFF;'+
             'border:1px solid #E3EEF1;'+
             'box-shadow:0 44px 90px -58px rgba(4,60,72,.34);'+
