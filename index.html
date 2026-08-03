@@ -423,6 +423,12 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 .hh-chapter [class*="text-[#6cc5da]"]{color:#8fdcee !important;}
 /* CTAボタンは塗りを保ったまま白文字 */
 .hh-chapter a[class*="bg-[#2C9FB8]"]{background:#2C9FB8 !important;color:#ffffff !important;}
+/* フッター：ブランドの濃色で締める（ロゴは非表示） */
+.hh-foot{background:linear-gradient(180deg,#0c333b 0%,#08272e 100%) !important;border-top:none !important;}
+.hh-foot,.hh-foot p,.hh-foot span,.hh-foot div,.hh-foot li,.hh-foot small{color:#ffffff !important;}
+.hh-foot a{color:rgba(255,255,255,.78) !important;transition:color .25s;}
+.hh-foot a:hover{color:#ffffff !important;}
+.hh-foot img{display:none !important;}
 .hh-deco{position:relative;overflow:hidden;}
 .hh-deco::before{content:"";position:absolute;top:4%;left:-14%;width:64%;height:300px;background:rgba(255,255,255,.055);border-radius:60px;transform:translate3d(var(--hhd1x,0px),var(--hhd1y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
 .hh-deco::after{content:"";position:absolute;bottom:2%;right:-12%;width:54%;height:280px;background:rgba(255,255,255,.038);border-radius:60px;transform:translate3d(var(--hhd2x,0px),var(--hhd2y,0px),0) rotate(-24deg);pointer-events:none;z-index:0;will-change:transform;}
@@ -783,6 +789,12 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 
       /* 18) 役割の単体アニメは廃止：step23 の"章"の入口アニメに一本化した
              （章にまとめた以上、中で個別に開くと二重になり境目が見えてしまう） */
+
+      /* 24) フッターをブランドの濃色に（ロゴは非表示） */
+      try{
+        var _ft=document.querySelector('main footer')||document.querySelector('footer');
+        if(_ft && _ft.className.indexOf('hh-foot')<0) _ft.className+=' hh-foot';
+      }catch(e){}
 
       /* 16) メンバー紹介: 右から左へ永遠スライド（既存カードをそのまま使う・作り直さない） */
       var mrail=null, mrailX=0, mrailWrap=0, mrailPaused=false, railVP=null;
