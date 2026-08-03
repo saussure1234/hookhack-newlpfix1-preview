@@ -618,18 +618,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
             var give=Math.min(80,pb);
             caseTop.style.paddingBottom=(pb-give)+'px';
             sampTop.style.paddingTop=((parseFloat(getComputedStyle(sampTop).paddingTop)||0)+give)+'px';
-            /* 継ぎ目をまたぐ柔らかい光（サンプル側の子なので導入側のoverflow:hiddenに切られない） */
-            if(!document.querySelector('.hh-seam')){
-              if(getComputedStyle(sampTop).position==='static') sampTop.style.position='relative';
-              var seam=document.createElement('div'); seam.className='hh-seam';
-              /* 上下とも本文に届かない高さに収める（導入側の余白134px / サンプル側145px の内側） */
-              seam.style.cssText='position:absolute;z-index:0;top:-125px;left:50%;transform:translateX(-50%);'+
-                'width:min(120vw,1400px);height:260px;border-radius:50%;'+
-                'background:radial-gradient(closest-side,rgba(0,147,180,.16),rgba(0,147,180,0) 74%);'+
-                'filter:blur(10px);pointer-events:none;';
-              sampTop.insertBefore(seam, sampTop.firstChild);
-              [].forEach.call(sampTop.children,function(c){ if(c!==seam){ if(getComputedStyle(c).position==='static') c.style.position='relative'; c.style.zIndex='1'; } });
-            }
+            /* 継ぎ目の光は不要（step23 で帯を敷き、色が連続するため） */
           }
         }
       }catch(e){}
@@ -677,6 +666,23 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           var iqRows=_iq.querySelectorAll('form > div');
           if(iqRows.length) stagger(iqRows,80);
         }
+      }catch(e){}
+
+      /* 23) 「導入事例〜サンプル」の背後に寒色の帯を敷く
+             ・白いパネル（導入事例の箱／サンプルの панель）が、ほぼ白の地の上で沈んでいたため
+             ・帯の上端＝ダークセクション直後、下端＝費用の直前 → セクションの分け目もはっきりする */
+      try{
+        var TINT='#E4F1F5';
+        var _c=document.getElementById('case')||sectionOf('導入事例');
+        var _sv=document.getElementById('sample-videos')||sectionOf('サンプル動画');
+        var seen=[];
+        [_c,_sv].forEach(function(sec){
+          if(!sec) return;
+          var t=topLevelOf(sec);
+          if(!t || seen.indexOf(t)>-1) return;
+          seen.push(t);
+          t.style.background=TINT;
+        });
       }catch(e){}
 
       /* 21) 「役割」の背景の棒を、スクロールで少し動かす（擬似要素なのでCSS変数経由） */
