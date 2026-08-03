@@ -660,7 +660,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         var topLevelOf=function(el){ var e=el; while(e.parentElement && e.parentElement.tagName!=='MAIN' && e.parentElement.tagName!=='BODY') e=e.parentElement; return e; };
         [
           {before:'メンバー紹介', w:74,
-           d:'M-40 55 L370 200 L620 90 L900 240',   /* 左上→右下へ下る */
+           d:'M-40 62 C 320 78, 590 142, 900 246',   /* 左上→右下へ、円弧のように緩やかに下る */
            cols:['#1DEEC8','#0093B4','#0d6e86'], x1:'0',y1:'0',x2:'1',y2:'1'}
         ].forEach(function(cfg,i){
           var sec=sectionOf(cfg.before); if(!sec) return;
