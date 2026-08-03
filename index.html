@@ -507,8 +507,8 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           if(getComputedStyle(sec).position==='static') sec.style.position='relative';
           sec.style.overflow='hidden';
           var specs=[
-            {pos:'top:3%;right:-6%;',  col:'0,147,180',  a:'.32', depth:'0.18'},
-            {pos:'top:50%;left:-8%;',  col:'29,238,200', a:'.26', depth:'-0.14'}
+            {pos:'top:-8%;right:-12%;', col:'0,147,180',  a:'.26', depth:'0.18'},
+            {pos:'top:52%;left:-14%;',  col:'29,238,200', a:'.20', depth:'-0.14'}
           ];
           specs.forEach(function(sp){
             var blob=document.createElement('div'); blob.className='hh-sbg'; blob.setAttribute('data-depth', sp.depth);
@@ -641,13 +641,16 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
           if(getComputedStyle(_cs).position==='static') _cs.style.position='relative';
           /* 出現アニメは付けない（静止）。白地に白い箱では見えないので、実際に寒色のトーンを持たせる */
           var cbox=document.createElement('div'); cbox.className='hh-cbox';
-          /* 箱は白のまま。色みは背景シェイプ側で出す */
+          /* 箱は白のまま。色みは箱の"中"に閉じ込める（外にはみ出すと中途半端に見える） */
           cbox.style.cssText='position:absolute;z-index:0;top:40px;left:2.5%;right:2.5%;bottom:40px;border-radius:32px;'+
             'background:#FFFFFF;'+
             'border:1px solid #E3EEF1;'+
             'box-shadow:0 44px 90px -58px rgba(4,60,72,.34);'+
-            'pointer-events:none;';
+            'overflow:hidden;pointer-events:none;';
           _cs.insertBefore(cbox, _cs.firstChild);
+          /* 先に入れた背景シェイプを箱の中へ移動 → 角丸でクリップされ、箱の外に漏れない */
+          /* children はライブなので、移動前に配列へコピーする（走査中に動かすと取りこぼす） */
+          [].slice.call(_cs.children).forEach(function(b){ if(b!==cbox && String(b.className||'').indexOf('hh-sbg')>-1) cbox.appendChild(b); });
         }
       }catch(e){}
 
