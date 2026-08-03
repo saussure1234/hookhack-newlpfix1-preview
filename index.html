@@ -432,6 +432,8 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 /* お問い合わせ：カードが白地の上に白・枠も白・影なしで輪郭が無かった（差5）。
    セクションに面を敷いて、カードを浮かせる。 */
 #inquiry{background:linear-gradient(180deg,#E6F2F6 0%,#F1F9FB 100%) !important;}
+/* フッター直前のマーキー帯は、上のお問い合わせと地を揃える（帯だけ透明だと面が切り替わって見える） */
+.hh-mq{background:#F1F9FB;}
 #inquiry [class*="rounded-xl"][class*="bg-white"]{
   background:#ffffff !important;
   border:1px solid #CFE3E8 !important;
@@ -460,7 +462,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
    ダーク章の一括CSSが背景と枠色を他カードと同じに潰していたので、Doだけ戻して更に立てる。 */
 .hh-dark-sec [class*="border-2"]{
   background:rgba(255,255,255,.14) !important;
-  border-color:rgba(29,238,200,.55) !important;
+  border-color:rgba(255,255,255,.42) !important;   /* ミントの縁は浮くので、白の縁で立てる */
   box-shadow:0 28px 64px -30px rgba(0,0,0,.6) !important;
 }
 .hh-deco{position:relative;overflow:hidden;}
