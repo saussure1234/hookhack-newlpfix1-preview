@@ -27,23 +27,19 @@ html{
 body{min-height:100vh;font-family:"Noto Sans JP","Hiragino Sans",-apple-system,sans-serif;
   color:var(--ink);background:transparent;line-height:1.85;overflow-x:hidden}
 
-/* ===== FV の斜めバー（LPと同じモチーフ。見出し領域だけに刈り込む） ===== */
-#bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;opacity:.42}
-.bar{position:absolute;width:150%;height:clamp(52px,11vw,150px);border-radius:999px}
-.bar.l{left:-40%;top:14%;transform:rotate(-38deg);background:linear-gradient(90deg,#9FDDEA,#6CC5DA)}
-.bar.r{right:-40%;left:auto;top:9%;transform:rotate(38deg);background:linear-gradient(90deg,#0E86A6,#0A5E75)}
 
 .container{width:100%;max-width:820px;margin:0 auto;padding:72px 20px 0}
 
 /* ===== 見出し ===== */
 .eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--cyan);margin-bottom:12px}
-h1{font-size:clamp(22px,3.6vw,32px);line-height:1.42;font-weight:900;color:var(--ink);margin-bottom:14px;text-wrap:balance}
+h1{font-size:clamp(22px,3.6vw,32px);line-height:1.42;font-weight:900;color:var(--ink);margin-bottom:14px}
+h1 .nb{white-space:nowrap}   /* 意味の切れ目以外で折らない。wbr の位置だけで改行させる */
 .subtitle{font-size:15px;color:var(--body);margin-bottom:44px}
 
 /* ===== 条件カード：白地の上に白では消えるので、枠と影で面を作る ===== */
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;
   box-shadow:0 44px 88px -58px rgba(4,60,72,.45);margin-bottom:56px;overflow:hidden}
-.overview{padding:26px 24px}
+.overview{padding:30px 30px 32px}
 .overview h2{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:16px;
   padding-left:12px;border-left:3px solid var(--cyan)}
 .list{list-style:none;font-size:14.5px;color:var(--body);line-height:1.9}
@@ -54,7 +50,9 @@ details{border-top:1px solid var(--line-soft)}
 summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;
   list-style:none;padding:18px 24px;font-size:15px;font-weight:700;color:var(--ink);
   transition:background-color .2s}
-summary:hover{background:#F3FAFC}
+summary{background:#FAFDFE}
+summary:hover{background:#F1F9FB}
+details[open] summary{background:#F1F9FB;border-bottom:1px solid var(--line-soft)}
 summary::-webkit-details-marker{display:none}
 summary svg{width:20px;height:20px;flex-shrink:0;color:var(--cyan);transition:transform .25s var(--ease)}
 details[open] summary svg{transform:rotate(180deg)}
@@ -135,11 +133,9 @@ footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;pad
 </head>
 <body>
 
-<div id="bg"><div class="bar l"></div><div class="bar r"></div></div>
-
 <div class="container">
   <div class="rv">
-    <h1>初回LP制作キャンペーン申し込みフォーム</h1>
+    <h1><span class="nb">初回LP制作キャンペーン</span><wbr><span class="nb">申し込みフォーム</span></h1>
     <p class="subtitle">以下の条件をご確認の上、お申し込みください。</p>
   </div>
 
@@ -327,17 +323,6 @@ footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;pad
 (function(){
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-  /* --- 斜めバーは見出し領域だけに刈り込む（下のセクションに漏らさない） --- */
-  var bg = document.getElementById('bg');
-  var hero = document.querySelector('.container');
-  function clipBars(){
-    if(!bg || !hero) return;
-    var b = hero.getBoundingClientRect().bottom;
-    var vh = window.innerHeight || 800;
-    var cut = Math.max(0, vh - b);
-    bg.style.clipPath = 'inset(0 0 ' + cut + 'px 0)';
-  }
-
   /* --- 登場アニメ：スクロール位置で判定（IntersectionObserver に依存しない） --- */
   var items = [].slice.call(document.querySelectorAll('.rv'));
   function check(){
@@ -351,12 +336,12 @@ footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;pad
   }
   var ticking = false;
   addEventListener('scroll', function(){
-    if(!ticking){ ticking = true; requestAnimationFrame(function(){ check(); clipBars(); ticking = false; }); }
+    if(!ticking){ ticking = true; requestAnimationFrame(function(){ check(); ticking = false; }); }
   }, {passive:true});
-  addEventListener('resize', function(){ check(); clipBars(); });
+  addEventListener('resize', check);
 
   if(reduce){ items.forEach(function(el){ el.classList.add('in'); }); items.length = 0; }
-  check(); clipBars();
+  check();
 
   /* --- 詳細を閉じる --- */
   document.getElementById('close-details').addEventListener('click', function(){
