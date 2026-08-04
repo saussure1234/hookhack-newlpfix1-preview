@@ -1,0 +1,472 @@
+<!doctype html><html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CTAカラー比較 | HookHack LP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0A2C34;--sub:#4A6670;--line:#CFE3E8;--brand:#11434D;--cyan:#2C9FB8}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Noto Sans JP",-apple-system,"Hiragino Sans",sans-serif;color:var(--ink);
+  background:linear-gradient(180deg,#EAF4F7 0%,#F5FAFC 40%,#FFFFFF 100%);min-height:100vh;line-height:1.7}
+.wrap{max-width:1360px;margin:0 auto;padding:0 24px}
+
+header.top{padding:44px 0 8px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--cyan)}
+h1{font-size:clamp(22px,3vw,32px);font-weight:900;margin:6px 0 14px;letter-spacing:.01em}
+.intro{font-size:14px;color:var(--sub);max-width:760px;margin:0 0 8px}
+.intro b{color:var(--ink)}
+
+.bar{position:sticky;top:0;z-index:30;margin:22px 0 0;
+  background:rgba(255,255,255,.86);backdrop-filter:blur(10px);
+  border:1px solid var(--line);border-radius:14px;padding:14px 18px;
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;box-shadow:0 12px 30px -22px rgba(4,60,72,.6)}
+.bar .k{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--sub)}
+.pick{font-size:19px;font-weight:900;font-variant-numeric:tabular-nums}
+.bar .sep{width:1px;height:26px;background:var(--line)}
+.swatches{display:flex;gap:6px}
+.sw{width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,.12)}
+.bar .hint{margin-left:auto;font-size:12px;color:var(--sub)}
+
+h2.sec{font-size:17px;font-weight:900;margin:48px 0 4px;display:flex;align-items:center;gap:12px}
+h2.sec::after{content:"";flex:1;height:1px;background:var(--line)}
+.seclead{font-size:13px;color:var(--sub);margin:0 0 18px}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pcard,.scard{appearance:none;text-align:left;font:inherit;color:inherit;cursor:pointer;
+  background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;
+  box-shadow:0 16px 34px -30px rgba(4,60,72,.6);transition:border-color .18s,box-shadow .18s,transform .18s}
+.pcard:hover,.scard:hover{border-color:var(--cyan);transform:translateY(-2px);box-shadow:0 20px 40px -26px rgba(4,60,72,.55)}
+.pcard[aria-pressed="true"],.scard[aria-pressed="true"]{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand) inset,0 20px 40px -26px rgba(4,60,72,.55)}
+.pcard:focus-visible,.scard:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+
+.phead{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.num{font-size:11px;font-weight:900;letter-spacing:.06em;color:#fff;background:var(--brand);
+  padding:3px 8px;border-radius:5px;font-variant-numeric:tabular-nums}
+.pname{font-size:15px;font-weight:900}
+.pname em{font-style:normal;font-size:10px;font-weight:700;color:var(--cyan);border:1px solid var(--cyan);
+  border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:2px}
+.pnote{font-size:12px;color:var(--sub);margin:0 0 14px;min-height:34px}
+
+.prev{border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:9px;align-items:flex-start;margin-bottom:9px}
+.prev.light{background:linear-gradient(180deg,#F2F9FB,#fff);border:1px solid var(--line)}
+.prev.dark{background:linear-gradient(160deg,#11434D,#0d3640)}
+.lbl{font-size:10px;letter-spacing:.06em;color:#7E959D;font-weight:700}
+.prev.dark .lbl{color:rgba(255,255,255,.5)}
+.btn{display:inline-block;font-weight:700;line-height:1.35;white-space:nowrap;
+  border:1px solid transparent;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.s14{font-size:12px;padding:8px 16px}
+.s16{font-size:13px;padding:9px 18px}
+.rd{border-radius:8px}
+
+.meta{display:flex;gap:14px;flex-wrap:wrap;font-size:10px;color:var(--sub);font-weight:700;letter-spacing:.02em}
+.chip{display:inline-block;font-variant-numeric:tabular-nums;padding:1px 6px;border-radius:4px;margin-left:3px;font-weight:900}
+.chip.ok{background:#DBF0E4;color:#1B6B3A}
+.chip.mid{background:#FDF0D8;color:#8A5A06}
+.chip.ng{background:#FBE1DF;color:#9B2C24}
+.hexes{margin-top:10px;display:flex;gap:6px}
+.hexes code{font-size:10px;background:#F1F7F9;border:1px solid var(--line);border-radius:4px;padding:2px 6px;color:var(--sub)}
+
+.bpaas{background:rgba(17,67,77,.72);border:1px solid rgba(255,255,255,.10);border-radius:10px;
+  padding:16px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+  background-image:linear-gradient(160deg,#11434D,#0d3640);margin-bottom:10px}
+
+.final{margin:52px 0 80px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;
+  box-shadow:0 30px 60px -46px rgba(4,60,72,.7)}
+.final .fl{padding:34px 32px;background:linear-gradient(180deg,#F2F9FB,#fff);
+  display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.final .fd{padding:34px 32px;background:linear-gradient(160deg,#11434D,#0d3640);
+  display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.final .flabel{font-size:11px;font-weight:900;letter-spacing:.1em;color:#7E959D}
+.final .fd .flabel{color:rgba(255,255,255,.5)}
+.final .btn{font-size:15px;padding:13px 30px}
+.final .bpaas{width:100%;margin:6px 0 0;padding:24px}
+
+@media(max-width:1080px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){
+  .wrap{padding:0 16px}
+  .grid{grid-template-columns:1fr}
+  .btn{white-space:normal}
+  .bar{gap:12px;padding:12px 14px}
+  .bar .hint{margin-left:0;width:100%}
+  .bpaas{justify-content:stretch}
+  .bpaas .btn{flex:1;text-align:center}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">HookHack LP</p>
+  <h1>CTAカラー比較</h1>
+  <p class="intro">このLPは<b>白地と紺のダーク地の両方にCTAがある</b>ため、片方で映える色はもう片方で沈みます。
+  各案を実際の使用面そのままで並べました。数字は<b>コントラスト比</b>で、<b>文字</b>＝ボタン内の可読性（4.5以上が基準）、<b>地差</b>＝背景からボタンが図として浮くか（3.0以上が基準）です。</p>
+  <p class="intro">プライマリ（主CTA）とセカンダリ（メニュー表DL）は別々に選べます。カードを押すと選択され、一番下に実寸プレビューが出ます。<b>決まったら「P◯ × S◯」で伝えてください。</b></p>
+</header>
+
+<div class="bar">
+  <div><span class="k">選択中</span><div class="pick" id="pick">P1 × S1</div></div>
+  <div class="sep"></div>
+  <div class="swatches" id="sw"></div>
+  <div class="sep"></div>
+  <div><span class="k">プライマリ</span><div id="pn" style="font-size:13px;font-weight:700"></div></div>
+  <div><span class="k">セカンダリ</span><div id="sn" style="font-size:13px;font-weight:700"></div></div>
+  <p class="hint">カードを押して切り替え</p>
+</div>
+
+<h2 class="sec">プライマリ（主CTA）</h2>
+<p class="seclead">ヘッダー・HERO・3つの軸・会社概要下・BPaaS相談の5箇所に入る色です。</p>
+<div class="grid">
+<button class="pcard" data-i="0" type="button">
+  <div class="phead">
+    <span class="num">P1</span>
+    <span class="pname">バーントオレンジ</span>
+  </div>
+  <p class="pnote">現行。焦げたオレンジで落ち着きがある</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#CC4A0D;color:#FFFFFF">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#CC4A0D;color:#FFFFFF">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#CC4A0D;color:#FFFFFF">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip ok">4.61</span> 地差<span class="chip ok">4.61</span></span>
+    <span>ダーク 文字<span class="chip ok">4.61</span> 地差<span class="chip ng">2.81</span></span>
+  </div>
+  <div class="hexes"><code>#CC4A0D</code></div>
+</button>
+<button class="pcard" data-i="1" type="button">
+  <div class="phead">
+    <span class="num">P2</span>
+    <span class="pname">ビビッドオレンジ</span>
+  </div>
+  <p class="pnote">最もオレンジらしい明度。前に出る</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#E4610F;color:#FFFFFF">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#E4610F;color:#FFFFFF">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#E4610F;color:#FFFFFF">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip mid">3.49</span> 地差<span class="chip ok">3.49</span></span>
+    <span>ダーク 文字<span class="chip mid">3.49</span> 地差<span class="chip ok">3.72</span></span>
+  </div>
+  <div class="hexes"><code>#E4610F</code></div>
+</button>
+<button class="pcard" data-i="2" type="button">
+  <div class="phead">
+    <span class="num">P3</span>
+    <span class="pname">朱赤（バーミリオン）</span>
+  </div>
+  <p class="pnote">和の朱。紺との相性が良い</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#D23A1F;color:#FFFFFF">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#D23A1F;color:#FFFFFF">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#D23A1F;color:#FFFFFF">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip ok">4.81</span> 地差<span class="chip ok">4.81</span></span>
+    <span>ダーク 文字<span class="chip ok">4.81</span> 地差<span class="chip ng">2.70</span></span>
+  </div>
+  <div class="hexes"><code>#D23A1F</code></div>
+</button>
+<button class="pcard" data-i="3" type="button">
+  <div class="phead">
+    <span class="num">P4</span>
+    <span class="pname">ディープレッド</span>
+  </div>
+  <p class="pnote">最も強い。緊急度が出る</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#C0392B;color:#FFFFFF">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#C0392B;color:#FFFFFF">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#C0392B;color:#FFFFFF">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip ok">5.44</span> 地差<span class="chip ok">5.44</span></span>
+    <span>ダーク 文字<span class="chip ok">5.44</span> 地差<span class="chip ng">2.39</span></span>
+  </div>
+  <div class="hexes"><code>#C0392B</code></div>
+</button>
+<button class="pcard" data-i="4" type="button">
+  <div class="phead">
+    <span class="num">P5</span>
+    <span class="pname">アンバー（琥珀）</span>
+  </div>
+  <p class="pnote">黄寄り。落ち着いた高級感</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#A96A00;color:#FFFFFF">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#A96A00;color:#FFFFFF">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#A96A00;color:#FFFFFF">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip mid">4.42</span> 地差<span class="chip ok">4.42</span></span>
+    <span>ダーク 文字<span class="chip mid">4.42</span> 地差<span class="chip ng">2.93</span></span>
+  </div>
+  <div class="hexes"><code>#A96A00</code></div>
+</button>
+<button class="pcard" data-i="5" type="button">
+  <div class="phead">
+    <span class="num">P6</span>
+    <span class="pname">ゴールデンイエロー</span>
+  </div>
+  <p class="pnote">黄×紺。ダーク地で最強、白地は弱い</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#F2B01E;color:#11434D">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#F2B01E;color:#11434D">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#F2B01E;color:#11434D">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip ok">5.69</span> 地差<span class="chip ng">1.91</span></span>
+    <span>ダーク 文字<span class="chip ok">5.69</span> 地差<span class="chip ok">6.80</span></span>
+  </div>
+  <div class="hexes"><code>#F2B01E</code></div>
+</button>
+<button class="pcard" data-i="6" type="button">
+  <div class="phead">
+    <span class="num">P7</span>
+    <span class="pname">コーラル</span>
+  </div>
+  <p class="pnote">朱にピンクみ。やわらかい</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#E8624F;color:#FFFFFF">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#E8624F;color:#FFFFFF">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#E8624F;color:#FFFFFF">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip mid">3.34</span> 地差<span class="chip ok">3.34</span></span>
+    <span>ダーク 文字<span class="chip mid">3.34</span> 地差<span class="chip ok">3.89</span></span>
+  </div>
+  <div class="hexes"><code>#E8624F</code></div>
+</button>
+<button class="pcard" data-i="7" type="button">
+  <div class="phead">
+    <span class="num">P8</span>
+    <span class="pname">ラズベリー</span>
+  </div>
+  <p class="pnote">赤紫。テック寄りの印象</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#C2185B;color:#FFFFFF">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#C2185B;color:#FFFFFF">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#C2185B;color:#FFFFFF">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip ok">5.87</span> 地差<span class="chip ok">5.87</span></span>
+    <span>ダーク 文字<span class="chip ok">5.87</span> 地差<span class="chip ng">2.21</span></span>
+  </div>
+  <div class="hexes"><code>#C2185B</code></div>
+</button>
+<button class="pcard" data-i="8" type="button">
+  <div class="phead">
+    <span class="num">P9</span>
+    <span class="pname">パープル</span>
+  </div>
+  <p class="pnote">寒色内で差をつける。攻めた選択</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#6A3AA0;color:#FFFFFF">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#6A3AA0;color:#FFFFFF">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#6A3AA0;color:#FFFFFF">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip ok">7.70</span> 地差<span class="chip ok">7.70</span></span>
+    <span>ダーク 文字<span class="chip ok">7.70</span> 地差<span class="chip ng">1.68</span></span>
+  </div>
+  <div class="hexes"><code>#6A3AA0</code></div>
+</button>
+<button class="pcard" data-i="9" type="button">
+  <div class="phead">
+    <span class="num">P10</span>
+    <span class="pname">ライムグリーン</span>
+  </div>
+  <p class="pnote">黄緑。SaaS的な軽さ</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#B7D63F;color:#11434D">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#B7D63F;color:#11434D">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#B7D63F;color:#11434D">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip ok">6.57</span> 地差<span class="chip ng">1.65</span></span>
+    <span>ダーク 文字<span class="chip ok">6.57</span> 地差<span class="chip ok">7.85</span></span>
+  </div>
+  <div class="hexes"><code>#B7D63F</code></div>
+</button>
+<button class="pcard" data-i="10" type="button">
+  <div class="phead">
+    <span class="num">P11</span>
+    <span class="pname">オレンジ2トーン <em>2トーン</em></span>
+  </div>
+  <p class="pnote">白地は濃く／ダーク地は明るく。両立させる案</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#CC4A0D;color:#FFFFFF">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#CC4A0D;color:#FFFFFF">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#FF7A2F;color:#11434D">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip ok">4.61</span> 地差<span class="chip ok">4.61</span></span>
+    <span>ダーク 文字<span class="chip mid">4.18</span> 地差<span class="chip ok">4.99</span></span>
+  </div>
+  <div class="hexes"><code>#CC4A0D</code><code>#FF7A2F</code></div>
+</button>
+<button class="pcard" data-i="11" type="button">
+  <div class="phead">
+    <span class="num">P12</span>
+    <span class="pname">アンバー2トーン <em>2トーン</em></span>
+  </div>
+  <p class="pnote">白地は琥珀／ダーク地は黄。最もコントラストが稼げる</p>
+  <div class="prev light">
+    <span class="lbl">白地（ヘッダー・HERO・会社概要下）</span>
+    <span class="btn s14" style="background:#A96A00;color:#FFFFFF">無料で動画5本＋LP1枚制作</span>
+    <span class="btn s16" style="background:#A96A00;color:#FFFFFF">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+  </div>
+  <div class="prev dark">
+    <span class="lbl">ダーク地（3つの軸・BPaaS）</span>
+    <span class="btn s16" style="background:#F2B01E;color:#11434D">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="meta">
+    <span>白地 文字<span class="chip mid">4.42</span> 地差<span class="chip ok">4.42</span></span>
+    <span>ダーク 文字<span class="chip ok">5.69</span> 地差<span class="chip ok">6.80</span></span>
+  </div>
+  <div class="hexes"><code>#A96A00</code><code>#F2B01E</code></div>
+</button></div>
+
+<h2 class="sec">セカンダリ（メニュー表ダウンロード）</h2>
+<p class="seclead">BPaaSカード内で、選択中のプライマリと並べて表示しています。</p>
+<div class="grid">
+<button class="scard" data-i="0" type="button">
+  <div class="phead"><span class="num">S1</span><span class="pname">水色ソリッド</span></div>
+  <p class="pnote">現行</p>
+  <div class="bpaas">
+    <span class="btn s16 rd sec" style="background:#6CC5DA;color:#11434D;border-color:#6CC5DA">メニュー表ダウンロード</span>
+    <span class="btn s16 rd js-prim">BPaaSプランの相談をする</span>
+  </div>
+  <div class="meta"><span>文字<span class="chip ok">5.50</span> 地差<span class="chip ok">6.57</span></span></div>
+</button>
+<button class="scard" data-i="1" type="button">
+  <div class="phead"><span class="num">S2</span><span class="pname">白ソリッド</span></div>
+  <p class="pnote">最も強い従属ボタン</p>
+  <div class="bpaas">
+    <span class="btn s16 rd sec" style="background:#FFFFFF;color:#11434D;border-color:#FFFFFF">メニュー表ダウンロード</span>
+    <span class="btn s16 rd js-prim">BPaaSプランの相談をする</span>
+  </div>
+  <div class="meta"><span>文字<span class="chip ok">10.86</span> 地差<span class="chip ok">12.97</span></span></div>
+</button>
+<button class="scard" data-i="2" type="button">
+  <div class="phead"><span class="num">S3</span><span class="pname">白アウトライン</span></div>
+  <p class="pnote">改修前の状態。最も控えめ</p>
+  <div class="bpaas">
+    <span class="btn s16 rd sec" style="background:transparent;color:#FFFFFF;border-color:rgba(255,255,255,.45)">メニュー表ダウンロード</span>
+    <span class="btn s16 rd js-prim">BPaaSプランの相談をする</span>
+  </div>
+  <div class="meta"><span>文字<span class="chip ok">12.97</span> 地差<span class="chip ng">1.00</span></span></div>
+</button>
+<button class="scard" data-i="3" type="button">
+  <div class="phead"><span class="num">S4</span><span class="pname">水色アウトライン</span></div>
+  <p class="pnote">枠だけ水色。主従がはっきりする</p>
+  <div class="bpaas">
+    <span class="btn s16 rd sec" style="background:transparent;color:#8FDCEE;border-color:rgba(143,220,238,.55)">メニュー表ダウンロード</span>
+    <span class="btn s16 rd js-prim">BPaaSプランの相談をする</span>
+  </div>
+  <div class="meta"><span>文字<span class="chip ok">8.43</span> 地差<span class="chip ng">1.00</span></span></div>
+</button>
+<button class="scard" data-i="4" type="button">
+  <div class="phead"><span class="num">S5</span><span class="pname">ペールサンド</span></div>
+  <p class="pnote">暖色寄りの淡色。オレンジと同系でまとまる</p>
+  <div class="bpaas">
+    <span class="btn s16 rd sec" style="background:#EFE3CE;color:#11434D;border-color:#EFE3CE">メニュー表ダウンロード</span>
+    <span class="btn s16 rd js-prim">BPaaSプランの相談をする</span>
+  </div>
+  <div class="meta"><span>文字<span class="chip ok">8.56</span> 地差<span class="chip ok">10.22</span></span></div>
+</button>
+<button class="scard" data-i="5" type="button">
+  <div class="phead"><span class="num">S6</span><span class="pname">ミント</span></div>
+  <p class="pnote">青緑の淡色。ブランド内に留める</p>
+  <div class="bpaas">
+    <span class="btn s16 rd sec" style="background:#9BD9C4;color:#11434D;border-color:#9BD9C4">メニュー表ダウンロード</span>
+    <span class="btn s16 rd js-prim">BPaaSプランの相談をする</span>
+  </div>
+  <div class="meta"><span>文字<span class="chip ok">6.78</span> 地差<span class="chip ok">8.10</span></span></div>
+</button></div>
+
+<h2 class="sec">実寸プレビュー</h2>
+<p class="seclead">選択中の組み合わせを、本番と同じサイズで表示しています。</p>
+<div class="final">
+  <div class="fl">
+    <span class="flabel">白地｜ヘッダー・HERO・会社概要下</span>
+    <span class="btn js-prim">無料で動画5本＋LP1枚制作</span>
+    <span class="btn js-prim">まず1セット、無料で試す（動画5本＋LP1枚）</span>
+    <span class="btn js-prim">最短5分｜無料で動画5本＋LP1本制作</span>
+  </div>
+  <div class="fd">
+    <span class="flabel">ダーク地｜コンバージョン改善に繋がる3つの軸</span>
+    <span class="btn js-primD">最短5分｜無料で動画5本＋LP1本制作</span>
+    <span class="flabel" style="margin-top:14px">BPaaSカード内</span>
+    <div class="bpaas">
+      <span class="btn rd js-sec">メニュー表ダウンロード</span>
+      <span class="btn rd js-primD">BPaaSプランの相談をする</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+var DATA = {"p": [{"n": "バーントオレンジ", "note": "現行。焦げたオレンジで落ち着きがある", "lf": "#CC4A0D", "lt": "#FFFFFF", "df": "#CC4A0D", "dt": "#FFFFFF", "c_l": 4.61, "c_d": 4.61, "s_l": 4.61, "s_d": 2.81}, {"n": "ビビッドオレンジ", "note": "最もオレンジらしい明度。前に出る", "lf": "#E4610F", "lt": "#FFFFFF", "df": "#E4610F", "dt": "#FFFFFF", "c_l": 3.49, "c_d": 3.49, "s_l": 3.49, "s_d": 3.72}, {"n": "朱赤（バーミリオン）", "note": "和の朱。紺との相性が良い", "lf": "#D23A1F", "lt": "#FFFFFF", "df": "#D23A1F", "dt": "#FFFFFF", "c_l": 4.81, "c_d": 4.81, "s_l": 4.81, "s_d": 2.7}, {"n": "ディープレッド", "note": "最も強い。緊急度が出る", "lf": "#C0392B", "lt": "#FFFFFF", "df": "#C0392B", "dt": "#FFFFFF", "c_l": 5.44, "c_d": 5.44, "s_l": 5.44, "s_d": 2.39}, {"n": "アンバー（琥珀）", "note": "黄寄り。落ち着いた高級感", "lf": "#A96A00", "lt": "#FFFFFF", "df": "#A96A00", "dt": "#FFFFFF", "c_l": 4.42, "c_d": 4.42, "s_l": 4.42, "s_d": 2.93}, {"n": "ゴールデンイエロー", "note": "黄×紺。ダーク地で最強、白地は弱い", "lf": "#F2B01E", "lt": "#11434D", "df": "#F2B01E", "dt": "#11434D", "c_l": 5.69, "c_d": 5.69, "s_l": 1.91, "s_d": 6.8}, {"n": "コーラル", "note": "朱にピンクみ。やわらかい", "lf": "#E8624F", "lt": "#FFFFFF", "df": "#E8624F", "dt": "#FFFFFF", "c_l": 3.34, "c_d": 3.34, "s_l": 3.34, "s_d": 3.89}, {"n": "ラズベリー", "note": "赤紫。テック寄りの印象", "lf": "#C2185B", "lt": "#FFFFFF", "df": "#C2185B", "dt": "#FFFFFF", "c_l": 5.87, "c_d": 5.87, "s_l": 5.87, "s_d": 2.21}, {"n": "パープル", "note": "寒色内で差をつける。攻めた選択", "lf": "#6A3AA0", "lt": "#FFFFFF", "df": "#6A3AA0", "dt": "#FFFFFF", "c_l": 7.7, "c_d": 7.7, "s_l": 7.7, "s_d": 1.68}, {"n": "ライムグリーン", "note": "黄緑。SaaS的な軽さ", "lf": "#B7D63F", "lt": "#11434D", "df": "#B7D63F", "dt": "#11434D", "c_l": 6.57, "c_d": 6.57, "s_l": 1.65, "s_d": 7.85}, {"n": "オレンジ2トーン", "note": "白地は濃く／ダーク地は明るく。両立させる案", "lf": "#CC4A0D", "lt": "#FFFFFF", "df": "#FF7A2F", "dt": "#11434D", "c_l": 4.61, "c_d": 4.18, "s_l": 4.61, "s_d": 4.99}, {"n": "アンバー2トーン", "note": "白地は琥珀／ダーク地は黄。最もコントラストが稼げる", "lf": "#A96A00", "lt": "#FFFFFF", "df": "#F2B01E", "dt": "#11434D", "c_l": 4.42, "c_d": 5.69, "s_l": 4.42, "s_d": 6.8}], "s": [{"n": "水色ソリッド", "note": "現行", "f": "#6CC5DA", "t": "#11434D", "b": "#6CC5DA", "c": 5.5, "s": 6.57}, {"n": "白ソリッド", "note": "最も強い従属ボタン", "f": "#FFFFFF", "t": "#11434D", "b": "#FFFFFF", "c": 10.86, "s": 12.97}, {"n": "白アウトライン", "note": "改修前の状態。最も控えめ", "f": "transparent", "t": "#FFFFFF", "b": "rgba(255,255,255,.45)", "c": 12.97, "s": 1.0}, {"n": "水色アウトライン", "note": "枠だけ水色。主従がはっきりする", "f": "transparent", "t": "#8FDCEE", "b": "rgba(143,220,238,.55)", "c": 8.43, "s": 1.0}, {"n": "ペールサンド", "note": "暖色寄りの淡色。オレンジと同系でまとまる", "f": "#EFE3CE", "t": "#11434D", "b": "#EFE3CE", "c": 8.56, "s": 10.22}, {"n": "ミント", "note": "青緑の淡色。ブランド内に留める", "f": "#9BD9C4", "t": "#11434D", "b": "#9BD9C4", "c": 6.78, "s": 8.1}]};
+var pi=0, si=0;
+function apply(){
+  var p=DATA.p[pi], s=DATA.s[si];
+  document.getElementById('pick').textContent='P'+(pi+1)+' × S'+(si+1);
+  document.getElementById('pn').textContent=p.n;
+  document.getElementById('sn').textContent=s.n;
+  var sw=[p.lf]; if(p.lf!==p.df) sw.push(p.df); sw.push(s.f==='transparent'?'#0d3640':s.f);
+  document.getElementById('sw').innerHTML=sw.map(function(c){return '<span class="sw" style="background:'+c+'"></span>';}).join('');
+  [].forEach.call(document.querySelectorAll('.js-prim'),function(e){e.style.background=p.lf;e.style.color=p.lt;e.style.borderColor=p.lf;});
+  [].forEach.call(document.querySelectorAll('.js-primD'),function(e){e.style.background=p.df;e.style.color=p.dt;e.style.borderColor=p.df;});
+  [].forEach.call(document.querySelectorAll('.js-sec'),function(e){e.style.background=s.f;e.style.color=s.t;e.style.borderColor=s.b;});
+  [].forEach.call(document.querySelectorAll('.pcard'),function(e,i){e.setAttribute('aria-pressed', i===pi?'true':'false');});
+  [].forEach.call(document.querySelectorAll('.scard'),function(e,i){e.setAttribute('aria-pressed', i===si?'true':'false');});
+}
+[].forEach.call(document.querySelectorAll('.pcard'),function(e){e.addEventListener('click',function(){pi=+e.dataset.i;apply();});});
+[].forEach.call(document.querySelectorAll('.scard'),function(e){e.addEventListener('click',function(){si=+e.dataset.i;apply();});});
+apply();
+</script>
+</body></html>
