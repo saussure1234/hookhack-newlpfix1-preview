@@ -85,8 +85,11 @@ details[open] summary svg{transform:rotate(180deg)}
 .case-item{display:flex;flex-direction:column;gap:10px}
 .case-frame{position:relative;width:100%;aspect-ratio:16/9;background:#F1F7F9;
   border:1px solid var(--line-soft);border-radius:12px;overflow:hidden}
-.case-frame video,.case-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
-.case-frame iframe{pointer-events:none}
+/* iframe は .case-link の中にあるので、.case-frame だけを対象にすると指定が当たらず
+   既定サイズ(300x150)のまま置かれ、右と下に隙間ができてスクロールもできてしまう */
+.case-frame video,.case-frame iframe,
+.case-link video,.case-link iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.case-frame iframe,.case-link iframe{pointer-events:none}
 .case-link{display:block;position:relative;width:100%;aspect-ratio:16/9;
   border:1px solid var(--line-soft);border-radius:12px;overflow:hidden;background:#fff}
 .case-link .hint{position:absolute;left:0;right:0;bottom:0;padding:8px 10px;
