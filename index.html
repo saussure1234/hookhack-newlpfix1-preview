@@ -891,10 +891,18 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
         }
       }catch(e){}
 
-      /* 24) フッターをブランドの濃色に（ロゴは非表示） */
+      /* 24) フッターをブランドの濃色に（ロゴは非表示）＋フッター内は登場アニメを付けない
+             （リンク4つは親要素が fadeup で動いていた） */
       try{
         var _ft=document.querySelector('main footer')||document.querySelector('footer');
-        if(_ft && _ft.className.indexOf('hh-foot')<0) _ft.className+=' hh-foot';
+        if(_ft){
+          if(_ft.className.indexOf('hh-foot')<0) _ft.className+=' hh-foot';
+          [].forEach.call(_ft.querySelectorAll('.hh-rv,.hh-lines'),function(el){
+            el.classList.remove('hh-rv'); el.classList.remove('hh-lines'); el.classList.remove('hh-in');
+            el.removeAttribute('data-fx');
+            el.style.opacity=''; el.style.transform=''; el.style.filter=''; el.style.clipPath=''; el.style.transitionDelay='';
+          });
+        }
       }catch(e){}
 
       /* 16) メンバー紹介: 右から左へ永遠スライド（既存カードをそのまま使う・作り直さない） */
