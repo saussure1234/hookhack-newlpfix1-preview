@@ -431,9 +431,18 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 [class*="bg-[#11434D]/70"] a[class*="bg-white"]{background:#ffffff !important;color:#11434D !important;}
 /* お問い合わせ：カードが白地の上に白・枠も白・影なしで輪郭が無かった（差5）。
    セクションに面を敷いて、カードを浮かせる。 */
-#inquiry{background:linear-gradient(180deg,#E6F2F6 0%,#F1F9FB 100%) !important;}
-/* フッター直前のマーキー帯は、上のお問い合わせと地を揃える（帯だけ透明だと面が切り替わって見える） */
-.hh-mq{background:#F1F9FB;}
+/* お問い合わせ＝最後のコンバージョン地点。ブランド色でベタ塗りして最も目立たせる。
+   カードの外にある文字は見出しと導入文の2つだけなので、そこを白に。 */
+#inquiry{background:linear-gradient(180deg,#0093B4 0%,#0d6e86 100%) !important;}
+#inquiry > *, #inquiry h1,#inquiry h2,#inquiry h3,#inquiry i,#inquiry span{color:#ffffff !important;}
+#inquiry [class*="text-muted-foreground"]{color:rgba(255,255,255,.86) !important;}
+/* フォームカードの中は白地なので元の濃色を維持（上の白指定を打ち消す） */
+#inquiry [class*="rounded-xl"][class*="bg-white"] *{color:inherit !important;}
+#inquiry [class*="rounded-xl"][class*="bg-white"]{color:#0a2b31 !important;}
+#inquiry [class*="rounded-xl"][class*="bg-white"] a{color:#0d6e86 !important;}
+/* フッター直前のマーキー帯は、上のお問い合わせの下端と地を揃える */
+.hh-mq{background:#0d6e86;}
+.hh-mq-track span{-webkit-text-stroke-color:rgba(255,255,255,.34) !important;}
 #inquiry [class*="rounded-xl"][class*="bg-white"]{
   background:#ffffff !important;
   border:1px solid #CFE3E8 !important;
