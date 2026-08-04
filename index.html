@@ -437,7 +437,10 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 #inquiry > *, #inquiry h1,#inquiry h2,#inquiry h3,#inquiry i,#inquiry span{color:#ffffff !important;}
 #inquiry [class*="text-muted-foreground"]{color:rgba(255,255,255,.86) !important;}
 /* フォームカードの中は白地なので元の濃色を維持（上の白指定を打ち消す） */
-#inquiry [class*="rounded-xl"][class*="bg-white"] *{color:inherit !important;}
+/* カード内は継承で濃色に戻す。ただし自前の濃い背景を持つボタン類は除外
+   （除外しないと送信ボタンの白文字まで濃色になり、濃い地に沈む） */
+#inquiry [class*="rounded-xl"][class*="bg-white"] *:not(button):not(button *){color:inherit !important;}
+#inquiry [class*="rounded-xl"][class*="bg-white"] button[type="submit"]{color:#ffffff !important;}
 #inquiry [class*="rounded-xl"][class*="bg-white"]{color:#0a2b31 !important;}
 #inquiry [class*="rounded-xl"][class*="bg-white"] a{color:#0d6e86 !important;}
 #inquiry input:not([type="checkbox"]),#inquiry textarea{border-color:#C3D9E0 !important;}
