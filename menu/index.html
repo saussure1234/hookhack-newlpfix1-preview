@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LP制作・改修 料金表 | Hook-Hack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#041D22; --body:#46595d; --muted:#6b7f83;
+  --teal:#11434D; --cyan:#0093B4; --deep:#0d3640;
+  --line:#CFE3E8; --line-soft:#E3EEF1;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+
+html{
+  background:
+    radial-gradient(58% 40% at 82% 0%, rgba(0,147,180,.07), transparent 70%),
+    radial-gradient(50% 40% at 6% 100%, rgba(44,159,184,.05), transparent 70%),
+    linear-gradient(180deg,#EFF9FB 0%,#F7FCFD 55%,#FFFFFF 100%);
+  background-attachment:fixed;
+}
+body{min-height:100vh;font-family:"Noto Sans JP","Hiragino Sans",-apple-system,sans-serif;
+  color:var(--ink);background:transparent;line-height:1.8;overflow-x:hidden}
+
+/* ===== 背景の斜めバー（LPと同じ。見出しより下から） ===== */
+#hh-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;opacity:.55}
+.hh-barwrap{position:absolute;left:0;top:0;width:100%;height:100%;will-change:transform}
+.hh-bar{position:absolute;width:150%;height:clamp(48px,10vw,132px);border-radius:999px}
+.hh-bar.l{left:-40%;top:36%;transform:rotate(-38deg);background:linear-gradient(90deg,#9FDDEA,#6CC5DA)}
+.hh-bar.r{right:-40%;left:auto;top:30%;transform:rotate(38deg);background:linear-gradient(90deg,#0E86A6,#0A5E75)}
+
+.wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* ===== ヘッダー ===== */
+header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+  padding:56px 0 22px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:16px}
+.brand .logo{font-size:clamp(24px,3.4vw,32px);font-weight:900;letter-spacing:-.01em;line-height:1}
+.brand .logo .a{color:var(--teal)} .brand .logo .b{color:#4FBBD4}
+.brand .bar{width:1px;height:26px;background:var(--line)}
+.brand h1{font-size:clamp(15px,2vw,19px);font-weight:700;color:var(--ink);line-height:1.4}
+.meta{text-align:right;font-size:12.5px;color:var(--muted);line-height:1.7}
+.meta .ver{font-weight:700;color:var(--ink);font-size:13px}
+
+/* ===== 新規LP制作（濃色バンド） ===== */
+.headline{background:linear-gradient(160deg,#15525F 0%,#0d3640 100%);
+  border-radius:16px;padding:34px 36px;display:flex;align-items:center;justify-content:space-between;
+  gap:24px;flex-wrap:wrap;box-shadow:0 44px 88px -58px rgba(4,60,72,.55);margin-bottom:52px}
+.headline h2{color:#fff;font-size:clamp(22px,3.2vw,30px);font-weight:900;line-height:1.3}
+.price-block{display:flex;align-items:center;gap:16px;margin-left:auto}
+.price-note{text-align:right;color:rgba(255,255,255,.78);font-size:12.5px;line-height:1.6;white-space:nowrap}
+.price{color:#fff;font-size:clamp(38px,6.4vw,62px);font-weight:900;line-height:1;letter-spacing:-.02em;white-space:nowrap}
+.price .yen{font-size:.52em;font-weight:700;margin-right:.1em;vertical-align:.12em}
+
+/* ===== 見出し ===== */
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.sec-head h2{font-size:clamp(17px,2.4vw,21px);font-weight:900;color:var(--ink);white-space:nowrap}
+.sec-head .sl{color:var(--line);font-weight:400}
+.sec-head .sub{font-size:clamp(17px,2.4vw,21px);font-weight:900;color:var(--cyan);white-space:nowrap}
+.sec-head .rule{flex:1;height:1px;background:var(--line)}
+
+/* ===== メニュー（3カラム） ===== */
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;align-items:start}
+.col{display:flex;flex-direction:column;gap:26px}
+
+.group{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  box-shadow:0 30px 60px -50px rgba(4,60,72,.4)}
+.group > h3{background:var(--teal);color:#fff;font-size:14px;font-weight:700;padding:11px 16px;line-height:1.4}
+.rows{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 16px}
+.row + .row{border-top:1px solid var(--line-soft)}
+.row .t{min-width:0}
+.row .name{font-size:14px;font-weight:700;color:var(--ink);line-height:1.5}
+.row .eg{font-size:12px;color:var(--muted);line-height:1.6;margin-top:2px}
+.row .p{font-size:16px;font-weight:900;color:var(--ink);white-space:nowrap;flex-shrink:0}
+.row .p .u{font-size:.68em;font-weight:700;margin-left:.1em}
+.row.quote .p{font-size:13px;font-weight:700;color:var(--muted)}
+
+/* ===== フッター ===== */
+footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;padding:30px 24px;margin-top:64px}
+.foot-inner{max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;font-size:12.5px}
+.foot-inner .l{color:rgba(255,255,255,.82)}
+.foot-inner .r{color:rgba(255,255,255,.68)}
+
+/* ===== 登場アニメーション ===== */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .9s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+@media (max-width:1024px){
+  .cols{grid-template-columns:repeat(2,1fr);gap:22px}
+}
+@media (max-width:640px){
+  .wrap{padding:0 16px}
+  header.top{padding:38px 0 18px}
+  .meta{text-align:left}
+  .headline{padding:24px 20px;margin-bottom:38px}
+  .price-block{margin-left:0;width:100%;justify-content:space-between}
+  .cols{grid-template-columns:1fr;gap:20px}
+  .col{gap:20px}
+  .row{padding:12px 14px}
+}
+@media (prefers-reduced-motion:reduce){ .rv{opacity:1;transform:none;transition:none} }
+@media print{
+  #hh-bg{display:none} .rv{opacity:1;transform:none}
+  body{background:#fff} html{background:#fff}
+  .cols{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div id="hh-bg">
+  <div class="hh-barwrap" data-speed="0.55"><div class="hh-bar l"></div></div>
+  <div class="hh-barwrap" data-speed="0.78"><div class="hh-bar r"></div></div>
+</div>
+
+<div class="wrap">
+
+  <header class="top rv">
+    <div class="brand">
+      <div class="logo"><span class="a">Hook</span><span class="b">Hack</span></div>
+      <div class="bar"></div>
+      <h1>LP制作・改修 料金表</h1>
+    </div>
+    <div class="meta">
+      <div class="ver">2026年8月版</div>
+      <div>表示価格はすべて税別です</div>
+    </div>
+  </header>
+
+  <div class="headline rv">
+    <h2>新規LP制作</h2>
+    <div class="price-block">
+      <div class="price-note">1ページ 一式<br>税別</div>
+      <div class="price"><span class="yen">¥</span>100,000</div>
+    </div>
+  </div>
+
+  <div class="sec-head rv">
+    <h2>改修メニュー</h2>
+    <span class="sl">／</span>
+    <span class="sub">単価一覧</span>
+    <span class="rule"></span>
+  </div>
+
+  <div class="cols">
+
+    <!-- 列1 -->
+    <div class="col">
+      <div class="group rv">
+        <h3>テキスト改修</h3>
+        <div class="rows">
+          <div class="row"><div class="t"><div class="name">見出しテキストの変更</div><div class="eg">「無料相談実施中」→「初回相談無料」</div></div><div class="p">2,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">本文・説明文の書き換え</div><div class="eg">1セクション分の差し替え</div></div><div class="p">2,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">CTAボタン文言の変更</div><div class="eg">「申し込む」→「無料で試す」</div></div><div class="p">2,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">価格・数値の更新</div><div class="eg">「月額3万円」→「月額2.5万円」</div></div><div class="p">2,500<span class="u">円</span></div></div>
+        </div>
+      </div>
+
+      <div class="group rv">
+        <h3>要素順序・表示制御</h3>
+        <div class="rows">
+          <div class="row"><div class="t"><div class="name">セクション順序の入れ替え</div><div class="eg">実績を解決策より前に移動</div></div><div class="p">2,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">セクションの表示・非表示切替</div><div class="eg">FAQを一時的に非表示にする</div></div><div class="p">2,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">要素の表示・非表示切替</div><div class="eg">ファーストビュー内の補足文を隠す</div></div><div class="p">2,500<span class="u">円</span></div></div>
+        </div>
+      </div>
+
+      <div class="group rv">
+        <h3>スタイル軽微修正</h3>
+        <div class="rows">
+          <div class="row"><div class="t"><div class="name">テーマカラーの変更</div><div class="eg">ページ全体の配色を一括で変更</div></div><div class="p">5,000<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">フォントサイズの調整</div><div class="eg">見出しを32px→36pxに</div></div><div class="p">2,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">余白・間隔の調整</div><div class="eg">セクション間の余白を96px→64pxに</div></div><div class="p">2,500<span class="u">円</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 列2 -->
+    <div class="col">
+      <div class="group rv">
+        <h3>要素単体の置き換え</h3>
+        <div class="rows">
+          <div class="row"><div class="t"><div class="name">画像の差し替え</div><div class="eg">ヒーロー画像の変更（素材ご支給）</div></div><div class="p">2,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">CTAリンク先の変更</div><div class="eg">遷移先URLの差し替え</div></div><div class="p">2,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">アイコン・装飾要素の変更</div><div class="eg">セクション装飾の差し替え</div></div><div class="p">5,000<span class="u">円</span></div></div>
+        </div>
+      </div>
+
+      <div class="group rv">
+        <h3>レイアウト構造変更</h3>
+        <div class="rows">
+          <div class="row"><div class="t"><div class="name">グリッドレイアウトの変更</div><div class="eg">解決策セクションを2カラム→3カラムに</div></div><div class="p">7,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">要素の新規追加</div><div class="eg">ファーストビューにCTAボタンを増設</div></div><div class="p">7,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">要素・コンポーネントの削除</div><div class="eg">セクション内の特定要素のみ削除</div></div><div class="p">5,000<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">セクションの分割・統合</div><div class="eg">1セクションを2つに分ける</div></div><div class="p">10,000<span class="u">円</span></div></div>
+        </div>
+      </div>
+
+      <div class="group rv">
+        <h3>新規セクション追加</h3>
+        <div class="rows">
+          <div class="row"><div class="t"><div class="name">新規セクション追加（テンプレートあり）</div><div class="eg">既存の型を使って追加</div></div><div class="p">10,000<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">新規セクション追加（カスタム）</div><div class="eg">導入事例セクションを新設</div></div><div class="p">12,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">FAQセクションの追加</div><div class="eg">質問5件までを含む</div></div><div class="p">10,000<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">お客様の声の追加</div><div class="eg">3件までを含む（原稿ご支給）</div></div><div class="p">7,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">既存セクションの大幅な構成変更</div><div class="eg">実績セクションを一新</div></div><div class="p">12,500<span class="u">円</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 列3 -->
+    <div class="col">
+      <div class="group rv">
+        <h3>インタラクション追加</h3>
+        <div class="rows">
+          <div class="row"><div class="t"><div class="name">カルーセル・スライダーの追加</div><div class="eg">お客様の声をスライド表示に</div></div><div class="p">10,000<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">モーダル・ポップアップの追加</div><div class="eg">離脱防止ポップアップの設置</div></div><div class="p">10,000<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">スクロール連動アニメーション</div><div class="eg">要素のフェードイン・視差効果</div></div><div class="p">7,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">タブ・アコーディオンの追加</div><div class="eg">長い情報を折りたたんで整理</div></div><div class="p">7,500<span class="u">円</span></div></div>
+        </div>
+      </div>
+
+      <div class="group rv">
+        <h3>フォーム改修</h3>
+        <div class="rows">
+          <div class="row"><div class="t"><div class="name">フォーム項目の追加・削除</div><div class="eg">「電話番号」項目を追加</div></div><div class="p">7,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">バリデーションルールの変更</div><div class="eg">メール形式チェックの厳格化</div></div><div class="p">5,000<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">送信先・連携設定の変更</div><div class="eg">問い合わせの転送先メール変更</div></div><div class="p">7,500<span class="u">円</span></div></div>
+          <div class="row"><div class="t"><div class="name">フォームデザインの変更</div><div class="eg">入力欄のレイアウトを刷新</div></div><div class="p">7,500<span class="u">円</span></div></div>
+        </div>
+      </div>
+
+      <div class="group rv">
+        <h3>その他</h3>
+        <div class="rows">
+          <div class="row quote"><div class="t"><div class="name">上記メニューにない作業</div><div class="eg">内容をうかがったうえでお見積りします</div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <div class="l">サムライスタイル株式会社 ／ 東京都渋谷区道玄坂1-10-8 渋谷道玄坂東急ビル2F</div>
+    <div class="r">HookHack LP制作・改修 料金表 ／ 2026年8月版</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  var bg = document.getElementById('hh-bg');
+  var wraps = [].slice.call(document.querySelectorAll('.hh-barwrap'));
+  var foot = document.querySelector('footer');
+  function moveBars(){
+    if(!bg) return;
+    var y = window.pageYOffset || document.documentElement.scrollTop;
+    wraps.forEach(function(w){
+      w.style.transform = 'translateY(' + (y * parseFloat(w.getAttribute('data-speed'))) + 'px)';
+    });
+    if(foot){
+      var top = foot.getBoundingClientRect().top;
+      var vh = window.innerHeight || 800;
+      bg.style.clipPath = 'inset(0 0 ' + Math.max(0, vh - top) + 'px 0)';
+    }
+  }
+
+  var items = [].slice.call(document.querySelectorAll('.rv'));
+  function check(){
+    for(var i = items.length - 1; i >= 0; i--){
+      var r = items[i].getBoundingClientRect();
+      if(r.top < innerHeight * 0.92 && r.bottom > 0){ items[i].classList.add('in'); items.splice(i,1); }
+    }
+  }
+  var ticking = false;
+  addEventListener('scroll', function(){
+    if(!ticking){ ticking = true; requestAnimationFrame(function(){ check(); moveBars(); ticking = false; }); }
+  }, {passive:true});
+  addEventListener('resize', function(){ check(); moveBars(); });
+
+  if(reduce){ items.forEach(function(el){ el.classList.add('in'); }); items.length = 0; }
+  check(); moveBars();
+})();
+</script>
+</body>
+</html>
