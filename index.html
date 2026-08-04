@@ -399,7 +399,7 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 /* CTAボタンは塗りを保ったまま白文字 */
 .hh-chapter a[class*="bg-[#2C9FB8]"]{background:#2C9FB8 !important;color:#ffffff !important;}
 /* フッター：ブランドの濃色で締める（ロゴは非表示） */
-.hh-foot{background:linear-gradient(180deg,#0c333b 0%,#08272e 100%) !important;border-top:none !important;}
+.hh-foot{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%) !important;border-top:none !important;}
 .hh-foot,.hh-foot p,.hh-foot span,.hh-foot div,.hh-foot li,.hh-foot small{color:#ffffff !important;}
 .hh-foot a{color:rgba(255,255,255,.78) !important;transition:color .25s;}
 .hh-foot a:hover{color:#ffffff !important;}
@@ -433,15 +433,16 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
    セクションに面を敷いて、カードを浮かせる。 */
 /* お問い合わせ＝最後のコンバージョン地点。ブランド色でベタ塗りして最も目立たせる。
    カードの外にある文字は見出しと導入文の2つだけなので、そこを白に。 */
-#inquiry{background:linear-gradient(180deg,#0093B4 0%,#0d6e86 100%) !important;}
+#inquiry{background:linear-gradient(180deg,#0c333b 0%,#0a2d35 100%) !important;}
 #inquiry > *, #inquiry h1,#inquiry h2,#inquiry h3,#inquiry i,#inquiry span{color:#ffffff !important;}
 #inquiry [class*="text-muted-foreground"]{color:rgba(255,255,255,.86) !important;}
 /* フォームカードの中は白地なので元の濃色を維持（上の白指定を打ち消す） */
 #inquiry [class*="rounded-xl"][class*="bg-white"] *{color:inherit !important;}
 #inquiry [class*="rounded-xl"][class*="bg-white"]{color:#0a2b31 !important;}
 #inquiry [class*="rounded-xl"][class*="bg-white"] a{color:#0d6e86 !important;}
+#inquiry input:not([type="checkbox"]),#inquiry textarea{border-color:#C3D9E0 !important;}
 /* フッター直前のマーキー帯は、上のお問い合わせの下端と地を揃える */
-.hh-mq{background:#0d6e86;}
+.hh-mq{background:#0a2d35;}
 .hh-mq-track span{-webkit-text-stroke-color:rgba(255,255,255,.34) !important;}
 #inquiry [class*="rounded-xl"][class*="bg-white"]{
   background:#ffffff !important;
@@ -483,10 +484,12 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
 /* 背後を流れる巨大文字（B案: HookHack・輪郭線）*/
 .hh-mq{position:relative;width:100%;overflow:hidden;z-index:0;
   pointer-events:none;user-select:none;display:flex;align-items:center;
-  height:clamp(115px,15vw,200px);
+  height:clamp(115px,15vw,200px);}
+/* マスクは"文字"側に掛ける。帯そのものに掛けると背景まで透明になり、
+   左右の端で裏の明るい地が透けて「白が勝つ」状態になっていた */
+.hh-mq-track{display:flex;width:max-content;will-change:transform;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
           mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);}
-.hh-mq-track{display:flex;width:max-content;will-change:transform;}
 .hh-mq-track span{display:block;white-space:nowrap;padding-right:.3em;
   font-size:clamp(80px,13vw,190px);font-weight:900;line-height:1;letter-spacing:-.01em;
   color:transparent;-webkit-text-stroke:2px rgba(0,147,180,.42);}
