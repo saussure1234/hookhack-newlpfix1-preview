@@ -36,6 +36,9 @@ body{font-family:"Hiragino Sans","Noto Sans JP",-apple-system,sans-serif;
 .r1{stroke:var(--sage);stroke-width:clamp(18px,6.0vw,96px);opacity:.26}
 .r2{stroke:var(--sky); stroke-width:clamp(13px,4.4vw,70px);opacity:.32}
 .r3{stroke:var(--sun); stroke-width:clamp( 9px,3.0vw,48px);opacity:.30}
+/* スマホ専用パス（既定は非表示） */
+.m1{stroke:var(--sage);stroke-width:26px;opacity:.30;display:none}
+.m2{stroke:var(--sky); stroke-width:19px;opacity:.34;display:none}
 
 .fv{position:relative;min-height:min(88vh,700px);display:flex;align-items:center}
 .fv-inner{position:relative;z-index:1;width:100%;max-width:1180px;margin:0 auto;
@@ -50,11 +53,9 @@ body{font-family:"Hiragino Sans","Noto Sans JP",-apple-system,sans-serif;
 
 /* ---- レスポンシブ：細くする＋本数を減らす＋下げる ---- */
 @media (max-width:767px){
-  #growth .r3{display:none}                    /* 3本目は落とす */
-  #growth svg{transform:translateY(5%)}        /* 文字から離す */
-}
-@media (max-width:480px){
-  #growth svg{transform:translateY(8%)}
+  /* 3本→2本。さらにパスごと差し替える（横に潰すと上昇が右端に寄るため） */
+  #growth .r1,#growth .r2,#growth .r3{display:none}
+  #growth .m1,#growth .m2{display:block}
 }
 @media (prefers-reduced-motion:reduce){
   #growth .gl{transform:none !important}
@@ -106,11 +107,13 @@ pre code{background:none;padding:0;font-size:inherit}
   <div class="gl" data-speed="0.30">
     <svg viewBox="0 0 1440 1584" preserveAspectRatio="none">
       <path class="r1" d="M-80 1182 C 420 1172, 980 992, 1560 552"/>
+      <path class="m1" d="M-120 1150 C 380 1130, 860 1060, 1560 960"/>
     </svg>
   </div>
   <div class="gl" data-speed="0.40">
     <svg viewBox="0 0 1440 1584" preserveAspectRatio="none">
       <path class="r2" d="M-80 1252 C 460 1232, 1020 1042, 1560 662"/>
+      <path class="m2" d="M-120 1216 C 400 1200, 880 1140, 1560 1050"/>
     </svg>
   </div>
   <div class="gl" data-speed="0.52">
@@ -254,22 +257,34 @@ growth.style.clipPath = 'inset(0 0 ' + Math.max(0, innerHeight - top) + 'px 0)';
 .r3{ stroke-width: clamp( 9px, 3.0vw, 48px); }</code></pre>
 <p>clamp なのでブレークポイントを書かずに連続的に細くなります。下の表は実際に出る値です。</p>
 <table>
-  <tr><th>ビューポート幅</th><th class="n">r1</th><th class="n">r2</th><th class="n">r3</th><th>本数</th><th>Y位置</th></tr>
+  <tr><th>ビューポート幅</th><th class="n">r1</th><th class="n">r2</th><th class="n">r3</th><th>本数</th><th>パス</th></tr>
   <tr><td>1600px 以上</td><td class="n">96px</td><td class="n">70px</td><td class="n">48px</td><td>3本</td><td>0</td></tr>
   <tr><td>1440px（基準）</td><td class="n">86px</td><td class="n">63px</td><td class="n">43px</td><td>3本</td><td>0</td></tr>
   <tr><td>1024px</td><td class="n">61px</td><td class="n">45px</td><td class="n">31px</td><td>3本</td><td>0</td></tr>
   <tr><td>768px</td><td class="n">46px</td><td class="n">34px</td><td class="n">23px</td><td>3本</td><td>0</td></tr>
-  <tr><td>767px 以下</td><td class="n">—</td><td class="n">—</td><td class="n">非表示</td><td><strong>2本</strong></td><td><strong>+5%</strong></td></tr>
-  <tr><td>375px</td><td class="n">23px</td><td class="n">17px</td><td class="n">—</td><td>2本</td><td>+8%（480px以下）</td></tr>
+  <tr><td>767px 以下</td><td class="n">26px</td><td class="n">19px</td><td class="n">非表示</td><td><strong>2本</strong></td><td><strong>スマホ用に差し替え</strong></td></tr>
 </table>
-<pre><code>@media (max-width:767px){
-  #growth .r3{ display:none; }               /* 3本目を落とす */
-  #growth svg{ transform:translateY(5%); }   /* 文字から離す */
-}
-@media (max-width:480px){
-  #growth svg{ transform:translateY(8%); }
+<pre><code>/* SVGにPC用3本とスマホ用2本の両方を入れておき、CSSで出し分ける */
+&lt;path class="m1" d="M-120 1150 C 380 1130, 860 1060, 1560 960"/&gt;
+&lt;path class="m2" d="M-120 1216 C 400 1200, 880 1140, 1560 1050"/&gt;
+
+.m1{ stroke:var(--sage); stroke-width:26px; opacity:.30; display:none; }
+.m2{ stroke:var(--sky);  stroke-width:19px; opacity:.34; display:none; }
+
+@media (max-width:767px){
+  #growth .r1, #growth .r2, #growth .r3{ display:none; }
+  #growth .m1, #growth .m2{ display:block; }
 }</code></pre>
-<p><strong>なぜ本数を減らすか：</strong> 幅が狭くなると3本の間隔が詰まり、重なって1本の帯に見えます。細くするだけでは足りません。767px以下では2本にして間隔を確保してください。</p>
+<div class="callout warn">
+  <span class="t">スマホは「細くする」だけでは足りない</span>
+  <code>preserveAspectRatio="none"</code> で横を 1440→375 に潰すと、<strong>PC用パスの立ち上がりが右端15%に押し込まれ、画面上からほぼ消えます</strong>。太さではなくパスの問題なので、スマホ用のパスを別に用意して差し替えてください。スマホ用は傾きをゆるくして、画面幅いっぱいで上がるように引き直しています。あわせて3本→2本に減らします（幅が狭いと3本が詰まって1本の帯に見えるため）。
+</div>
+<table>
+  <tr><th>スマホ用パス（線の上端）</th><th class="n">x=0</th><th class="n">x=480</th><th class="n">x=960</th><th class="n">x=1440</th></tr>
+  <tr><td>m1</td><td class="n">97%</td><td class="n">92%</td><td class="n">84%</td><td class="n">74%</td></tr>
+  <tr><td>m2</td><td class="n">107%</td><td class="n">103%</td><td class="n">95%</td><td class="n">87%</td></tr>
+</table>
+<p class="note">画面高さに対する比率。本文の下端は約68%地点なので、全域で重なりません。</p>
 
 <h2><span class="no">07</span>アクセシビリティ・パフォーマンス</h2>
 <ul>
@@ -286,7 +301,7 @@ growth.style.clipPath = 'inset(0 0 ' + Math.max(0, innerHeight - top) + 'px 0)';
   <li><strong>3本を同じ速さで動かさない。</strong> 奥行きが消えます。</li>
   <li><strong>スクロールで加速させない。</strong> 05を参照。</li>
   <li><strong>見出しを横切らせない。</strong> どれだけ薄くても読みにくくなります。パスを下げるのが正解で、不透明度で逃げると今度は線が見えなくなります。</li>
-  <li><strong>モバイルで太いまま出さない。</strong> vw連動と本数削減の両方が必要です。</li>
+  <li><strong>モバイルでPC用パスをそのまま潰さない。</strong> 立ち上がりが右端に寄って消えます。専用パスへの差し替えと本数削減の両方が必要です。</li>
   <li><strong><code>vector-effect</code> を外さない。</strong> 06を参照。線が横に潰れます。</li>
   <li><strong>下のセクションに入り込ませない。</strong> 05のクリップを必ず入れる。</li>
   <li><strong>3色の明度を揃えない。</strong> 04を参照。上昇が読めなくなります。</li>
@@ -335,7 +350,7 @@ growth.style.clipPath = 'inset(0 0 ' + Math.max(0, innerHeight - top) + 'px 0)';
   <li>スクロールすると3本がついてくる。奥の太い線ほどゆっくり動いている</li>
   <li>スクロール速度を上げても加速しない</li>
   <li>1600 / 1440 / 1024 / 768 / 375px で線が細くなっていく</li>
-  <li>767px以下で3本目が消え、線が団子になっていない</li>
+  <li>767px以下でスマホ用2本に切り替わり、画面幅いっぱいで上がっている</li>
   <li>見出しの上を線が通っていない。コントラスト比 4.5:1 以上</li>
   <li>濃色セクション／フッターに線が入り込んでいない</li>
   <li>コンテンツが必ず線より前面にある（z-index の付け忘れが無い）</li>
