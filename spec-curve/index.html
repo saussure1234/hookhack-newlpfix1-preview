@@ -56,6 +56,8 @@ body{font-family:"Hiragino Sans","Noto Sans JP",-apple-system,sans-serif;
   /* 3本→2本。さらにパスごと差し替える（横に潰すと上昇が右端に寄るため） */
   #growth .r1,#growth .r2,#growth .r3{display:none}
   #growth .m1,#growth .m2{display:block}
+  /* 曲線が入る帯を確保するため、スマホではFVを全画面にする */
+  .fv{min-height:100vh}
 }
 @media (prefers-reduced-motion:reduce){
   #growth .gl{transform:none !important}
@@ -274,6 +276,9 @@ growth.style.clipPath = 'inset(0 0 ' + Math.max(0, innerHeight - top) + 'px 0)';
 @media (max-width:767px){
   #growth .r1, #growth .r2, #growth .r3{ display:none; }
   #growth .m1, #growth .m2{ display:block; }
+
+  /* 曲線が入る帯を確保するため、スマホではFVを全画面にする */
+  .fv{ min-height:100vh; }
 }</code></pre>
 <div class="callout warn">
   <span class="t">スマホは「細くする」だけでは足りない</span>
@@ -285,6 +290,7 @@ growth.style.clipPath = 'inset(0 0 ' + Math.max(0, innerHeight - top) + 'px 0)';
   <tr><td>m2</td><td class="n">107%</td><td class="n">103%</td><td class="n">95%</td><td class="n">87%</td></tr>
 </table>
 <p class="note">画面高さに対する比率。本文の下端は約68%地点なので、全域で重なりません。</p>
+<p><strong>スマホではFVを <code>min-height:100vh</code> にしてください。</strong> 88vh のままだと本文の下端と曲線の間に帯が取れず、曲線が下のセクションに切られて消えます。</p>
 
 <h2><span class="no">07</span>アクセシビリティ・パフォーマンス</h2>
 <ul>
@@ -351,6 +357,7 @@ growth.style.clipPath = 'inset(0 0 ' + Math.max(0, innerHeight - top) + 'px 0)';
   <li>スクロール速度を上げても加速しない</li>
   <li>1600 / 1440 / 1024 / 768 / 375px で線が細くなっていく</li>
   <li>767px以下でスマホ用2本に切り替わり、画面幅いっぱいで上がっている</li>
+  <li>スマホでFVが全画面になっていて、曲線が本文の下に収まっている</li>
   <li>見出しの上を線が通っていない。コントラスト比 4.5:1 以上</li>
   <li>濃色セクション／フッターに線が入り込んでいない</li>
   <li>コンテンツが必ず線より前面にある（z-index の付け忘れが無い）</li>
