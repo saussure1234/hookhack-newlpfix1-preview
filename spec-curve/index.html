@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FV背景「成長の曲線」実装指示書</title>
+<style>
+:root{
+  --paper:#FCFAF6; --ink:#22302C; --sub:#68766F; --line:#E2E6E0;
+  --sage:#5E9C80; --sky:#7FB4D0; --sun:#EDAE42;
+  --code-bg:#1D2A27; --code-ink:#D9E5E0;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Hiragino Sans","Noto Sans JP",-apple-system,sans-serif;
+  color:var(--ink);background:var(--paper);line-height:1.85;-webkit-font-smoothing:antialiased}
+
+/* ============================================================
+   ここから：FV背景「成長の曲線」の実装本体（このデモがそのまま仕様）
+   ============================================================ */
+.fv{position:relative;overflow:hidden;min-height:min(88vh,700px);
+  display:flex;align-items:center;
+  background:linear-gradient(172deg,#FDFCF8 0%,#F6F3EC 100%)}
+
+/* 背景レイヤ：FV全面。preserveAspectRatio="none" で伸縮させ、
+   線の太さは vector-effect="non-scaling-stroke" ＋ CSS で別管理する */
+.growth{position:absolute;inset:0;z-index:0;pointer-events:none;
+  will-change:transform,opacity}
+.growth svg{width:100%;height:100%;display:block}
+.growth path{fill:none;stroke-linecap:round;
+  vector-effect:non-scaling-stroke;          /* ← これが無いと横に潰れる */
+  transition:stroke-width .25s var(--ease-out)}
+
+.r1{stroke:var(--sage);stroke-width:clamp(12px,2.40vw,34px);opacity:.22}
+.r2{stroke:var(--sky); stroke-width:clamp(9px, 1.85vw,26px);opacity:.30}
+.r3{stroke:var(--sun); stroke-width:clamp(7px, 1.30vw,18px);opacity:.28}
+
+/* 入場ドローの初期状態（JSが実長を測って上書きする） */
+.growth.is-draw path{stroke-dasharray:var(--len);stroke-dashoffset:var(--len)}
+.growth.is-draw.is-in path{stroke-dashoffset:0;
+  transition:stroke-dashoffset var(--dur,1400ms) var(--ease-out)}
+.growth.is-draw.is-in .r2{transition-delay:140ms}
+.growth.is-draw.is-in .r3{transition-delay:280ms}
+
+.fv-inner{position:relative;z-index:1;width:100%;max-width:1180px;margin:0 auto;
+  padding:0 clamp(20px,5vw,40px)}
+.fv h1{font-size:clamp(27px,5.2vw,54px);font-weight:800;line-height:1.36;letter-spacing:.01em;
+  text-wrap:balance}
+.fv .lead{margin-top:18px;font-size:clamp(13px,1.4vw,16px);color:var(--sub);max-width:32em}
+.fv .cta{display:inline-block;margin-top:26px;background:var(--ink);color:#fff;font-weight:700;
+  font-size:clamp(13px,1.3vw,15px);padding:13px 30px;border-radius:999px;text-decoration:none}
+.fv .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--sage);
+  margin-bottom:14px}
+
+/* ---- レスポンシブ：細くする＋本数を減らす＋下げる ---- */
+@media (max-width:767px){
+  .growth .r3{display:none}                 /* 3本目は落とす */
+  .growth svg{transform:translateY(6%)}     /* 文字から離す */
+}
+@media (max-width:480px){
+  .growth svg{transform:translateY(9%)}
+}
+@media (prefers-reduced-motion:reduce){
+  .growth{transform:none !important}
+  .growth.is-draw path{stroke-dashoffset:0 !important;transition:none !important}
+}
+/* ============================================================
+   実装本体ここまで
+   ============================================================ */
+
+/* --- 以下は指示書としての体裁 --- */
+.doc{max-width:940px;margin:0 auto;padding:0 24px 100px}
+h2{font-size:clamp(19px,2.4vw,24px);font-weight:800;margin:64px 0 6px;padding-top:14px;
+  border-top:2px solid var(--ink);letter-spacing:.01em}
+h2 .no{font-size:12px;font-weight:700;color:var(--sage);display:block;letter-spacing:.14em;margin-bottom:2px}
+h3{font-size:15.5px;font-weight:800;margin:30px 0 8px}
+p{margin:10px 0;font-size:14.5px}
+p.note{font-size:13px;color:var(--sub)}
+ul,ol{margin:10px 0 10px 22px;font-size:14.5px}
+li{margin:5px 0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:#F1EFE9;font-weight:700;white-space:nowrap}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+pre{background:var(--code-bg);color:var(--code-ink);padding:18px 20px;border-radius:10px;
+  overflow-x:auto;font-size:12.5px;line-height:1.75;margin:14px 0;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;
+  background:#EFEDE6;padding:1px 5px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+.callout{border-left:3px solid var(--sage);background:#F2F7F4;padding:14px 18px;border-radius:0 8px 8px 0;
+  margin:16px 0;font-size:13.5px}
+.callout.warn{border-color:#C4703F;background:#FAF2EC}
+.callout .t{font-weight:800;display:block;margin-bottom:3px}
+.docheader{max-width:940px;margin:0 auto;padding:56px 24px 0}
+.docheader .k{font-size:11px;font-weight:700;letter-spacing:.18em;color:var(--sage)}
+.docheader h1{font-size:clamp(24px,3.6vw,34px);font-weight:800;margin:6px 0 10px}
+.docheader .m{font-size:13px;color:var(--sub)}
+.swatch{display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:6px;
+  border:1px solid rgba(0,0,0,.12)}
+.scrollhint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:2;
+  font-size:11px;color:var(--sub);letter-spacing:.1em}
+</style>
+</head>
+<body>
+
+<!-- ===================== ライブデモ（＝実装本体） ===================== -->
+<section class="fv" id="fv">
+  <div class="growth is-draw" id="growth">
+    <svg viewBox="0 0 1440 720" preserveAspectRatio="none" aria-hidden="true">
+      <path class="r1" d="M-80 830 C 300 700, 620 470, 1520 210"/>
+      <path class="r2" d="M-80 900 C 340 800, 700 570, 1520 320"/>
+      <path class="r3" d="M-80 960 C 380 890, 780 680, 1520 430"/>
+    </svg>
+  </div>
+  <div class="fv-inner">
+    <span class="tag">DEMO</span>
+    <h1>ここがファーストビューです。<br>そのままスクロールしてください。</h1>
+    <p class="lead">読み込み時に3本が下から順に描かれ、スクロールすると静かに上へ抜けながら薄くなります。加速はしません。ウィンドウ幅を変えると線が細くなり、767px以下では3本目が消えます。</p>
+    <a class="cta" href="#doc">仕様を読む</a>
+  </div>
+  <div class="scrollhint">SCROLL</div>
+</section>
+
+<!-- ===================== 指示書 ===================== -->
+<div class="docheader" id="doc">
+  <p class="k">IMPLEMENTATION SPEC</p>
+  <h1>FV背景「成長の曲線」実装指示書</h1>
+  <p class="m">2026年8月5日 ／ 教育系LP（中高生・受験・進学塾）向け</p>
+</div>
+
+<div class="doc">
+
+<h2><span class="no">01</span>この装置が何をするか</h2>
+<p>SaaSのLPで使っている「斜めの直線バー」を、曲線に置き換えたものです。抽象度・レイヤー構造・実装コストはほぼ同じまま、伝わる意味だけが変わります。</p>
+<table>
+  <tr><th>要素</th><th>直線バー（SaaS）</th><th>成長の曲線（教育）</th></tr>
+  <tr><td>形</td><td>直線・鋭角</td><td>曲線・右上へ立ち上がる</td></tr>
+  <tr><td>意味</td><td>速さ・システム・精度</td><td>伸びる・積み上がる・上向き</td></tr>
+  <tr><td>動き</td><td>スクロールで加速する視差</td><td>等速・減速。加速させない</td></tr>
+  <tr><td>色</td><td>ブランド1色の濃淡</td><td>3色（緑・青・黄）を低不透明度で重ねる</td></tr>
+</table>
+<p class="note">曲線が右上へ抜けることが本質です。左下から右上への上昇＝成長という読み方は説明不要で伝わるため、キャッチコピーに「伸びる」と書かなくても効きます。</p>
+
+<h2><span class="no">02</span>構造（HTML）</h2>
+<p>FVの中に背景レイヤを1つ置くだけです。SVGは<strong>1枚・パス3本</strong>。画像は使いません。</p>
+<pre><code>&lt;section class="fv"&gt;
+  &lt;div class="growth is-draw" id="growth"&gt;
+    &lt;svg viewBox="0 0 1440 720" preserveAspectRatio="none" aria-hidden="true"&gt;
+      &lt;path class="r1" d="M-80 830 C 300 700, 620 470, 1520 210"/&gt;
+      &lt;path class="r2" d="M-80 900 C 340 800, 700 570, 1520 320"/&gt;
+      &lt;path class="r3" d="M-80 960 C 380 890, 780 680, 1520 430"/&gt;
+    &lt;/svg&gt;
+  &lt;/div&gt;
+
+  &lt;div class="fv-inner"&gt;
+    &lt;!-- 見出し・リード・CTA --&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</code></pre>
+<ul>
+  <li><code>aria-hidden="true"</code> は必須。装飾なのでスクリーンリーダーに読ませない。</li>
+  <li>パスの始点 <code>-80</code>・終点 <code>1520</code> は viewBox（0〜1440）の外側です。<strong>端を画面外に逃がすことで、線端の丸みが画面内に見えない</strong>ようにしています。ここは詰めないでください。</li>
+</ul>
+
+<h2><span class="no">03</span>ジオメトリ（曲線の設計）</h2>
+<p>基準は 1440×720。3本とも「左下 → 右上」の三次ベジェで、奥にいくほど太く・上を通ります。</p>
+<table>
+  <tr><th>パス</th><th>役割</th><th>始点</th><th>終点</th><th>右端の高さ</th></tr>
+  <tr><td>r1</td><td>奥・最も太い</td><td class="n">(-80, 830)</td><td class="n">(1520, 210)</td><td class="n">最も高い</td></tr>
+  <tr><td>r2</td><td>中</td><td class="n">(-80, 900)</td><td class="n">(1520, 320)</td><td class="n">中間</td></tr>
+  <tr><td>r3</td><td>手前・最も細い</td><td class="n">(-80, 960)</td><td class="n">(1520, 430)</td><td class="n">最も低い</td></tr>
+</table>
+<p><strong>見出しと重ならないことの担保：</strong> 3本とも、画面左半分では y=560 より下を通ります（1440×720基準）。見出しは左上〜左中央に置く前提なので、構造的に交差しません。<strong>見出しを右寄せにする場合はパスを引き直してください。</strong></p>
+
+<div class="callout warn">
+  <span class="t">この検証を必ずやること</span>
+  見出しの外接矩形の中で、曲線が最も明るく／濃く出る点を拾い、文字色とのコントラスト比が <strong>4.5:1</strong> 以上あることを確認する。下回るなら、パスを下げるか不透明度を下げる。太さで逃げないこと（太さを変えると装置の印象が変わる）。
+</div>
+
+<h2><span class="no">04</span>カラーと不透明度</h2>
+<table>
+  <tr><th>パス</th><th>色</th><th>不透明度</th><th>意図</th></tr>
+  <tr><td>r1</td><td><span class="swatch" style="background:#5E9C80"></span>#5E9C80（セージ）</td><td class="n">.22</td><td>最も太いので最も薄く</td></tr>
+  <tr><td>r2</td><td><span class="swatch" style="background:#7FB4D0"></span>#7FB4D0（スカイ）</td><td class="n">.30</td><td>中間</td></tr>
+  <tr><td>r3</td><td><span class="swatch" style="background:#EDAE42"></span>#EDAE42（サン）</td><td class="n">.28</td><td>細いので少し強く</td></tr>
+  <tr><td>地</td><td><span class="swatch" style="background:#F6F3EC"></span>#FDFCF8 → #F6F3EC</td><td class="n">—</td><td>172deg のグラデーション</td></tr>
+</table>
+<p class="note">ブランドカラーに置き換える場合は、<strong>3色の明度差を保つこと</strong>が条件です。同じ明度の3色を重ねると、線が団子になって「上昇」が読めなくなります。明度差がとれない場合は2本に減らしてください。</p>
+
+<h2><span class="no">05</span>スクロールアニメーション</h2>
+
+<h3>フェーズ1：入場ドロー（読み込み時に1回）</h3>
+<p>線が左下から右上へ「描かれて」いきます。3本を時間差でずらすことで、成長の順序が出ます。</p>
+<table>
+  <tr><th>項目</th><th>値</th></tr>
+  <tr><td>手法</td><td><code>stroke-dasharray</code> / <code>stroke-dashoffset</code> を実長から 0 へ</td></tr>
+  <tr><td>長さの取得</td><td><code>path.getTotalLength()</code>（レスポンシブで変わるので resize 時に再計測）</td></tr>
+  <tr><td>duration</td><td class="n">1400ms</td></tr>
+  <tr><td>イージング</td><td><code>cubic-bezier(.22, 1, .36, 1)</code>（強い減速）</td></tr>
+  <tr><td>ディレイ</td><td class="n">r1: 0ms ／ r2: 140ms ／ r3: 280ms</td></tr>
+  <tr><td>発火</td><td>FVは初期表示にあるので、DOM構築直後に1フレーム空けて発火</td></tr>
+</table>
+
+<h3>フェーズ2：スクロール連動</h3>
+<p>FVをスクロールしている間だけ、グループ全体が静かに上へ抜けながら薄くなります。<strong>次のセクションに線がはみ出さないための処理</strong>でもあります。</p>
+<pre><code>p = clamp(scrollY / FVの高さ, 0, 1)
+
+translateY = -(p × 42px)      // 上へ最大42px
+opacity    = 1 - (p × 0.55)   // 最大45%まで薄くなる</code></pre>
+<div class="callout">
+  <span class="t">加速させないこと</span>
+  SaaSのLPでは視差係数 0.55／0.78 で加速させていますが、<strong>この案では等速・減速のみ</strong>にします。教育系で加速する背景は「急かされている」印象になり、安心感と正面から衝突します。42pxという移動量は、FV1画面ぶんスクロールしても「動いたことに気づくかどうか」の量です。それで正解です。
+</div>
+
+<h3>フェーズ3：呼吸（任意・既定はOFF）</h3>
+<p>常時ゆっくり上下する動きです。8秒周期・振幅±5px・各リボンで位相をずらします。写真を使わないFVで間が持たないときだけ有効化してください。</p>
+
+<h2><span class="no">06</span>レスポンシブ（＝細くする）</h2>
+<div class="callout warn">
+  <span class="t">最重要：太さは viewBox のスケールから切り離す</span>
+  <code>preserveAspectRatio="none"</code> で伸縮させると、通常の <code>stroke-width</code> は<strong>横方向に引き伸ばされて線が潰れます</strong>。パスに <code>vector-effect="non-scaling-stroke"</code> を付けて、太さは CSS 側で完全に管理してください。これを外すと、狭い画面で線がべったり太くなります。
+</div>
+<pre><code>.growth path{ vector-effect: non-scaling-stroke; }
+
+.r1{ stroke-width: clamp(12px, 2.40vw, 34px); }
+.r2{ stroke-width: clamp( 9px, 1.85vw, 26px); }
+.r3{ stroke-width: clamp( 7px, 1.30vw, 18px); }</code></pre>
+<p>clamp を使うので、ブレークポイントを書かずに連続的に細くなります。下の表は実際に出る値です。</p>
+<table>
+  <tr><th>ビューポート幅</th><th class="n">r1</th><th class="n">r2</th><th class="n">r3</th><th>本数</th><th>Y位置</th></tr>
+  <tr><td>1440px（基準）</td><td class="n">34px</td><td class="n">26px</td><td class="n">18px</td><td>3本</td><td>0</td></tr>
+  <tr><td>1280px</td><td class="n">30px</td><td class="n">23px</td><td class="n">16px</td><td>3本</td><td>0</td></tr>
+  <tr><td>1024px</td><td class="n">24px</td><td class="n">18px</td><td class="n">13px</td><td>3本</td><td>0</td></tr>
+  <tr><td>768px</td><td class="n">18px</td><td class="n">14px</td><td class="n">10px</td><td>3本</td><td>0</td></tr>
+  <tr><td>767px 以下</td><td class="n">—</td><td class="n">—</td><td class="n">非表示</td><td><strong>2本</strong></td><td><strong>+6%</strong></td></tr>
+  <tr><td>375px</td><td class="n">12px</td><td class="n">9px</td><td class="n">—</td><td>2本</td><td>+9%（480px以下）</td></tr>
+</table>
+<pre><code>@media (max-width:767px){
+  .growth .r3{ display:none; }              /* 3本目を落とす */
+  .growth svg{ transform:translateY(6%); }  /* 文字から離す */
+}
+@media (max-width:480px){
+  .growth svg{ transform:translateY(9%); }
+}</code></pre>
+<p><strong>なぜ本数を減らすか：</strong> 幅が狭くなると3本の間隔が詰まり、重なって1本の帯に見えます。細くするだけでは足りません。767px以下では2本にして、間隔を確保してください。</p>
+
+<h2><span class="no">07</span>アクセシビリティ・パフォーマンス</h2>
+<ul>
+  <li><code>prefers-reduced-motion: reduce</code> で、ドローも視差も止めて<strong>完成状態を即表示</strong>する。</li>
+  <li>SVGは <code>aria-hidden="true"</code>、<code>pointer-events:none</code>。</li>
+  <li>アニメーションは <code>transform</code> / <code>opacity</code> / <code>stroke-dashoffset</code> のみ。<code>top</code> や <code>height</code> は触らない。</li>
+  <li>スクロールハンドラは <code>{passive:true}</code> ＋ <code>requestAnimationFrame</code> で1フレーム1回に間引く。</li>
+  <li>レイヤに <code>will-change: transform, opacity</code>。ただし<strong>FVを抜けたら外す</strong>（付けっぱなしはメモリを食う）。</li>
+</ul>
+
+<h2><span class="no">08</span>やってはいけないこと</h2>
+<ol>
+  <li><strong>見出しを横切らせない。</strong> 線が文字の裏を通ると、どれだけ薄くても読みにくくなります。パスを下げるのが正解で、不透明度をさらに下げて逃げると今度は線が見えなくなります。</li>
+  <li><strong>スクロールで加速させない。</strong> 05を参照。</li>
+  <li><strong>モバイルで太いまま出さない。</strong> vw連動と本数削減の両方が必要です。</li>
+  <li><strong><code>vector-effect</code> を外さない。</strong> 06を参照。線が横に潰れます。</li>
+  <li><strong>FVの外へ流し込まない。</strong> <code>.fv</code> に <code>overflow:hidden</code> を必ず付ける。曲線が次のセクションに侵入すると、セクションの境界が読めなくなります。</li>
+  <li><strong>3色の明度を揃えない。</strong> 04を参照。上昇が読めなくなります。</li>
+</ol>
+
+<h2><span class="no">09</span>JavaScript（全文）</h2>
+<pre><code>(function(){
+  var wrap = document.getElementById('growth');
+  var fv   = document.getElementById('fv');
+  if(!wrap || !fv) return;
+
+  var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var paths  = [].slice.call(wrap.querySelectorAll('path'));
+
+  // --- フェーズ1：入場ドロー ---
+  function measure(){
+    paths.forEach(function(p){
+      var len = Math.ceil(p.getTotalLength());
+      p.style.setProperty('--len', len);
+    });
+  }
+  measure();
+  wrap.style.setProperty('--dur', '1400ms');
+
+  if(reduce){
+    wrap.classList.add('is-in');
+  }else{
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ wrap.classList.add('is-in'); });
+    });
+  }
+
+  // --- フェーズ2：スクロール連動（等速・加速なし） ---
+  var SHIFT = 42;   // 上への最大移動量(px)
+  var FADE  = 0.55; // 最大でどれだけ薄くするか
+  var ticking = false;
+
+  function frame(){
+    ticking = false;
+    if(reduce) return;
+    var h = fv.offsetHeight || 1;
+    var p = Math.min(1, Math.max(0, (window.pageYOffset || 0) / h));
+    wrap.style.transform = 'translate3d(0,' + (-p * SHIFT) + 'px,0)';
+    wrap.style.opacity   = (1 - p * FADE).toFixed(3);
+    wrap.style.willChange = p &lt; 1 ? 'transform,opacity' : 'auto';
+  }
+  addEventListener('scroll', function(){
+    if(!ticking){ ticking = true; requestAnimationFrame(frame); }
+  }, {passive:true});
+
+  // --- リサイズ：パス実長が変わるので測り直す ---
+  var rt;
+  addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){ measure(); frame(); }, 150);
+  });
+
+  frame();
+})();</code></pre>
+
+<h2><span class="no">10</span>チェックリスト（実装後）</h2>
+<ul>
+  <li>1440 / 1024 / 768 / 375px で、線が細くなっていく</li>
+  <li>767px以下で3本目が消え、線が団子になっていない</li>
+  <li>見出しの上を線が通っていない。コントラスト比 4.5:1 以上</li>
+  <li>読み込み時に3本が時間差で描かれる</li>
+  <li>スクロールしても加速しない</li>
+  <li>次のセクションに線がはみ出していない</li>
+  <li>OS設定で「視差効果を減らす」をONにすると、動かず完成状態で出る</li>
+  <li>ウィンドウをリサイズしてもドローが崩れない</li>
+</ul>
+
+</div>
+
+<script>
+(function(){
+  var wrap = document.getElementById('growth');
+  var fv   = document.getElementById('fv');
+  if(!wrap || !fv) return;
+
+  var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var paths  = [].slice.call(wrap.querySelectorAll('path'));
+
+  function measure(){
+    paths.forEach(function(p){
+      var len = Math.ceil(p.getTotalLength());
+      p.style.setProperty('--len', len);
+    });
+  }
+  measure();
+  wrap.style.setProperty('--dur', '1400ms');
+
+  if(reduce){
+    wrap.classList.add('is-in');
+  }else{
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){ wrap.classList.add('is-in'); });
+    });
+  }
+
+  var SHIFT = 42, FADE = 0.55, ticking = false;
+  function frame(){
+    ticking = false;
+    if(reduce) return;
+    var h = fv.offsetHeight || 1;
+    var p = Math.min(1, Math.max(0, (window.pageYOffset || 0) / h));
+    wrap.style.transform = 'translate3d(0,' + (-p * SHIFT) + 'px,0)';
+    wrap.style.opacity   = (1 - p * FADE).toFixed(3);
+    wrap.style.willChange = p < 1 ? 'transform,opacity' : 'auto';
+  }
+  addEventListener('scroll', function(){
+    if(!ticking){ ticking = true; requestAnimationFrame(frame); }
+  }, {passive:true});
+
+  var rt;
+  addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){ measure(); frame(); }, 150);
+  });
+  frame();
+})();
+</script>
+</body>
+</html>
