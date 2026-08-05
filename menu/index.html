@@ -11,7 +11,7 @@
 :root{
   --ink:#041D22; --body:#46595d; --muted:#6b7f83;
   --teal:#11434D; --cyan:#0093B4; --deep:#0d3640;
-  --line:#CFE3E8; --line-soft:#E3EEF1;
+  --line:#CFE3E8; --line-soft:#E6F0F3; --dot:#AECDD7;
   --ease:cubic-bezier(.16,1,.3,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -24,7 +24,8 @@ html{
   background-attachment:fixed;
 }
 body{min-height:100vh;font-family:"Noto Sans JP","Hiragino Sans",-apple-system,sans-serif;
-  color:var(--ink);background:transparent;line-height:1.8;overflow-x:hidden}
+  color:var(--ink);background:transparent;line-height:1.8;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased}
 
 /* ===== 背景の斜めバー：右上に淡く（文字は横切らない） ===== */
 #hh-bg{position:absolute;right:0;top:0;width:min(72%,900px);height:640px;z-index:-1;
@@ -40,84 +41,112 @@ body{min-height:100vh;font-family:"Noto Sans JP","Hiragino Sans",-apple-system,s
 
 /* ===== ヘッダー ===== */
 header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
-  padding:56px 0 22px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:16px}
-.brand .logo{font-size:clamp(24px,3.4vw,32px);font-weight:900;letter-spacing:-.01em;line-height:1}
+  padding:58px 0 20px;margin-bottom:34px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:18px}
+.brand .logo{font-size:clamp(24px,3.4vw,33px);font-weight:900;letter-spacing:-.015em;line-height:1}
 .brand .logo .a{color:var(--teal)} .brand .logo .b{color:#4FBBD4}
-.brand .bar{width:1px;height:26px;background:var(--line)}
-.brand h1{font-size:clamp(15px,2vw,19px);font-weight:700;color:var(--ink);line-height:1.4}
+.brand .bar{width:1px;height:28px;background:var(--line)}
+.brand h1{font-size:clamp(15px,2vw,19px);font-weight:700;color:var(--ink);line-height:1.4;letter-spacing:.02em}
 .meta{text-align:right;font-size:12.5px;color:var(--muted);line-height:1.7}
-.meta .ver{font-weight:700;color:var(--ink);font-size:13px}
+.meta .ver{font-weight:700;color:var(--ink);font-size:13px;letter-spacing:.04em;
+  font-variant-numeric:tabular-nums}
 
 /* ===== 新規LP制作（濃色バンド） ===== */
 .headline{position:relative;overflow:hidden;isolation:isolate;
-  background:linear-gradient(160deg,#15525F 0%,#0d3640 100%);
-  border-radius:16px;padding:34px 36px;display:flex;align-items:center;justify-content:space-between;
-  gap:24px;flex-wrap:wrap;box-shadow:0 44px 88px -58px rgba(4,60,72,.55);margin-bottom:52px}
-.headline .hb{position:absolute;left:-10%;width:130%;height:clamp(40px,5.6vw,80px);border-radius:999px;
+  background:linear-gradient(158deg,#17596A 0%,#0d3640 62%,#0a2d35 100%);
+  border-radius:18px;padding:clamp(30px,4.4vw,50px) clamp(24px,3.6vw,52px);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:28px;flex-wrap:wrap;box-shadow:0 50px 96px -60px rgba(4,60,72,.62);margin-bottom:66px}
+.headline .hb{position:absolute;left:-10%;width:130%;height:clamp(44px,6.2vw,92px);border-radius:999px;
   transform:rotate(-31deg);pointer-events:none;z-index:-1}
-.headline .hb.a{top:-34%;background:linear-gradient(90deg,rgba(160,224,240,.22),rgba(120,205,226,.05))}
-.headline .hb.b{top:44%;background:linear-gradient(90deg,rgba(255,255,255,.10),rgba(255,255,255,0))}
-.headline h2{color:#fff;font-size:clamp(22px,3.2vw,30px);font-weight:900;line-height:1.3}
-.price-block{display:flex;align-items:center;gap:16px;margin-left:auto}
-.price-note{text-align:right;color:rgba(255,255,255,.78);font-size:12.5px;line-height:1.6;white-space:nowrap}
-.price{color:#fff;font-size:clamp(38px,6.4vw,62px);font-weight:900;line-height:1;letter-spacing:-.02em;white-space:nowrap}
-.price .yen{font-size:.52em;font-weight:700;margin-right:.1em;vertical-align:.12em}
+.headline .hb.a{top:-40%;background:linear-gradient(90deg,rgba(160,224,240,.24),rgba(120,205,226,.04))}
+.headline .hb.b{top:48%;background:linear-gradient(90deg,rgba(255,255,255,.11),rgba(255,255,255,0))}
+.headline h2{color:#fff;font-size:clamp(23px,3.6vw,36px);font-weight:900;line-height:1.28;
+  letter-spacing:.01em}
+.headline h2::after{content:"";display:block;width:44px;height:3px;margin-top:16px;border-radius:2px;
+  background:linear-gradient(90deg,#5CC7DE,rgba(92,199,222,.15))}
+
+.price-block{display:flex;align-items:center;gap:clamp(16px,2.4vw,28px);margin-left:auto}
+.price-note{display:flex;flex-direction:column;align-items:flex-end;gap:5px;
+  padding-right:clamp(16px,2.4vw,28px);border-right:1px solid rgba(255,255,255,.20)}
+.price-note span{color:rgba(255,255,255,.72);font-size:12px;font-weight:500;letter-spacing:.10em;
+  line-height:1.5;white-space:nowrap}
+.price{color:#fff;font-size:clamp(42px,7.8vw,78px);font-weight:900;line-height:.92;
+  letter-spacing:-.035em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.price .yen{font-size:.46em;font-weight:700;margin-right:.08em;vertical-align:.2em;letter-spacing:0;
+  color:rgba(255,255,255,.88)}
 
 /* ===== 見出し ===== */
-.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:22px}
-.sec-head h2{font-size:clamp(17px,2.4vw,21px);font-weight:900;color:var(--ink);white-space:nowrap}
+.sec-head{display:flex;align-items:center;gap:15px;margin-bottom:26px}
+.sec-head h2{font-size:clamp(17px,2.4vw,22px);font-weight:900;color:var(--ink);white-space:nowrap;
+  letter-spacing:.02em}
 .sec-head .sl{color:var(--line);font-weight:400}
-.sec-head .sub{font-size:clamp(17px,2.4vw,21px);font-weight:900;color:var(--cyan);white-space:nowrap}
-.sec-head .rule{flex:1;height:1px;background:var(--line)}
+.sec-head .sub{font-size:clamp(17px,2.4vw,22px);font-weight:900;color:var(--cyan);white-space:nowrap;
+  letter-spacing:.02em}
+.sec-head .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),rgba(207,227,232,.25))}
 
 /* ===== メニュー（3カラム） ===== */
-.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;align-items:start}
-.col{display:flex;flex-direction:column;gap:26px}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start;padding-bottom:8px}
+.col{display:flex;flex-direction:column;gap:24px}
 
-.group{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;
-  box-shadow:0 30px 60px -50px rgba(4,60,72,.4)}
-.group > h3{background:var(--teal);color:#fff;font-size:14px;font-weight:700;padding:11px 16px;line-height:1.4}
+.group{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  box-shadow:0 26px 54px -46px rgba(4,60,72,.46)}
+.group > h3{position:relative;background:var(--teal);color:#fff;font-size:13.5px;font-weight:700;
+  padding:12px 18px 12px 22px;line-height:1.45;letter-spacing:.06em}
+.group > h3::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#4FBBD4}
+
 .rows{display:flex;flex-direction:column}
-.row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 16px}
+.row{padding:14px 18px}
 .row + .row{border-top:1px solid var(--line-soft)}
-.row .t{min-width:0}
-.row .name{font-size:14px;font-weight:700;color:var(--ink);line-height:1.5}
-.row .eg{font-size:12px;color:var(--muted);line-height:1.6;margin-top:2px}
-.row .p{font-size:16px;font-weight:900;color:var(--ink);white-space:nowrap;flex-shrink:0}
-.row .p .u{font-size:.68em;font-weight:700;margin-left:.1em}
-.row.quote .p{font-size:13px;font-weight:700;color:var(--muted)}
+/* 品名が折り返したとき、点線と価格は「最終行」の高さに揃える（対応外ブラウザは1行目基準） */
+.rt{display:flex;align-items:baseline;align-items:last baseline;gap:9px}
+.rt .name{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.55;min-width:0}
+.rt .ld{flex:1 1 auto;min-width:0;height:0;border-bottom:1px dotted var(--dot);
+  transform:translateY(-5px)}
+.rt .p{font-size:17px;font-weight:900;color:var(--ink);white-space:nowrap;flex-shrink:0;
+  font-variant-numeric:tabular-nums;letter-spacing:-.015em}
+.rt .p .u{font-size:.66em;font-weight:700;margin-left:.14em;color:var(--body);letter-spacing:0}
+.row .eg{font-size:12.5px;color:var(--muted);line-height:1.65;margin-top:3px}
+.row.quote .rt .name{font-weight:700}
 
 /* ===== フッター ===== */
-footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;padding:30px 24px;margin-top:64px}
+footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;padding:32px 24px;margin-top:72px}
 .foot-inner{max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;
   gap:16px;flex-wrap:wrap;font-size:12.5px}
 .foot-inner .l{color:rgba(255,255,255,.82)}
-.foot-inner .r{color:rgba(255,255,255,.68)}
+.foot-inner .r{color:rgba(255,255,255,.68);font-variant-numeric:tabular-nums}
 
 /* ===== 登場アニメーション ===== */
 .rv{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .9s var(--ease)}
 .rv.in{opacity:1;transform:none}
 
 @media (max-width:1024px){
-  .cols{grid-template-columns:repeat(2,1fr);gap:22px}
+  .cols{grid-template-columns:repeat(2,1fr);gap:20px}
+  .col{gap:20px}
 }
 @media (max-width:640px){
   .wrap{padding:0 16px}
-  header.top{padding:38px 0 18px}
+  header.top{padding:38px 0 16px;margin-bottom:26px}
   .meta{text-align:left}
-  .headline{padding:24px 20px;margin-bottom:38px}
+  .headline{margin-bottom:44px;border-radius:14px}
+  .headline h2::after{margin-top:12px}
   .price-block{margin-left:0;width:100%;justify-content:space-between}
-  .price-note{text-align:left}
-  .cols{grid-template-columns:1fr;gap:20px}
-  .col{gap:20px}
-  .row{padding:12px 14px}
+  .price-note{align-items:flex-start;padding-right:0;border-right:0}
+  .cols{grid-template-columns:1fr;gap:18px}
+  .col{gap:18px}
+  .row{padding:13px 15px}
+  .rt .name{font-size:14px}
+  .rt .p{font-size:16px}
 }
 @media (prefers-reduced-motion:reduce){ .rv{opacity:1;transform:none;transition:none} }
 @media print{
   #hh-bg{display:none} .rv{opacity:1;transform:none}
-  body{background:#fff} html{background:#fff}
-  .cols{grid-template-columns:repeat(3,1fr)}
+  html,body{background:#fff}
+  .cols{grid-template-columns:repeat(3,1fr);gap:14px}
+  .col{gap:14px}
+  .group{box-shadow:none;break-inside:avoid;page-break-inside:avoid}
+  .headline{box-shadow:none;margin-bottom:32px;padding:22px 26px}
+  footer{margin-top:28px}
 }
 </style>
 </head>
@@ -146,7 +175,7 @@ footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;pad
     <span class="hb a"></span><span class="hb b"></span>
     <h2>新規LP制作</h2>
     <div class="price-block">
-      <div class="price-note">1ページ 一式<br>税別</div>
+      <div class="price-note"><span>1ページ 一式</span><span>税別</span></div>
       <div class="price"><span class="yen">¥</span>100,000</div>
     </div>
   </div>
@@ -165,28 +194,28 @@ footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;pad
       <div class="group rv">
         <h3>テキスト改修</h3>
         <div class="rows">
-          <div class="row"><div class="t"><div class="name">見出しテキストの変更</div><div class="eg">「無料相談実施中」→「初回相談無料」</div></div><div class="p">2,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">本文・説明文の書き換え</div><div class="eg">1セクション分の差し替え</div></div><div class="p">2,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">CTAボタン文言の変更</div><div class="eg">「申し込む」→「無料で試す」</div></div><div class="p">2,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">価格・数値の更新</div><div class="eg">「月額3万円」→「月額2.5万円」</div></div><div class="p">2,500<span class="u">円</span></div></div>
+          <div class="row"><div class="rt"><span class="name">見出しテキストの変更</span><span class="ld"></span><span class="p">2,500<span class="u">円</span></span></div><div class="eg">「無料相談実施中」→「初回相談無料」</div></div>
+          <div class="row"><div class="rt"><span class="name">本文・説明文の書き換え</span><span class="ld"></span><span class="p">2,500<span class="u">円</span></span></div><div class="eg">1セクション分の差し替え</div></div>
+          <div class="row"><div class="rt"><span class="name">CTAボタン文言の変更</span><span class="ld"></span><span class="p">2,500<span class="u">円</span></span></div><div class="eg">「申し込む」→「無料で試す」</div></div>
+          <div class="row"><div class="rt"><span class="name">価格・数値の更新</span><span class="ld"></span><span class="p">2,500<span class="u">円</span></span></div><div class="eg">「月額3万円」→「月額2.5万円」</div></div>
         </div>
       </div>
 
       <div class="group rv">
         <h3>要素順序・表示制御</h3>
         <div class="rows">
-          <div class="row"><div class="t"><div class="name">セクション順序の入れ替え</div><div class="eg">実績を解決策より前に移動</div></div><div class="p">2,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">セクションの表示・非表示切替</div><div class="eg">FAQを一時的に非表示にする</div></div><div class="p">2,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">要素の表示・非表示切替</div><div class="eg">ファーストビュー内の補足文を隠す</div></div><div class="p">2,500<span class="u">円</span></div></div>
+          <div class="row"><div class="rt"><span class="name">セクション順序の入れ替え</span><span class="ld"></span><span class="p">2,500<span class="u">円</span></span></div><div class="eg">実績を解決策より前に移動</div></div>
+          <div class="row"><div class="rt"><span class="name">セクションの表示・非表示切替</span><span class="ld"></span><span class="p">2,500<span class="u">円</span></span></div><div class="eg">FAQを一時的に非表示にする</div></div>
+          <div class="row"><div class="rt"><span class="name">要素の表示・非表示切替</span><span class="ld"></span><span class="p">2,500<span class="u">円</span></span></div><div class="eg">ファーストビュー内の補足文を隠す</div></div>
         </div>
       </div>
 
       <div class="group rv">
         <h3>スタイル軽微修正</h3>
         <div class="rows">
-          <div class="row"><div class="t"><div class="name">テーマカラーの変更</div><div class="eg">ページ全体の配色を一括で変更</div></div><div class="p">5,000<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">フォントサイズの調整</div><div class="eg">見出しを32px→36pxに</div></div><div class="p">2,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">余白・間隔の調整</div><div class="eg">セクション間の余白を96px→64pxに</div></div><div class="p">2,500<span class="u">円</span></div></div>
+          <div class="row"><div class="rt"><span class="name">テーマカラーの変更</span><span class="ld"></span><span class="p">5,000<span class="u">円</span></span></div><div class="eg">ページ全体の配色を一括で変更</div></div>
+          <div class="row"><div class="rt"><span class="name">フォントサイズの調整</span><span class="ld"></span><span class="p">2,500<span class="u">円</span></span></div><div class="eg">見出しを32px→36pxに</div></div>
+          <div class="row"><div class="rt"><span class="name">余白・間隔の調整</span><span class="ld"></span><span class="p">2,500<span class="u">円</span></span></div><div class="eg">セクション間の余白を96px→64pxに</div></div>
         </div>
       </div>
     </div>
@@ -196,30 +225,30 @@ footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;pad
       <div class="group rv">
         <h3>要素単体の置き換え</h3>
         <div class="rows">
-          <div class="row"><div class="t"><div class="name">画像の差し替え</div><div class="eg">ヒーロー画像の変更（素材ご支給）</div></div><div class="p">2,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">CTAリンク先の変更</div><div class="eg">遷移先URLの差し替え</div></div><div class="p">2,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">アイコン・装飾要素の変更</div><div class="eg">セクション装飾の差し替え</div></div><div class="p">5,000<span class="u">円</span></div></div>
+          <div class="row"><div class="rt"><span class="name">画像の差し替え</span><span class="ld"></span><span class="p">2,500<span class="u">円</span></span></div><div class="eg">ヒーロー画像の変更（素材ご支給）</div></div>
+          <div class="row"><div class="rt"><span class="name">CTAリンク先の変更</span><span class="ld"></span><span class="p">2,500<span class="u">円</span></span></div><div class="eg">遷移先URLの差し替え</div></div>
+          <div class="row"><div class="rt"><span class="name">アイコン・装飾要素の変更</span><span class="ld"></span><span class="p">5,000<span class="u">円</span></span></div><div class="eg">セクション装飾の差し替え</div></div>
         </div>
       </div>
 
       <div class="group rv">
         <h3>レイアウト構造変更</h3>
         <div class="rows">
-          <div class="row"><div class="t"><div class="name">グリッドレイアウトの変更</div><div class="eg">解決策セクションを2カラム→3カラムに</div></div><div class="p">7,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">要素の新規追加</div><div class="eg">ファーストビューにCTAボタンを増設</div></div><div class="p">7,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">要素・コンポーネントの削除</div><div class="eg">セクション内の特定要素のみ削除</div></div><div class="p">5,000<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">セクションの分割・統合</div><div class="eg">1セクションを2つに分ける</div></div><div class="p">10,000<span class="u">円</span></div></div>
+          <div class="row"><div class="rt"><span class="name">グリッドレイアウトの変更</span><span class="ld"></span><span class="p">7,500<span class="u">円</span></span></div><div class="eg">解決策セクションを2カラム→3カラムに</div></div>
+          <div class="row"><div class="rt"><span class="name">要素の新規追加</span><span class="ld"></span><span class="p">7,500<span class="u">円</span></span></div><div class="eg">ファーストビューにCTAボタンを増設</div></div>
+          <div class="row"><div class="rt"><span class="name">要素・コンポーネントの削除</span><span class="ld"></span><span class="p">5,000<span class="u">円</span></span></div><div class="eg">セクション内の特定要素のみ削除</div></div>
+          <div class="row"><div class="rt"><span class="name">セクションの分割・統合</span><span class="ld"></span><span class="p">10,000<span class="u">円</span></span></div><div class="eg">1セクションを2つに分ける</div></div>
         </div>
       </div>
 
       <div class="group rv">
         <h3>新規セクション追加</h3>
         <div class="rows">
-          <div class="row"><div class="t"><div class="name">新規セクション追加（テンプレートあり）</div><div class="eg">既存の型を使って追加</div></div><div class="p">10,000<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">新規セクション追加（カスタム）</div><div class="eg">導入事例セクションを新設</div></div><div class="p">12,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">FAQセクションの追加</div><div class="eg">質問5件までを含む</div></div><div class="p">10,000<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">お客様の声の追加</div><div class="eg">3件までを含む（原稿ご支給）</div></div><div class="p">7,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">既存セクションの大幅な構成変更</div><div class="eg">実績セクションを一新</div></div><div class="p">12,500<span class="u">円</span></div></div>
+          <div class="row"><div class="rt"><span class="name">新規セクション追加（テンプレートあり）</span><span class="ld"></span><span class="p">10,000<span class="u">円</span></span></div><div class="eg">既存の型を使って追加</div></div>
+          <div class="row"><div class="rt"><span class="name">新規セクション追加（カスタム）</span><span class="ld"></span><span class="p">12,500<span class="u">円</span></span></div><div class="eg">導入事例セクションを新設</div></div>
+          <div class="row"><div class="rt"><span class="name">FAQセクションの追加</span><span class="ld"></span><span class="p">10,000<span class="u">円</span></span></div><div class="eg">質問5件までを含む</div></div>
+          <div class="row"><div class="rt"><span class="name">お客様の声の追加</span><span class="ld"></span><span class="p">7,500<span class="u">円</span></span></div><div class="eg">3件までを含む（原稿ご支給）</div></div>
+          <div class="row"><div class="rt"><span class="name">既存セクションの大幅な構成変更</span><span class="ld"></span><span class="p">12,500<span class="u">円</span></span></div><div class="eg">実績セクションを一新</div></div>
         </div>
       </div>
     </div>
@@ -229,27 +258,27 @@ footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;pad
       <div class="group rv">
         <h3>インタラクション追加</h3>
         <div class="rows">
-          <div class="row"><div class="t"><div class="name">カルーセル・スライダーの追加</div><div class="eg">お客様の声をスライド表示に</div></div><div class="p">10,000<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">モーダル・ポップアップの追加</div><div class="eg">離脱防止ポップアップの設置</div></div><div class="p">10,000<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">スクロール連動アニメーション</div><div class="eg">要素のフェードイン・視差効果</div></div><div class="p">7,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">タブ・アコーディオンの追加</div><div class="eg">長い情報を折りたたんで整理</div></div><div class="p">7,500<span class="u">円</span></div></div>
+          <div class="row"><div class="rt"><span class="name">カルーセル・スライダーの追加</span><span class="ld"></span><span class="p">10,000<span class="u">円</span></span></div><div class="eg">お客様の声をスライド表示に</div></div>
+          <div class="row"><div class="rt"><span class="name">モーダル・ポップアップの追加</span><span class="ld"></span><span class="p">10,000<span class="u">円</span></span></div><div class="eg">離脱防止ポップアップの設置</div></div>
+          <div class="row"><div class="rt"><span class="name">スクロール連動アニメーション</span><span class="ld"></span><span class="p">7,500<span class="u">円</span></span></div><div class="eg">要素のフェードイン・視差効果</div></div>
+          <div class="row"><div class="rt"><span class="name">タブ・アコーディオンの追加</span><span class="ld"></span><span class="p">7,500<span class="u">円</span></span></div><div class="eg">長い情報を折りたたんで整理</div></div>
         </div>
       </div>
 
       <div class="group rv">
         <h3>フォーム改修</h3>
         <div class="rows">
-          <div class="row"><div class="t"><div class="name">フォーム項目の追加・削除</div><div class="eg">「電話番号」項目を追加</div></div><div class="p">7,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">バリデーションルールの変更</div><div class="eg">メール形式チェックの厳格化</div></div><div class="p">5,000<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">送信先・連携設定の変更</div><div class="eg">問い合わせの転送先メール変更</div></div><div class="p">7,500<span class="u">円</span></div></div>
-          <div class="row"><div class="t"><div class="name">フォームデザインの変更</div><div class="eg">入力欄のレイアウトを刷新</div></div><div class="p">7,500<span class="u">円</span></div></div>
+          <div class="row"><div class="rt"><span class="name">フォーム項目の追加・削除</span><span class="ld"></span><span class="p">7,500<span class="u">円</span></span></div><div class="eg">「電話番号」項目を追加</div></div>
+          <div class="row"><div class="rt"><span class="name">バリデーションルールの変更</span><span class="ld"></span><span class="p">5,000<span class="u">円</span></span></div><div class="eg">メール形式チェックの厳格化</div></div>
+          <div class="row"><div class="rt"><span class="name">送信先・連携設定の変更</span><span class="ld"></span><span class="p">7,500<span class="u">円</span></span></div><div class="eg">問い合わせの転送先メール変更</div></div>
+          <div class="row"><div class="rt"><span class="name">フォームデザインの変更</span><span class="ld"></span><span class="p">7,500<span class="u">円</span></span></div><div class="eg">入力欄のレイアウトを刷新</div></div>
         </div>
       </div>
 
       <div class="group rv">
         <h3>その他</h3>
         <div class="rows">
-          <div class="row quote"><div class="t"><div class="name">上記メニューにない作業</div><div class="eg">内容をうかがったうえでお見積りします</div></div></div>
+          <div class="row quote"><div class="rt"><span class="name">上記メニューにない作業</span></div><div class="eg">内容をうかがったうえでお見積りします</div></div>
         </div>
       </div>
     </div>
