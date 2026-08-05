@@ -109,9 +109,9 @@ pre code{background:none;padding:0;font-size:inherit}
 <section class="fv" id="fv">
   <div class="growth is-draw" id="growth">
     <svg viewBox="0 0 1440 720" preserveAspectRatio="none" aria-hidden="true">
-      <path class="r1" d="M-80 830 C 300 700, 620 470, 1520 210"/>
-      <path class="r2" d="M-80 900 C 340 800, 700 570, 1520 320"/>
-      <path class="r3" d="M-80 960 C 380 890, 780 680, 1520 430"/>
+      <path class="r1" d="M-80 830 C 420 820, 980 640, 1560 200"/>
+      <path class="r2" d="M-80 900 C 460 880, 1020 690, 1560 310"/>
+      <path class="r3" d="M-80 960 C 500 945, 1060 800, 1560 440"/>
     </svg>
   </div>
   <div class="fv-inner">
@@ -148,9 +148,9 @@ pre code{background:none;padding:0;font-size:inherit}
 <pre><code>&lt;section class="fv"&gt;
   &lt;div class="growth is-draw" id="growth"&gt;
     &lt;svg viewBox="0 0 1440 720" preserveAspectRatio="none" aria-hidden="true"&gt;
-      &lt;path class="r1" d="M-80 830 C 300 700, 620 470, 1520 210"/&gt;
-      &lt;path class="r2" d="M-80 900 C 340 800, 700 570, 1520 320"/&gt;
-      &lt;path class="r3" d="M-80 960 C 380 890, 780 680, 1520 430"/&gt;
+      &lt;path class="r1" d="M-80 830 C 420 820, 980 640, 1560 200"/&gt;
+      &lt;path class="r2" d="M-80 900 C 460 880, 1020 690, 1560 310"/&gt;
+      &lt;path class="r3" d="M-80 960 C 500 945, 1060 800, 1560 440"/&gt;
     &lt;/svg&gt;
   &lt;/div&gt;
 
@@ -160,18 +160,19 @@ pre code{background:none;padding:0;font-size:inherit}
 &lt;/section&gt;</code></pre>
 <ul>
   <li><code>aria-hidden="true"</code> は必須。装飾なのでスクリーンリーダーに読ませない。</li>
-  <li>パスの始点 <code>-80</code>・終点 <code>1520</code> は viewBox（0〜1440）の外側です。<strong>端を画面外に逃がすことで、線端の丸みが画面内に見えない</strong>ようにしています。ここは詰めないでください。</li>
+  <li>パスの始点 <code>-80</code>・終点 <code>1560</code> は viewBox（0〜1440）の外側です。<strong>端を画面外に逃がすことで、線端の丸みが画面内に見えない</strong>ようにしています。ここは詰めないでください。</li>
 </ul>
 
 <h2><span class="no">03</span>ジオメトリ（曲線の設計）</h2>
 <p>基準は 1440×720。3本とも「左下 → 右上」の三次ベジェで、奥にいくほど太く・上を通ります。</p>
 <table>
-  <tr><th>パス</th><th>役割</th><th>始点</th><th>終点</th><th>右端の高さ</th></tr>
-  <tr><td>r1</td><td>奥・最も太い</td><td class="n">(-80, 830)</td><td class="n">(1520, 210)</td><td class="n">最も高い</td></tr>
-  <tr><td>r2</td><td>中</td><td class="n">(-80, 900)</td><td class="n">(1520, 320)</td><td class="n">中間</td></tr>
-  <tr><td>r3</td><td>手前・最も細い</td><td class="n">(-80, 960)</td><td class="n">(1520, 430)</td><td class="n">最も低い</td></tr>
+  <tr><th>パス</th><th>役割</th><th>始点</th><th>終点</th><th>x=1008でのy</th><th>右端</th></tr>
+  <tr><td>r1</td><td>奥・最も太い</td><td class="n">(-80, 830)</td><td class="n">(1560, 200)</td><td class="n">547</td><td class="n">最も高い</td></tr>
+  <tr><td>r2</td><td>中</td><td class="n">(-80, 900)</td><td class="n">(1560, 310)</td><td class="n">631</td><td class="n">中間</td></tr>
+  <tr><td>r3</td><td>手前・最も細い</td><td class="n">(-80, 960)</td><td class="n">(1560, 440)</td><td class="n">745</td><td class="n">最も低い</td></tr>
 </table>
-<p><strong>見出しと重ならないことの担保：</strong> 3本とも、画面左半分では y=560 より下を通ります（1440×720基準）。見出しは左上〜左中央に置く前提なので、構造的に交差しません。<strong>見出しを右寄せにする場合はパスを引き直してください。</strong></p>
+<p><strong>見出しと重ならないことの担保：</strong> 3本とも、<strong>画面左70%（x&lt;1008）の範囲では FV高さの76%より下</strong>を通ります。1440×720基準で、最も上を通る r1 でも x=1008 の時点で y=547 です。見出しは左上〜左中央に置く前提なので、構造的に交差しません。曲線は<strong>右端の30%で一気に立ち上がる</strong>設計で、この「後半で急に伸びる」形がそのまま成長の読みになります。</p>
+<p class="note">見出しを右寄せ・中央寄せにする場合、またはFVの高さを大きく変える場合は、この保証が崩れます。パスを引き直したうえで、下の検証を必ず行ってください。</p>
 
 <div class="callout warn">
   <span class="t">この検証を必ずやること</span>
