@@ -51,6 +51,11 @@ header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:2
   font-variant-numeric:tabular-nums}
 .meta .date{font-variant-numeric:tabular-nums;letter-spacing:.03em}
 
+/* ===== 有効期限の注記 ===== */
+.notice{font-size:12.5px;line-height:1.75;color:var(--body);
+  background:rgba(17,67,77,.045);border-radius:8px;padding:11px 16px;margin:-10px 0 28px}
+.notice strong{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+
 /* ===== 新規LP制作（濃色バンド） ===== */
 .headline{position:relative;overflow:hidden;
   background:#11434D;
@@ -123,6 +128,7 @@ footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;pad
   .wrap{padding:0 16px}
   header.top{padding:38px 0 16px;margin-bottom:26px}
   .meta{text-align:left}
+  .notice{margin:-4px 0 22px;font-size:12px}
   .headline{margin-bottom:44px;border-radius:14px}
   .headline h2::after{margin-top:12px}
   .price-block{margin-left:0;width:100%;justify-content:space-between}
@@ -162,16 +168,17 @@ footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;pad
     </div>
     <div class="meta">
       <div class="ver">2026年8月版</div>
-      <div class="date">2026年8月5日</div>
       <div>表示価格はすべて税別です</div>
     </div>
   </header>
+
+  <p class="notice rv"><strong>2026年8月5日時点</strong>の価格です。価格改定の場合がありますので、最新の内容はお問い合わせください。</p>
 
   <div class="headline rv">
     <h2>新規LP制作</h2>
     <div class="price-block">
       <div class="price-note"><span>1ページ 一式</span><span>税別</span></div>
-      <div class="price"><span class="yen">¥</span>100,000</div>
+      <div class="price"><span class="yen">¥</span>80,000</div>
     </div>
   </div>
 
@@ -284,7 +291,7 @@ footer{background:linear-gradient(180deg,#0a2d35 0%,#08272e 100%);color:#fff;pad
 <footer>
   <div class="foot-inner">
     <div class="l">サムライスタイル株式会社 ／ 東京都渋谷区道玄坂1-10-8 渋谷道玄坂東急ビル2F</div>
-    <div class="r">HookHack LP制作・改修 メニュー表 ／ 2026年8月版</div>
+    <div class="r">HookHack LP制作・改修 メニュー表 ／ 2026年8月版（2026年8月5日時点）</div>
   </div>
 </footer>
 
