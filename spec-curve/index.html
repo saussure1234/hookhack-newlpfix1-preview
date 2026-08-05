@@ -14,7 +14,8 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:"Hiragino Sans","Noto Sans JP",-apple-system,sans-serif;
-  color:var(--ink);background:var(--paper);line-height:1.85;-webkit-font-smoothing:antialiased}
+  color:var(--ink);line-height:1.85;-webkit-font-smoothing:antialiased;
+  background:linear-gradient(176deg,#FDFCF9 0%,#F6F2EA 62%,#F2EDE3 100%);background-attachment:fixed}
 
 /* ============================================================
    ここから：FV背景「成長の曲線」実装本体（このデモがそのまま仕様）
@@ -32,9 +33,9 @@ body{font-family:"Hiragino Sans","Noto Sans JP",-apple-system,sans-serif;
 #growth path{fill:none;stroke-linecap:round;
   vector-effect:non-scaling-stroke}     /* ← これが無いと横に潰れる */
 
-.r1{stroke:var(--sage);stroke-width:clamp(18px,6.0vw,96px);opacity:.20}
-.r2{stroke:var(--sky); stroke-width:clamp(13px,4.4vw,70px);opacity:.26}
-.r3{stroke:var(--sun); stroke-width:clamp( 9px,3.0vw,48px);opacity:.24}
+.r1{stroke:var(--sage);stroke-width:clamp(18px,6.0vw,96px);opacity:.26}
+.r2{stroke:var(--sky); stroke-width:clamp(13px,4.4vw,70px);opacity:.32}
+.r3{stroke:var(--sun); stroke-width:clamp( 9px,3.0vw,48px);opacity:.30}
 
 .fv{position:relative;min-height:min(88vh,700px);display:flex;align-items:center}
 .fv-inner{position:relative;z-index:1;width:100%;max-width:1180px;margin:0 auto;
@@ -104,17 +105,17 @@ pre code{background:none;padding:0;font-size:inherit}
 <div id="growth" aria-hidden="true">
   <div class="gl" data-speed="0.30">
     <svg viewBox="0 0 1440 1584" preserveAspectRatio="none">
-      <path class="r1" d="M-80 1262 C 420 1252, 980 1072, 1560 632"/>
+      <path class="r1" d="M-80 1182 C 420 1172, 980 992, 1560 552"/>
     </svg>
   </div>
   <div class="gl" data-speed="0.40">
     <svg viewBox="0 0 1440 1584" preserveAspectRatio="none">
-      <path class="r2" d="M-80 1332 C 460 1312, 1020 1122, 1560 742"/>
+      <path class="r2" d="M-80 1252 C 460 1232, 1020 1042, 1560 662"/>
     </svg>
   </div>
   <div class="gl" data-speed="0.52">
     <svg viewBox="0 0 1440 1584" preserveAspectRatio="none">
-      <path class="r3" d="M-80 1392 C 500 1377, 1060 1232, 1560 872"/>
+      <path class="r3" d="M-80 1312 C 500 1297, 1060 1152, 1560 792"/>
     </svg>
   </div>
 </div>
@@ -158,17 +159,17 @@ pre code{background:none;padding:0;font-size:inherit}
 <pre><code>&lt;div id="growth" aria-hidden="true"&gt;
   &lt;div class="gl" data-speed="0.30"&gt;
     &lt;svg viewBox="0 0 1440 1584" preserveAspectRatio="none"&gt;
-      &lt;path class="r1" d="M-80 1262 C 420 1252, 980 1072, 1560 632"/&gt;
+      &lt;path class="r1" d="M-80 1182 C 420 1172, 980 992, 1560 552"/&gt;
     &lt;/svg&gt;
   &lt;/div&gt;
   &lt;div class="gl" data-speed="0.40"&gt;
     &lt;svg viewBox="0 0 1440 1584" preserveAspectRatio="none"&gt;
-      &lt;path class="r2" d="M-80 1332 C 460 1312, 1020 1122, 1560 742"/&gt;
+      &lt;path class="r2" d="M-80 1252 C 460 1232, 1020 1042, 1560 662"/&gt;
     &lt;/svg&gt;
   &lt;/div&gt;
   &lt;div class="gl" data-speed="0.52"&gt;
     &lt;svg viewBox="0 0 1440 1584" preserveAspectRatio="none"&gt;
-      &lt;path class="r3" d="M-80 1392 C 500 1377, 1060 1232, 1560 872"/&gt;
+      &lt;path class="r3" d="M-80 1312 C 500 1297, 1060 1152, 1560 792"/&gt;
     &lt;/svg&gt;
   &lt;/div&gt;
 &lt;/div&gt;
@@ -191,18 +192,18 @@ pre code{background:none;padding:0;font-size:inherit}
 <p>viewBox は <code>0 0 1440 1584</code>（＝220vh ぶん）。スクロール量0のとき画面に見えているのは <strong>y = 432 〜 1152</strong> の帯です。下の座標はこのトラック座標系です。</p>
 <table>
   <tr><th>パス</th><th>役割</th><th>speed</th><th>d 属性</th></tr>
-  <tr><td>r1</td><td>奥・最も太い</td><td class="n">0.30</td><td class="n">M-80 1262 C 420 1252, 980 1072, 1560 632</td></tr>
-  <tr><td>r2</td><td>中</td><td class="n">0.40</td><td class="n">M-80 1332 C 460 1312, 1020 1122, 1560 742</td></tr>
-  <tr><td>r3</td><td>手前・最も細い</td><td class="n">0.52</td><td class="n">M-80 1392 C 500 1377, 1060 1232, 1560 872</td></tr>
+  <tr><td>r1</td><td>奥・最も太い</td><td class="n">0.30</td><td class="n">M-80 1182 C 420 1172, 980 992, 1560 552</td></tr>
+  <tr><td>r2</td><td>中</td><td class="n">0.40</td><td class="n">M-80 1252 C 460 1232, 1020 1042, 1560 662</td></tr>
+  <tr><td>r3</td><td>手前・最も細い</td><td class="n">0.52</td><td class="n">M-80 1312 C 500 1297, 1060 1152, 1560 792</td></tr>
 </table>
-<p><strong>見出しと重ならないことの担保：</strong> 画面左70%（x&lt;1008）の範囲で、<strong>最も上を通る r1 でも、線の上端が FV高さの69%より下</strong>にあります（線幅の半分を含めた実測値）。見出しは左上〜左中央に置く前提なので構造的に交差しません。曲線は<strong>右端の30%で一気に立ち上がる</strong>設計で、この「後半で急に伸びる」形がそのまま成長の読みになります。</p>
+<p><strong>見出しと重ならないことの担保：</strong> 画面左70%（x&lt;1008）の範囲で、<strong>最も上を通る r1 でも、線の上端が画面高さの59%より下</strong>にあります（線幅の半分を含めた実測値）。見出しは左上〜左中央に置く前提なので構造的に交差しません。曲線は<strong>右端の30%で一気に立ち上がる</strong>設計で、この「後半で急に伸びる」形がそのまま成長の読みになります。</p>
 <table>
-  <tr><th>パス</th><th>x=1008 での中心</th><th>線幅の半分</th><th>線の上端</th><th>FV高さ比</th></tr>
-  <tr><td>r1</td><td class="n">y=547</td><td class="n">48px</td><td class="n">y=499</td><td class="n">69%</td></tr>
-  <tr><td>r2</td><td class="n">y=631</td><td class="n">35px</td><td class="n">y=596</td><td class="n">83%</td></tr>
-  <tr><td>r3</td><td class="n">y=745</td><td class="n">24px</td><td class="n">y=721</td><td class="n">100%</td></tr>
+  <tr><th>パス</th><th>x=1008 での中心</th><th>線幅の半分</th><th>線の上端</th><th>クリアランス</th></tr>
+  <tr><td>r1</td><td class="n">65%</td><td class="n">43px</td><td class="n">59%</td><td class="n">見出し下端から約70px下</td></tr>
+  <tr><td>r2</td><td class="n">76%</td><td class="n">32px</td><td class="n">72%</td><td class="n">十分</td></tr>
+  <tr><td>r3</td><td class="n">92%</td><td class="n">22px</td><td class="n">89%</td><td class="n">十分</td></tr>
 </table>
-<p class="note">※この表は720px高のFVに戻して表記しています。線幅は1440px幅時の値です。</p>
+<p class="note">※位置は可視窓（FV1画面ぶん）の高さを100%とした比率。線幅は1440px幅時の値です。</p>
 <div class="callout warn">
   <span class="t">この検証を必ずやること</span>
   見出しの外接矩形の中で曲線が最も濃く出る点を拾い、文字色とのコントラスト比が <strong>4.5:1</strong> 以上あることを確認する。下回るならパスを下げる。<strong>太さで逃げないこと</strong>——太さを変えるとこの装置の印象そのものが変わります。見出しを右寄せ・中央寄せにする場合はこの保証が崩れるので、パスを引き直してください。
@@ -211,9 +212,9 @@ pre code{background:none;padding:0;font-size:inherit}
 <h2><span class="no">04</span>カラーと太さ</h2>
 <table>
   <tr><th>パス</th><th>色</th><th>不透明度</th><th>太さ（1440px時）</th><th>意図</th></tr>
-  <tr><td>r1</td><td><span class="swatch" style="background:#5E9C80"></span>#5E9C80（セージ）</td><td class="n">.20</td><td class="n">86px</td><td>最も太いので最も薄く</td></tr>
-  <tr><td>r2</td><td><span class="swatch" style="background:#7FB4D0"></span>#7FB4D0（スカイ）</td><td class="n">.26</td><td class="n">63px</td><td>中間</td></tr>
-  <tr><td>r3</td><td><span class="swatch" style="background:#EDAE42"></span>#EDAE42（サン）</td><td class="n">.24</td><td class="n">43px</td><td>細いので少し強く</td></tr>
+  <tr><td>r1</td><td><span class="swatch" style="background:#5E9C80"></span>#5E9C80（セージ）</td><td class="n">.26</td><td class="n">86px</td><td>最も太いので最も薄く</td></tr>
+  <tr><td>r2</td><td><span class="swatch" style="background:#7FB4D0"></span>#7FB4D0（スカイ）</td><td class="n">.32</td><td class="n">63px</td><td>中間</td></tr>
+  <tr><td>r3</td><td><span class="swatch" style="background:#EDAE42"></span>#EDAE42（サン）</td><td class="n">.30</td><td class="n">43px</td><td>細いので少し強く</td></tr>
 </table>
 <p class="note">ブランドカラーに置き換える場合は <strong>3色の明度差を保つこと</strong>が条件です。同じ明度の3色を重ねると線が団子になり「上昇」が読めなくなります。明度差がとれないなら2本に減らしてください。</p>
 
