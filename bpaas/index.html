@@ -694,7 +694,7 @@ a.hh-cta2[class] *{color:#11434D !important;}
       }
       moveBars();
 
-      /* 15) 巨大文字「HookHack」：セクションとセクションの"間"に帯として置く（スクロールで加速） */
+      /* 15) 巨大文字「HookHacker」：セクションとセクションの"間"に帯として置く（スクロールで加速） */
       var mqs=[];
       var topLevelOf=function(el){ var e=el; while(e.parentElement && e.parentElement.tagName!=='MAIN' && e.parentElement.tagName!=='BODY') e=e.parentElement; return e; };
       try{
@@ -703,7 +703,7 @@ a.hh-cta2[class] *{color:#11434D !important;}
           var main=document.querySelector('main'); if(!main) return;
           var mq=document.createElement('div'); mq.className='hh-mq'; mq.setAttribute('data-i','0');
           var tr=document.createElement('div'); tr.className='hh-mq-track';
-          for(var k=0;k<10;k++){ var s=document.createElement('span'); s.textContent='HookHack'; tr.appendChild(s); }
+          for(var k=0;k<10;k++){ var s=document.createElement('span'); s.textContent='HookHacker'; tr.appendChild(s); }
           mq.appendChild(tr);
           /* footer は main の中にある。末尾に足すとフッターより下に出るので、footer の直前に入れる */
           var _ft=main.querySelector('footer');
