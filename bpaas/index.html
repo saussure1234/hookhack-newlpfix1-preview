@@ -498,8 +498,10 @@ main h1{font-size:clamp(22px,2.9vw,34px) !important;line-height:1.42 !important;
   /* スマホは横に潰れて線が急峻になり、見出しを横切ってしまうので潜り込みを浅く・薄く */
   .hh-band svg{height:calc(100% + 40px);opacity:.6;}
   /* FVの斜めバー：スマホでは濃い方(輝度111)がH1に重なり、ほぼ黒の見出しが沈む。
-     全体を薄くして、重なっても地の実効輝度が192以上になるようにする */
-  #hh-bg{opacity:.42;}
+     全体を薄くすると水色側まで消えるので、レイヤーは濃いまま出し、
+     見出しを沈ませる濃い方(.r)だけ個別に抑える */
+  #hh-bg{opacity:.82;}
+  #hh-bg .hh-bar.r{opacity:.5;}
   .hh-mq{height:clamp(80px,21vw,116px);}
   .hh-mq-track span{font-size:clamp(50px,16vw,88px);-webkit-text-stroke-width:1.5px;}
   .hh-dark-sec{padding-top:82px !important;clip-path:polygon(0 36px,100% 0,100% 100%,0 100%);}
