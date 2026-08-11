@@ -535,6 +535,13 @@ a.hh-cta2[class] *{color:#11434D !important;}
 @media (max-width:1023px){
   #hero h1.hh-fvh1{margin-bottom:22px !important}
 }
+
+/* ===== 3要素カード：サブ見出しの行数差で本文の開始位置がズレるのを防ぐ =====
+   カード2だけ1行、1と3は2行のため、2行ぶんの高さを最低値として確保する。
+   横並びになる768px以上でのみ適用（縦積み時は不要）。 */
+@media (min-width:768px){
+  .hh-gbox p.self-start{min-height:3.3em}
+}
 </style>
 <script>
 (function(){
