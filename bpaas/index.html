@@ -540,7 +540,8 @@ a.hh-cta2[class] *{color:#11434D !important;}
    カード2だけ1行、1と3は2行のため、2行ぶんの高さを最低値として確保する。
    横並びになる768px以上でのみ適用（縦積み時は不要）。 */
 @media (min-width:768px){
-  .hh-gbox p.self-start{min-height:3.3em}
+  .hh-gbox p.self-start{min-height:3.7em}
+  @supports (height:1lh){ .hh-gbox p.self-start{min-height:calc(2lh + 0.5rem)} }
 }
 </style>
 <script>
