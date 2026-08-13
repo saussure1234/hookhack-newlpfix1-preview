@@ -569,7 +569,10 @@ a.hh-cta3[class]:hover{background-color:#11434D !important;color:#ffffff !import
   box-shadow:0 26px 64px -36px rgba(4,60,72,.45)}
 
 /* ===== FV：CTAは「8万円（紺）」→ 一言 →「5万円トライアル（オレンジ）」の縦並び ===== */
-#hero .hh-fvbtns{display:flex;flex-direction:column;align-items:flex-start;gap:0}
+/* display は lg 以上でのみ。ここで display:flex を常時指定すると Tailwind の hidden を潰し、
+   スマホでPC用CTAとSP用CTAが二重に出る */
+#hero .hh-fvbtns{flex-direction:column;align-items:flex-start;gap:0}
+@media (max-width:1023px){ #hero .hh-fvbtns{display:none !important} }
 #hero .hh-fvbtns .hh-fvlead{margin:14px 0 14px !important}
 #hero a.hh-fvcta-main{padding:clamp(14px,1.15vw,18px) clamp(28px,2.6vw,40px);
   font-size:clamp(15px,1.25vw,18px)}
