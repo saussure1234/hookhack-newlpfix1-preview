@@ -606,9 +606,11 @@ a.hh-cta3[class]:hover{background-color:#11434D !important;color:#ffffff !import
   #hero .lg\:hidden .hh-fvlead{margin:0 0 14px !important}
 }
 
-/* FV：フォームが右端に張り付くので少し内側へ寄せる */
-@media (min-width:1280px){ #hero .hh-fvform{margin-right:clamp(24px,3vw,56px)} }
-@media (min-width:1024px) and (max-width:1279px){ #hero .hh-fvform{margin-right:16px} }
+/* FV：フォームが右端に張り付くので少し内側へ寄せる
+   ※margin-right だとグリッドのトラック幅が削られてフォームが細くなるため、
+     幅は保ったまま transform で位置だけ動かす */
+@media (min-width:1280px){ #hero .hh-fvform{transform:translateX(clamp(-56px,-3vw,-24px))} }
+@media (min-width:1024px) and (max-width:1279px){ #hero .hh-fvform{transform:translateX(-16px)} }
 </style>
 <script>
 (function(){
