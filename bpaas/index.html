@@ -573,6 +573,26 @@ a.hh-cta3[class]:hover{background-color:#11434D !important;color:#ffffff !import
 #hero .hh-fvbtns .hh-fvlead{margin:14px 0 14px !important}
 #hero a.hh-fvcta-main{padding:clamp(14px,1.15vw,18px) clamp(28px,2.6vw,40px);
   font-size:clamp(15px,1.25vw,18px)}
+
+/* ===== FV レスポンシブ微調整 ===== */
+/* 小型ノート〜タブレット横（1024-1279）：左カラムが狭く見出しが4行に折れるため、
+   フォームを細くして見出しを1段下げる */
+@media (min-width:1024px) and (max-width:1279px){
+  #hero .hh-fvgrid{grid-template-columns:minmax(0,1fr) minmax(300px,340px);gap:28px}
+  #hero h1.hh-fvh1{font-size:30px !important;line-height:1.42 !important}
+  #hero .hh-fvformtitle{font-size:16px;margin-bottom:10px}
+  #hero .hh-fvform > div{padding:20px !important}
+}
+/* 画面の高さが低い環境（短いノートPC）でFVの中身が収まらないのを防ぐ */
+@media (min-width:1024px) and (max-height:760px){
+  #hero .hh-fvform > div{padding:18px !important}
+  #hero .hh-fvform textarea{min-height:58px !important}
+  #hero .hh-fvbtns .hh-fvlead{margin:10px 0 10px !important}
+}
+/* スマホ横向き：FVが高さ不足になるので h-screen を解除 */
+@media (max-width:1023px) and (max-height:500px) and (orientation:landscape){
+  #hero{height:auto !important;min-height:0 !important;padding:36px 0 44px}
+}
 </style>
 <script>
 (function(){
