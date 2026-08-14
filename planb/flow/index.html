@@ -679,6 +679,12 @@ a.fl-apply-b{display:inline-block;padding:16px 40px;border-radius:8px;font-weigh
   .fl-note{margin-left:56px}
   a.fl-apply-b{display:block}
 }
+
+/* 固定ヘッダー(81px)の下から始める。
+   ※pt-28 / md:pt-36 は元ビルドに無く効かないため、ここで直接指定する */
+#hero{padding-top:clamp(122px,14vh,196px) !important;
+      padding-bottom:clamp(48px,7vh,88px) !important;
+      height:auto !important;min-height:0 !important}
 </style>
 <script>
 (function(){
