@@ -968,6 +968,35 @@ input::placeholder,textarea::placeholder{color:#9BB0B6}
 .df-card .hh-rv,.df-card .hh-rv.hh-in{opacity:1 !important;transform:none !important;
   filter:none !important;clip-path:none !important;transition:none !important}
 @media (max-width:520px){ .df-opts-2{grid-template-columns:1fr} }
+/* ===== レスポンシブ =====
+   横スクロールと要素のはみ出しは 375〜1920 で発生しないことを確認済み。
+   ここで直しているのは、幅では見えない4点。 */
+
+/* ① iOS Safari は font-size 16px 未満の入力にフォーカスすると自動でズームし、
+      戻らないまま画面がずれる。入力欄は16pxを下回らせない。 */
+.df-field input,.df-sub input,.df-field textarea{font-size:16px}
+
+/* ② 小さい端末は左右の余白を削って入力幅を稼ぐ（375pxで本文 285→315px） */
+@media (max-width:430px){
+  .df-formwrap{padding-left:14px;padding-right:14px}
+  .df-card{padding:22px 16px}
+  .df-sub{padding:12px 13px}
+  .df-drop{padding:22px 12px}
+}
+
+/* ③ 同意のチェックが17pxしかなく、指で押しづらい。行ごと44pxの当たり判定にする */
+.df-agree{align-items:center;min-height:44px;gap:11px}
+.df-agree input{width:20px;height:20px;margin-top:0}
+.df-agree label{padding:11px 0}
+
+/* ④ 長いファイル名で行が横に広がるのを止める */
+.df-filelist li>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* 横向きのスマホは縦が狭いので、上の余白を詰めてフォームを早く出す */
+@media (max-height:520px) and (orientation:landscape){
+  .df-formwrap{padding-top:92px;padding-bottom:40px}
+}
+
 /* メニューの中身（導入実績・CTA）が無くなったので、ハンバーガーごと出さない */
 header button[aria-label="Toggle menu"]{display:none !important}
 </style>
