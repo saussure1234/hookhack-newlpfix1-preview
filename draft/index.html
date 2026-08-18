@@ -911,14 +911,16 @@ input::placeholder,textarea::placeholder{color:#9BB0B6}
 .df-sw-any{background:conic-gradient(#E4610F,#EDAE42,#5E9C80,#2E6FB8,#8B5CC7,#E4610F)}
 
 /* 色の指定：帯そのものがピッカー。未選択のときは虹色にして「色を選ぶ場所」だと分かるようにする */
-.df-prev{position:relative;display:flex;align-items:center;justify-content:center;
+/* 帯自体が <label> なので .df-sub label{display:block} に負ける。詳細度を上げて勝たせる。 */
+.df-sub label.df-prev{position:relative;display:flex;align-items:center;justify-content:center;
+  margin-bottom:0;
   height:64px;border-radius:10px;border:1px solid #C3D9E0;cursor:pointer;overflow:hidden;
   background:conic-gradient(from 210deg,#E4610F,#EDAE42,#5E9C80,#0093B4,#2E6FB8,#8B5CC7,#D8628F,#E4610F);
   transition:background-color .18s ease}
-.df-prev.is-set{background-image:none}
-.df-prev:hover{border-color:#0093B4}
-.df-prev:focus-within{outline:none;border-color:#0093B4;box-shadow:0 0 0 3px rgba(0,147,180,.2)}
-.df-prev input[type=color]{position:absolute;inset:0;width:100%;height:100%;
+.df-sub label.df-prev.is-set{background-image:none}
+.df-sub label.df-prev:hover{border-color:#0093B4}
+.df-sub label.df-prev:focus-within{outline:none;border-color:#0093B4;box-shadow:0 0 0 3px rgba(0,147,180,.2)}
+.df-sub label.df-prev input[type=color]{position:absolute;inset:0;width:100%;height:100%;
   opacity:0;border:0;padding:0;margin:0;cursor:pointer}
 .df-prev-hex{position:relative;pointer-events:none;
   font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;
