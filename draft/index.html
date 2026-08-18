@@ -287,12 +287,12 @@ document.addEventListener("DOMContentLoaded", () => {
     /* 色の自動抽出は抽出元があるときだけ。抽出元＝作り直しのLPのURLしかない。
        それ以外は選択肢ごと出さず、「おまかせ」を既定にする。 */
     var autoOpt=$('df-color-auto'), autoIn=autoOpt.querySelector('input');
+    var aiIn=f.querySelector('input[name=color][value=ai]');
     toggle(autoOpt,renew); autoIn.disabled=!renew;
-    if(renew && !f.querySelector('input[name=color]:checked')) autoIn.checked=true;
-    if(!renew && autoIn.checked){
-      autoIn.checked=false;
-      f.querySelector('input[name=color][value=ai]').checked=true;
-    }
+    /* 既定のまま（＝おまかせ）なら、作り直しに入った時点で自動抽出へ倒す。
+       自分で色を選んでいる場合は触らない。抜けたときは逆に戻す。 */
+    if(renew && aiIn.checked){ aiIn.checked=false; autoIn.checked=true; }
+    if(!renew && autoIn.checked){ autoIn.checked=false; aiIn.checked=true; }
 
     var color=f.querySelector('input[name=color]:checked');
     toggle($('df-color-custom'), !!color && color.value==='custom');
