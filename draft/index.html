@@ -406,8 +406,15 @@ document.addEventListener("DOMContentLoaded", () => {
       r.readAsDataURL(file);
     });
   }
-  function label(sel,v){ var e=f.querySelector('input[name='+sel+'][value="'+v+'"]'); 
-    return e ? e.closest('.df-opt,.df-sw').querySelector('.df-opt-t,span:last-child').textContent.trim() : v; }
+  /* querySelectorのコンマは「文書順で最初に当たったもの」を返す。'.df-opt-t,span:last-child' と
+     書くと外側の .df-opt-b を拾って補足文まで連結されるので、優先順に個別で引く。 */
+  function label(sel,v){
+    var e=f.querySelector('input[name='+sel+'][value="'+v+'"]');
+    if(!e) return v;
+    var box=e.closest('.df-opt,.df-sw');
+    var t=box.querySelector('.df-opt-t') || box.querySelector('span');
+    return t ? t.textContent.trim() : v;
+  }
 
   f.addEventListener('submit',function(e){
     e.preventDefault();
