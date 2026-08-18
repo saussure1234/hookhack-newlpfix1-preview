@@ -941,8 +941,13 @@ input::placeholder,textarea::placeholder{color:#9BB0B6}
 .df-filelist li{display:flex;align-items:center;justify-content:space-between;gap:10px;
   font-size:12.5px;color:#11434D;background:#F1F7F9;border-radius:8px;padding:8px 12px}
 .df-filelist .sz{color:#6b7f83;font-variant-numeric:tabular-nums;flex-shrink:0}
-.df-filelist button{border:0;background:none;color:#6b7f83;font:inherit;font-size:16px;cursor:pointer;line-height:1}
-.df-filelist button:hover{color:#C0392B}
+/* 削除の×は16px角しかなく指で押せない。行の高さいっぱいの当たり判定にする */
+.df-filelist li{min-height:44px}
+.df-filelist button{flex-shrink:0;width:36px;height:36px;margin:-8px -6px -8px 0;
+  border:0;background:none;color:#6b7f83;font:inherit;font-size:18px;cursor:pointer;line-height:1;
+  border-radius:8px}
+.df-filelist button:hover{color:#C0392B;background:rgba(192,57,43,.08)}
+
 
 .df-matlink{margin-top:12px;margin-bottom:0}
 .df-filelist .df-total{background:none;padding:2px 2px 0;font-size:11.5px;color:#6b7f83;justify-content:flex-end}
