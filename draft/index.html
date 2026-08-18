@@ -833,15 +833,8 @@ header button[aria-label],header .lg\\:hidden button{display:none !important}
       }catch(e){} }
       function staggerKids(container,fx){ if(!container)return; [].forEach.call(container.children,function(c,i){ if(tagged(c))return; tag(c,fx||'fadeup'); c.style.transitionDelay=Math.min(i,6)*0.09+'s'; }); }
 
-      /* 1) ヒーローH1 → コピーを指定の2行に差し替え＋行マスク＋数字カウントアップ */
-      try{ var h1=document.querySelector('main h1');
-        if(h1){
-          h1.innerHTML=
-            '<span><i>入力1分で、</i></span>'+
-            '<span><i>翌営業日にLP初稿をご提出</i></span>';
-          h1.classList.add('hh-lines');
-        }
-      }catch(e){}
+      /* 1) ヒーローH1の差し替えは撤去。このページはFVを持たず、唯一のh1が
+            フォームの見出し（無料で初稿を依頼する）なので、上書きすると壊れる。 */
 
       /* 2) 見出し(h2) → 行マスク（H1は上で処理済み） */
       [].forEach.call(document.querySelectorAll('main h2'), lineMask);
