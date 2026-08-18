@@ -924,10 +924,11 @@ input::placeholder,textarea::placeholder{color:#9BB0B6}
 @media(min-width:560px){.df-swatches{grid-template-columns:repeat(3,1fr)}}
 .df-sw{cursor:pointer}
 .df-sw input{position:absolute;opacity:0;width:0;height:0}
-.df-sw span{display:flex;align-items:center;gap:9px;border:1px solid #C3D9E0;border-radius:10px;
+/* 「指定あり」だけ中に span を1つ持つので、枠は直接の子だけに当てる（>を外すと二重枠になる） */
+.df-sw>span{display:flex;align-items:center;gap:9px;border:1px solid #C3D9E0;border-radius:10px;
   padding:10px 12px;font-size:12.5px;font-weight:700;color:#11434D;background:#fff;transition:.15s}
-.df-sw:hover span{border-color:#0093B4}
-.df-sw input:checked + span{border-color:#11434D;box-shadow:0 0 0 1px #11434D inset}
+.df-sw:hover>span{border-color:#0093B4}
+.df-sw input:checked+span{border-color:#11434D;box-shadow:0 0 0 1px #11434D inset}
 .df-sw i{width:22px;height:22px;border-radius:6px;flex-shrink:0;display:block}
 .df-sw-any{background:conic-gradient(#E4610F,#EDAE42,#5E9C80,#2E6FB8,#8B5CC7,#E4610F)}
 
