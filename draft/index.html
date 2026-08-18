@@ -856,7 +856,9 @@ a.hh-cta3[class]:hover{background-color:#11434D !important;color:#ffffff !import
   box-shadow:0 30px 70px -40px rgba(4,60,72,.45)}
 h1.df-formtitle{font-size:clamp(19px,2.2vw,24px);font-weight:900;color:#11434D;
   margin:0 0 26px;text-align:center;line-height:1.5;letter-spacing:.01em}
-.df-sec{border:0;padding:0;margin:0 0 30px}
+/* fieldsetの既定は min-inline-size:min-content。長いファイル名を1件入れるだけで
+   章ごと横に広がり、中のドロップエリアや入力欄がカードからはみ出す。0にして止める。 */
+.df-sec{border:0;padding:0;margin:0 0 30px;min-inline-size:0}
 .df-sec legend{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:900;color:#11434D;
   margin-bottom:14px;padding:0}
 .df-no{width:24px;height:24px;border-radius:50%;background:#11434D;color:#fff;font-size:12px;
@@ -995,7 +997,8 @@ input::placeholder,textarea::placeholder{color:#9BB0B6}
 .df-agree label{padding:11px 0}
 
 /* ④ 長いファイル名で行が横に広がるのを止める */
-.df-filelist li>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.df-filelist li>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.df-filelist li>span.sz{flex:0 0 auto;overflow:visible}
 
 /* 横向きのスマホは縦が狭いので、上の余白を詰めてフォームを早く出す */
 @media (max-height:520px) and (orientation:landscape){
